@@ -22,8 +22,20 @@ const values = [
 ];
 
 const team = [
-  { name: "Dhawal Shukla", role: "Founder", emoji: "👨‍💼", bg: "from-amber-500 to-orange-500" },
-  { name: "Dhruv Khanna", role: "CTO & Co-Founder", emoji: "👨‍💻", bg: "from-blue-500 to-cyan-500" },
+  {
+    name: "Dhawal Shukla",
+    role: "Founder",
+    image: "https://thewittyswan.space/assets/img/dhawal.jpg",
+    bio: "Passionate about vernacular education, linguistic preservation, and empowering native educators across India.",
+    accent: "border-amber-500/40 shadow-amber-500/10",
+  },
+  {
+    name: "Dhruv Khanna",
+    role: "CTO & Co-Founder",
+    image: "https://media.licdn.com/dms/image/v2/D5603AQFt86gOPMryGg/profile-displayphoto-scale_400_400/B56Z8zmAJVKgAg-/0/1783277028870?e=1795651200&v=beta&t=nvzT0dfn0eXbrspaKa0q-vZB_Q1ZzNvTVLBXD3sxHmA",
+    bio: "Architecting scalable multilingual platforms, AI speech analysis, and high-performance educational systems.",
+    accent: "border-orange-500/40 shadow-orange-500/10",
+  },
 ];
 
 const stats = [
@@ -59,19 +71,26 @@ export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<Tab>("About");
 
   return (
-    <div className="min-h-screen bg-[#0a0908]/90 relative overflow-hidden flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0e0c0a] text-white relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
       {/* Background Indian Monument Backdrop */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        className="fixed inset-0 pointer-events-none -z-10 opacity-50 bg-cover bg-center scale-105 transition-opacity"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=1920&q=80')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundImage: `url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1920&q=85')`,
+          filter: "contrast(115%) brightness(95%)",
         }}
       />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
+      <div
+        className="fixed inset-0 pointer-events-none -z-10"
+        style={{
+          background: `
+            radial-gradient(ellipse 90% 70% at 50% 15%, rgba(255, 85, 0, 0.18), transparent 70%),
+            linear-gradient(180deg, rgba(14, 12, 10, 0.45) 0%, rgba(14, 12, 10, 0.70) 50%, #0e0c0a 100%)
+          `,
+        }}
+      />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20 w-full">
         {/* Page Header */}
@@ -151,15 +170,25 @@ export default function CommunityPage() {
 
             {/* Team */}
             <div>
-              <h2 className="font-kalam text-4xl font-bold text-white mb-10 text-center">The Team</h2>
-              <div className="grid sm:grid-cols-2 gap-6 max-w-2xl mx-auto">
+              <h2 className="font-kalam text-3xl sm:text-4xl font-bold text-white mb-8 text-center">The Team</h2>
+              <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
                 {team.map((member, i) => (
-                  <div key={i} className="p-6 rounded-2xl bg-stone-900/60 border border-stone-700/50 text-center hover:border-amber-500/30 transition-all">
-                    <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${member.bg} flex items-center justify-center text-3xl mx-auto mb-4 shadow-lg`}>
-                      {member.emoji}
+                  <div
+                    key={i}
+                    className={`p-7 rounded-3xl bg-[#14110E]/85 border ${member.accent} backdrop-blur-md text-center hover:scale-[1.02] transition-all shadow-xl flex flex-col items-center`}
+                  >
+                    <div className="relative w-28 h-28 mb-4">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={member.image}
+                        alt={member.name}
+                        referrerPolicy="no-referrer"
+                        className="w-28 h-28 rounded-2xl object-cover border-2 border-amber-500/40 shadow-lg"
+                      />
                     </div>
-                    <h3 className="font-kalam text-lg font-bold text-white mb-1">{member.name}</h3>
-                    <p className="text-stone-500 text-sm">{member.role}</p>
+                    <h3 className="font-kalam text-2xl font-bold text-white mb-1">{member.name}</h3>
+                    <p className="text-amber-400 text-xs uppercase tracking-wider font-bold mb-3">{member.role}</p>
+                    <p className="text-stone-300 text-xs sm:text-sm leading-relaxed">{member.bio}</p>
                   </div>
                 ))}
               </div>

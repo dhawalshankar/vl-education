@@ -59,17 +59,17 @@ function PaymentSuccessContent() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0e0c0a] text-white flex items-center justify-center px-6 py-16 relative overflow-hidden">
+    <main className="min-h-screen bg-[#0e0c0a] text-white flex items-center justify-center px-6 pt-32 pb-20 relative overflow-hidden">
       {/* Background Indian Monument Backdrop */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-35 bg-cover bg-center scale-105 transition-opacity"
+        className="fixed inset-0 pointer-events-none -z-10 opacity-35 bg-cover bg-center scale-105 transition-opacity"
         style={{
           backgroundImage: `url('https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=85')`,
           filter: "contrast(110%) brightness(75%)",
         }}
       />
       <div
-        className="fixed inset-0 pointer-events-none"
+        className="fixed inset-0 pointer-events-none -z-10"
         style={{
           background: `
             radial-gradient(ellipse 90% 70% at 50% 20%, rgba(255, 85, 0, 0.12), transparent 70%),

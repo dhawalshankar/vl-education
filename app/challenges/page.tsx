@@ -25,14 +25,14 @@ export default function ChallengesPage() {
 
       {/* Background Indian Monument Backdrop */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-35 bg-cover bg-center scale-105 transition-opacity"
+        className="fixed inset-0 pointer-events-none -z-10 opacity-35 bg-cover bg-center scale-105 transition-opacity"
         style={{
           backgroundImage: `url('https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1920&q=85')`,
           filter: "contrast(110%) brightness(75%)",
         }}
       />
       <div
-        className="fixed inset-0 pointer-events-none"
+        className="fixed inset-0 pointer-events-none -z-10"
         style={{
           background: `
             radial-gradient(ellipse 90% 70% at 50% 20%, rgba(255, 85, 0, 0.12), transparent 70%),

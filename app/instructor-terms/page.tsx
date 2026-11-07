@@ -31,14 +31,21 @@ export default function InstructorTermsPage() {
 
       {/* Background Indian Monument Backdrop */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        className="fixed inset-0 pointer-events-none -z-10 opacity-35 bg-cover bg-center scale-105 transition-opacity"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1622396481304-4b53e839e944?w=1920&q=80')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundImage: `url('https://images.unsplash.com/photo-1622396481304-4b53e839e944?w=1920&q=85')`,
+          filter: "contrast(110%) brightness(75%)",
         }}
       />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
+      <div
+        className="fixed inset-0 pointer-events-none -z-10"
+        style={{
+          background: `
+            radial-gradient(ellipse 90% 70% at 50% 20%, rgba(255, 85, 0, 0.12), transparent 70%),
+            linear-gradient(180deg, rgba(14, 12, 10, 0.55) 0%, rgba(14, 12, 10, 0.78) 55%, #0e0c0a 100%)
+          `,
+        }}
+      />
 
       <main className="relative z-10 max-w-4xl mx-auto px-6 pt-36 pb-20 w-full">
         <Link

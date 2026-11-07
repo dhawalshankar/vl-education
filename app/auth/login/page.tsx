@@ -66,14 +66,21 @@ export default function LoginPage() {
     <div className="min-h-screen bg-[#0B0A08]/90 relative overflow-hidden flex flex-col justify-between">
       {/* Background Indian Monument Backdrop */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        className="fixed inset-0 pointer-events-none -z-10 opacity-35 bg-cover bg-center scale-105 transition-opacity"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1564507592333-c60657eea523?w=1920&q=80')`,
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          backgroundImage: `url('https://images.unsplash.com/photo-1564507592333-c60657eea523?w=1920&q=85')`,
+          filter: "contrast(110%) brightness(75%)",
         }}
       />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#0B0A08]/80 via-[#0B0A08]/90 to-[#0B0A08] pointer-events-none" />
+      <div
+        className="fixed inset-0 pointer-events-none -z-10"
+        style={{
+          background: `
+            radial-gradient(ellipse 90% 70% at 50% 20%, rgba(255, 85, 0, 0.12), transparent 70%),
+            linear-gradient(180deg, rgba(14, 12, 10, 0.55) 0%, rgba(14, 12, 10, 0.78) 55%, #0e0c0a 100%)
+          `,
+        }}
+      />
 
       <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-16">
         <div className="w-full max-w-md bg-[#14120E]/90 border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl shadow-black/80">
