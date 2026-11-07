@@ -59,8 +59,26 @@ function PaymentSuccessContent() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0908]/90 text-white flex items-center justify-center px-6 py-16">
-      <section className="w-full max-w-lg rounded-3xl border border-emerald-500/25 bg-stone-900/70 p-8 text-center shadow-2xl">
+    <main className="min-h-screen bg-[#0e0c0a] text-white flex items-center justify-center px-6 py-16 relative overflow-hidden">
+      {/* Background Indian Monument Backdrop */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-35 bg-cover bg-center scale-105 transition-opacity"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=85')`,
+          filter: "contrast(110%) brightness(75%)",
+        }}
+      />
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(ellipse 90% 70% at 50% 20%, rgba(255, 85, 0, 0.12), transparent 70%),
+            linear-gradient(180deg, rgba(14, 12, 10, 0.55) 0%, rgba(14, 12, 10, 0.78) 55%, #0e0c0a 100%)
+          `,
+        }}
+      />
+
+      <section className="w-full max-w-lg rounded-3xl border border-emerald-500/25 bg-[#16130F]/90 backdrop-blur-xl p-8 text-center shadow-2xl relative z-10">
         <CheckCircle2 className="mx-auto mb-5 h-16 w-16 text-emerald-400" />
         <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-emerald-300">Payment successful</p>
         <h1 className="mb-3 font-kalam text-4xl font-bold">You&apos;re enrolled!</h1>
