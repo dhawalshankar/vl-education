@@ -179,19 +179,20 @@ export default function CourseViewer() {
   );
 
   return (
-    <div className="min-h-screen bg-[#0a0908] text-white relative overflow-hidden flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0a0908] text-white relative overflow-hidden">
       {/* Background Indian Monument Backdrop */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-15 mix-blend-luminosity scale-105"
+        className="fixed inset-0 z-0 pointer-events-none opacity-15 mix-blend-luminosity scale-105"
         style={{
           backgroundImage: `url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1920&q=80')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
         }}
       />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/85 via-[#0a0908]/95 to-[#0a0908] pointer-events-none" />
+      <div className="fixed inset-0 z-0 bg-gradient-to-b from-[#0a0908]/85 via-[#0a0908]/95 to-[#0a0908] pointer-events-none" />
 
-      <div className="border-b border-stone-800/80 bg-stone-900/60 backdrop-blur-md sticky top-0 z-40 px-6 py-4">
+      <div className="relative z-10 flex min-h-screen flex-col justify-between">
+        <div className="border-b border-stone-800/80 bg-stone-900/60 backdrop-blur-md sticky top-0 z-40 px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
           <Link
             href={`/learn/${language}`}
@@ -450,6 +451,7 @@ export default function CourseViewer() {
         </div>
       </div>
       <Footer />
+      </div>
     </div>
   );
 }
