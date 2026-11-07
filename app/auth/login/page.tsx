@@ -63,7 +63,7 @@ export default function LoginPage() {
     "w-full bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white placeholder-white/25 text-sm outline-none focus:border-[#FF5500]";
 
   return (
-    <div className="min-h-screen bg-[#0B0A08]/90 relative overflow-hidden flex flex-col justify-between">
+    <div className="cultural-page min-h-screen relative overflow-hidden flex flex-col justify-between">
       {/* Background Indian Monument Backdrop */}
       <div
         className="fixed inset-0 pointer-events-none -z-10 opacity-35 bg-cover bg-center scale-105 transition-opacity"

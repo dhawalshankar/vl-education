@@ -20,7 +20,7 @@ export default function ChallengesPage() {
   const { data: board, error: boardError, loading: boardLoading } = useApi(() => challengeAPI.leaderboard());
 
   return (
-    <div className="min-h-screen bg-[#0e0c0a] relative overflow-hidden flex flex-col justify-between">
+    <div className="cultural-page min-h-screen relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
       {/* Background Indian Monument Backdrop */}

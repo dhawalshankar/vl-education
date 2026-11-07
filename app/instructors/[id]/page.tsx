@@ -98,7 +98,7 @@ export default function PublicInstructorPage() {
     const totalLessons = courses.reduce((a, c) => a + (c.lessons_count || 0), 0);
 
     return (
-        <div className="min-h-screen bg-[#0e0c0a] text-white relative overflow-hidden flex flex-col justify-between">
+        <div className="cultural-page min-h-screen text-white relative overflow-hidden flex flex-col justify-between">
             <Navbar />
 
             {/* Background Indian Monument Backdrop */}

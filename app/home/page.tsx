@@ -260,7 +260,7 @@ export default function HomePage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0908] text-white flex flex-col justify-between">
+    <div className="cultural-page min-h-screen text-white flex flex-col justify-between">
       <style>{`
         @keyframes vl-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
         @keyframes vl-float { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-18px) rotate(4deg); } }

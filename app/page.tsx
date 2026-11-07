@@ -132,7 +132,7 @@ export default function RootTeaserPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#090807]/90 text-white relative overflow-hidden flex flex-col justify-between selection:bg-amber-500 selection:text-black">
+    <div className="cultural-page min-h-screen text-white relative overflow-hidden flex flex-col justify-between selection:bg-amber-500 selection:text-black">
       {/* ── HEADER ── */}
       <header className="fixed top-5 left-0 right-0 z-50 px-4 sm:px-8 max-w-7xl mx-auto">
         <nav className="rounded-full px-5 py-3 flex items-center justify-between shadow-2xl border border-white/10 bg-[#14110E]/85 backdrop-blur-xl">

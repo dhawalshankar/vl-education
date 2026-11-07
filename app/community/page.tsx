@@ -71,7 +71,7 @@ export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<Tab>("About");
 
   return (
-    <div className="min-h-screen bg-[#0e0c0a] text-white relative overflow-hidden flex flex-col justify-between">
+    <div className="cultural-page min-h-screen text-white relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
       {/* Background Indian Monument Backdrop */}

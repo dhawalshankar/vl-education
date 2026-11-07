@@ -27,7 +27,7 @@ export default function StudentDashboard() {
 
   if (authLoading || !user) {
     return (
-      <div className="min-h-screen bg-[#0a0908]/90 flex items-center justify-center">
+      <div className="cultural-page min-h-screen flex items-center justify-center">
         <div className="text-amber-400 text-2xl animate-pulse">Loading...</div>
       </div>
     );
@@ -42,7 +42,7 @@ export default function StudentDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0e0c0a] text-white relative overflow-hidden flex flex-col justify-between">
+    <div className="cultural-page min-h-screen text-white relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
       {/* Background Indian Monument Backdrop */}

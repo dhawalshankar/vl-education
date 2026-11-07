@@ -52,14 +52,14 @@ function PaymentSuccessContent() {
 
   if (authLoading || !authorized) {
     return (
-      <main className="min-h-screen bg-[#0a0908]/90 flex items-center justify-center">
+      <main className="cultural-page min-h-screen flex items-center justify-center">
         <p className="text-amber-400 animate-pulse">Verifying payment status…</p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0e0c0a] text-white flex items-center justify-center px-6 pt-32 pb-20 relative overflow-hidden">
+    <main className="cultural-page min-h-screen text-white flex items-center justify-center px-6 pt-32 pb-20 relative overflow-hidden">
       {/* Background Indian Monument Backdrop */}
       <div
         className="fixed inset-0 pointer-events-none -z-10 opacity-35 bg-cover bg-center scale-105 transition-opacity"
@@ -110,7 +110,7 @@ export default function PaymentSuccessPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-[#0a0908]/90 flex items-center justify-center">
+        <main className="cultural-page min-h-screen flex items-center justify-center">
           <p className="text-amber-400 animate-pulse">Verifying payment status…</p>
         </main>
       }
