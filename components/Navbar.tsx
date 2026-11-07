@@ -20,7 +20,7 @@ type NavItem = { label: string; href: string; ready: boolean };
 
 const NAV_ITEMS: NavItem[] = [
   { label: "My Learning", href: "/dashboard", ready: true },
-  { label: "Courses", href: "/learn", ready: true },
+  { label: "Learn", href: "/learn", ready: true },
   { label: "Practice Labs", href: "/practice", ready: true },
   { label: "Challenges", href: "/challenges", ready: true },
   { label: "Certifications", href: "/certifications", ready: true },
@@ -122,40 +122,46 @@ export default function Navbar() {
 
             {/* Streak Details Popover */}
             {showStreak && (
-              <div className="absolute right-2 sm:right-0 mt-2 w-[calc(100vw-2rem)] max-w-72 rounded-2xl bg-[#16130F]/95 border border-orange-500/30 shadow-2xl p-4 z-50 backdrop-blur-2xl">
-                <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/10">
-                  <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center">
-                    <Flame className="w-5 h-5 text-orange-400 fill-orange-500" />
+              <>
+                <div
+                  className="fixed inset-0 z-40 sm:hidden bg-black/40 backdrop-blur-xs"
+                  onClick={() => setShowStreak(false)}
+                />
+                <div className="fixed top-20 left-4 right-4 max-w-xs mx-auto sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-2 sm:w-72 sm:max-w-72 rounded-2xl bg-[#16130F]/95 border border-orange-500/30 shadow-2xl p-4 z-50 backdrop-blur-2xl">
+                  <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/10">
+                    <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center shrink-0">
+                      <Flame className="w-5 h-5 text-orange-400 fill-orange-500" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-bold text-white">
+                        {streak.currentStreak} Day Streak
+                      </p>
+                      <p className="text-xs text-orange-300/80">
+                        {streak.currentStreak > 0
+                          ? "Great consistency! Keep learning."
+                          : "Start your streak today!"}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="text-sm font-bold text-white">
-                      {streak.currentStreak} Day Streak
-                    </p>
-                    <p className="text-xs text-orange-300/80">
-                      {streak.currentStreak > 0
-                        ? "Great consistency! Keep learning."
-                        : "Start your streak today!"}
-                    </p>
-                  </div>
-                </div>
 
-                <div className="space-y-2 text-xs">
-                  <div className="flex justify-between text-stone-400">
-                    <span>Longest Streak</span>
-                    <span className="font-mono font-semibold text-white">
-                      {streak.longestStreak} days
-                    </span>
-                  </div>
-                  {totalActiveDays !== undefined && (
+                  <div className="space-y-2 text-xs">
                     <div className="flex justify-between text-stone-400">
-                      <span>Total Active Days</span>
+                      <span>Longest Streak</span>
                       <span className="font-mono font-semibold text-white">
-                        {totalActiveDays}
+                        {streak.longestStreak} days
                       </span>
                     </div>
-                  )}
+                    {totalActiveDays !== undefined && (
+                      <div className="flex justify-between text-stone-400">
+                        <span>Total Active Days</span>
+                        <span className="font-mono font-semibold text-white">
+                          {totalActiveDays}
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </>
             )}
           </div>
 
@@ -186,7 +192,12 @@ export default function Navbar() {
               </button>
 
               {showMenu && (
-                <div className="absolute right-0 mt-2 w-60 rounded-2xl bg-[#181512] border border-white/10 shadow-2xl p-2 z-50 backdrop-blur-2xl">
+                <>
+                  <div
+                    className="fixed inset-0 z-40 sm:hidden bg-black/40 backdrop-blur-xs"
+                    onClick={() => setShowMenu(false)}
+                  />
+                  <div className="fixed top-20 right-4 left-auto max-w-[260px] sm:absolute sm:top-full sm:right-0 sm:mt-2 w-60 rounded-2xl bg-[#181512] border border-white/10 shadow-2xl p-2 z-50 backdrop-blur-2xl">
                   <div className="px-3 py-2 border-b border-white/10 mb-1">
                     <p className="text-xs text-white/95 font-semibold truncate">{user.full_name}</p>
                     <p className="text-[11px] text-white/50 truncate">{user.email}</p>
@@ -235,7 +246,8 @@ export default function Navbar() {
                     <span>Log Out</span>
                   </button>
                 </div>
-              )}
+              </>
+            )}
             </div>
           ) : (
             <Link

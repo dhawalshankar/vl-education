@@ -239,9 +239,27 @@ export default function CourseViewer() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0908]/90 text-white flex flex-col">
+    <div className="min-h-screen bg-[#0e0c0a] text-white flex flex-col relative overflow-hidden">
+      {/* Background Indian Monument Backdrop */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-25 bg-cover bg-center scale-105 transition-opacity"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1920&q=85')`,
+          filter: "contrast(110%) brightness(70%)",
+        }}
+      />
+      <div
+        className="fixed inset-0 pointer-events-none"
+        style={{
+          background: `
+            radial-gradient(ellipse 90% 70% at 50% 20%, rgba(255, 85, 0, 0.10), transparent 70%),
+            linear-gradient(180deg, rgba(14, 12, 10, 0.7) 0%, rgba(14, 12, 10, 0.88) 60%, #0e0c0a 100%)
+          `,
+        }}
+      />
+
       {/* Top bar */}
-      <header className="sticky top-0 z-40 border-b border-stone-800 bg-[#0a0908]/90/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-stone-800 bg-[#0e0c0a]/90 backdrop-blur">
         <div className="w-full max-w-[1600px] mx-auto px-4 lg:px-6 h-14 flex items-center gap-4">
           <Link
             href={`/learn/${language}`}
