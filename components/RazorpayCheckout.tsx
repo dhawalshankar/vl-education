@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { enrollmentAPI, paymentsAPI, PaymentVerificationRequest } from "@/app/lib/api";
-import { ShieldCheck, Lock } from "lucide-react";
+import { ShieldCheck } from "lucide-react";
 
 const RAZORPAY_SCRIPT = "https://checkout.razorpay.com/v1/checkout.js";
 
@@ -121,6 +121,13 @@ export default function RazorpayCheckout({
             const verification = await paymentsAPI.verifyPayment(response);
             if (verification.success === false) throw new Error(verification.message || "Payment verification failed");
             await enrollmentAPI.enroll(courseId);
+            sessionStorage.setItem(
+              "paymentSuccess",
+              JSON.stringify({
+                courseId,
+                completedAt: Date.now(),
+              })
+            );
             processingRef.current = false;
             setProcessing(false);
             onSuccess();

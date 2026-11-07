@@ -12,7 +12,7 @@
 - **Authentication** — email/password and Google sign-in, SSO exchange, protected routes, and password recovery (`app/auth/login`, `app/context/AuthContext.tsx`)
 - **Learning activity** — enrollments, course progress, streak tracking, practice labs, challenges, community, and upcoming modules (`app/lib/streak.ts`, `app/practice`, `app/challenges`, `app/community`)
 - **Instructor profiles** — public instructor pages with dynamic IDs (`app/instructors/[id]`)
-- **Information and support** — About, Careers, Blog, Help, Certifications, Privacy, and Terms pages
+- **Information and support** — About, Certifications, Privacy, and Terms pages
 
 ## Tech Stack
 
@@ -90,7 +90,7 @@ app/
 ├── page.tsx                          # Landing page
 ├── layout.tsx                        # Root layout, wraps app in AuthProvider
 ├── globals.css                       # Global styles / Tailwind entry
-├── about/, blog/, careers/            # Marketing and company pages
+├── about/                             # About page
 ├── certifications/                   # Certification information
 ├── challenges/                        # Learning challenges
 ├── community/                         # Community page
@@ -106,13 +106,14 @@ app/
 ├── dashboard/                        # Student dashboard and enrollments
 │   ├── instructor/                   # Instructor dashboard
 │   └── admin/                        # Admin dashboard
+├── payment-success/                  # Post-payment enrollment confirmation
 ├── learn/                            # Course catalog
 │   └── [language]/
 │       ├── page.tsx                  # Courses for a given language
 │       └── [courseId]/page.tsx       # Single course page
 ├── instructors/[id]/                 # Public instructor profile
 ├── practice/                         # Practice labs and upcoming modules
-├── help/, privacy/, terms/            # Support and policy pages
+├── privacy/, terms/                   # Policy pages
 └── not-found.tsx                     # 404 page
 
 components/

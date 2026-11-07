@@ -154,8 +154,12 @@ export default function CourseViewer() {
   };
 
   const handlePaidSuccess = () => {
-    setReloadKey((k) => k + 1);
-    setSuccessMessage("Payment verified. You are enrolled in this course.");
+    const query = new URLSearchParams({
+      courseId,
+      language,
+      title: c.title,
+    });
+    router.replace(`/payment-success?${query.toString()}`);
   };
 
   const handleToggle = async (lesson: LessonOut) => {
