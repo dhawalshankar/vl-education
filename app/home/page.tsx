@@ -108,7 +108,7 @@ export default function HomePage() {
     router.push(isAuthenticated && isInstructor ? "/dashboard/instructor" : "/auth/login");
 
   return (
-    <div className="min-h-screen bg-[#090807] text-white selection:bg-[#FF5500] selection:text-black">
+    <div className="min-h-screen bg-[#090807]/90 text-white selection:bg-[#FF5500] selection:text-black">
       {/* Global Navbar */}
       <Navbar />
 

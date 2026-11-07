@@ -52,14 +52,14 @@ function PaymentSuccessContent() {
 
   if (authLoading || !authorized) {
     return (
-      <main className="min-h-screen bg-[#0a0908] flex items-center justify-center">
+      <main className="min-h-screen bg-[#0a0908]/90 flex items-center justify-center">
         <p className="text-amber-400 animate-pulse">Verifying payment status…</p>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0908] text-white flex items-center justify-center px-6 py-16">
+    <main className="min-h-screen bg-[#0a0908]/90 text-white flex items-center justify-center px-6 py-16">
       <section className="w-full max-w-lg rounded-3xl border border-emerald-500/25 bg-stone-900/70 p-8 text-center shadow-2xl">
         <CheckCircle2 className="mx-auto mb-5 h-16 w-16 text-emerald-400" />
         <p className="mb-2 text-sm font-semibold uppercase tracking-wider text-emerald-300">Payment successful</p>
@@ -92,7 +92,7 @@ export default function PaymentSuccessPage() {
   return (
     <Suspense
       fallback={
-        <main className="min-h-screen bg-[#0a0908] flex items-center justify-center">
+        <main className="min-h-screen bg-[#0a0908]/90 flex items-center justify-center">
           <p className="text-amber-400 animate-pulse">Verifying payment status…</p>
         </main>
       }

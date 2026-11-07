@@ -4,7 +4,7 @@ import { ArrowLeft, Home, ArrowRight } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#0a0908] relative overflow-hidden flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#0a0908]/90 relative overflow-hidden flex items-center justify-center px-6">
       {/* Background Indian Monument Backdrop */}
       <div
         className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"

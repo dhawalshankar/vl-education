@@ -17,6 +17,13 @@
 
 body {
   background-color: var(--bg-primary);
+  background-image:
+    linear-gradient(rgba(11, 10, 8, 0.78), rgba(11, 10, 8, 0.92)),
+    url("https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=2400&q=85");
+  background-position: center, center;
+  background-size: cover, cover;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
   color: var(--text-primary);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;

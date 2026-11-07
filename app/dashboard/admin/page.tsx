@@ -343,7 +343,7 @@ export default function AdminDashboard() {
 
   if (loading || !allowed) {
     return (
-      <div className="min-h-screen bg-[#0a0908] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0908]/90 flex items-center justify-center">
         <div className="text-amber-400 text-2xl animate-pulse">Loading...</div>
       </div>
     );
@@ -368,7 +368,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0908] text-white relative overflow-hidden flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0a0908]/90 text-white relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
       {/* Background Indian Monument Backdrop */}

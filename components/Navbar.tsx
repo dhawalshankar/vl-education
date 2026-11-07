@@ -122,7 +122,7 @@ export default function Navbar() {
 
             {/* Streak Details Popover */}
             {showStreak && (
-              <div className="absolute right-0 mt-2 w-72 rounded-2xl bg-[#16130F]/95 border border-orange-500/30 shadow-2xl p-4 z-50 backdrop-blur-2xl">
+              <div className="absolute right-2 sm:right-0 mt-2 w-[calc(100vw-2rem)] max-w-72 rounded-2xl bg-[#16130F]/95 border border-orange-500/30 shadow-2xl p-4 z-50 backdrop-blur-2xl">
                 <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/10">
                   <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center">
                     <Flame className="w-5 h-5 text-orange-400 fill-orange-500" />

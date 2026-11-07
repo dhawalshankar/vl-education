@@ -67,7 +67,7 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="relative bg-[#070605] border-t border-stone-800/80 text-stone-300">
+    <footer className="relative bg-[#070605]/90 border-t border-stone-800/80 text-stone-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-14">
         {/* Main Columns */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-8 pb-12 border-b border-stone-800/70">

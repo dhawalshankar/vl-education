@@ -63,7 +63,7 @@ export default function AboutPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0908] text-stone-200 relative overflow-hidden flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0a0908]/90 text-stone-200 relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
       {/* Background Indian Monument Backdrop */}

@@ -183,7 +183,7 @@ export default function CourseViewer() {
 
   if (authLoading || (course.loading && !course.data)) {
     return (
-      <div className="min-h-screen bg-[#0a0908] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0a0908]/90 flex items-center justify-center">
         <div className="text-amber-400 text-2xl animate-pulse">Loading course…</div>
       </div>
     );
@@ -191,7 +191,7 @@ export default function CourseViewer() {
 
   if (course.error || !course.data) {
     return (
-      <div className="min-h-screen bg-[#0a0908] text-white flex flex-col items-center justify-center gap-4 px-6 text-center">
+      <div className="min-h-screen bg-[#0a0908]/90 text-white flex flex-col items-center justify-center gap-4 px-6 text-center">
         <BookOpen className="w-12 h-12 text-stone-600" />
         <h2 className="text-2xl font-bold">Could not load this course</h2>
         <p className="text-stone-400 text-sm">{course.error ?? "Course not found"}</p>
@@ -239,9 +239,9 @@ export default function CourseViewer() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0908] text-white flex flex-col">
+    <div className="min-h-screen bg-[#0a0908]/90 text-white flex flex-col">
       {/* Top bar */}
-      <header className="sticky top-0 z-40 border-b border-stone-800 bg-[#0a0908]/95 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-stone-800 bg-[#0a0908]/90/95 backdrop-blur">
         <div className="w-full max-w-[1600px] mx-auto px-4 lg:px-6 h-14 flex items-center gap-4">
           <Link
             href={`/learn/${language}`}

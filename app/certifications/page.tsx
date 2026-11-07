@@ -33,7 +33,7 @@ export default function CertificationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0908] relative overflow-hidden flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0a0908]/90 relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
       {/* Background Indian Monument Backdrop */}
