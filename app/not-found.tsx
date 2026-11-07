@@ -4,17 +4,24 @@ import { ArrowLeft, Home, ArrowRight } from 'lucide-react';
 
 export default function NotFound() {
   return (
-    <div className="min-h-screen bg-[#0a0908]/90 relative overflow-hidden flex items-center justify-center px-6">
+    <div className="min-h-screen bg-[#0e0c0a] text-white relative overflow-hidden flex items-center justify-center px-6">
       {/* Background Indian Monument Backdrop */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        className="fixed inset-0 pointer-events-none -z-10 opacity-40 bg-cover bg-center scale-105 transition-opacity"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=80')`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
+          backgroundImage: `url('https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=85')`,
+          filter: "contrast(110%) brightness(80%)",
         }}
       />
-      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
+      <div
+        className="fixed inset-0 pointer-events-none -z-10"
+        style={{
+          background: `
+            radial-gradient(ellipse 90% 70% at 50% 20%, rgba(255, 85, 0, 0.12), transparent 70%),
+            linear-gradient(180deg, rgba(14, 12, 10, 0.55) 0%, rgba(14, 12, 10, 0.78) 55%, #0e0c0a 100%)
+          `,
+        }}
+      />
 
       <div className="relative z-10 text-center max-w-2xl mx-auto">
         {/* 404 Number */}

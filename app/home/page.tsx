@@ -1,660 +1,772 @@
+// app/home/page.tsx
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useState } from "react";
+import type { CSSProperties } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
-  ArrowRight,
-  ArrowUpRight,
-  BookOpen,
-  Sparkles,
-  Globe,
-  Users,
   Award,
-  Shield,
-  CheckCircle2,
+  BookOpen,
+  Bot,
+  Check,
+  Flame,
+  Globe,
+  ShieldCheck,
+  Sparkles,
+  Trophy,
+  Users,
   Video,
-  Calendar,
-  Mic,
-  GraduationCap,
-  LayoutDashboard,
-  IndianRupee,
-  Eye,
-  BarChart3,
-  Layers,
-  ChevronRight,
+  Zap,
 } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useAuth } from "@/app/context/AuthContext";
 import { learnAPI } from "@/app/lib/api";
-import { useApi } from "@/app/lib/useApi";
-import {
-  LANGUAGE_CATALOG,
-  canonicalLanguage,
-  presentationFor,
-  slugify,
-} from "@/app/lib/languages";
+import type { CourseCard, LanguageSummary } from "@/app/lib/api";
+import { slugify } from "@/app/lib/languages";
 
-type LanguageTab = "featured" | "scheduled22" | "world";
+/* ── images ──
+   Unsplash IDs: open each once to confirm it shows what you want.
+   For Freepik (or any licensed photo): download to /public/images and use "/images/name.jpg". */
+const unsplash = (id: string, w = 1400) =>
+  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${w}&q=70`;
 
-const FEATURED_INDIAN_NAMES = [
-  "Hindi",
-  "Tamil",
-  "Telugu",
-  "Bengali",
-  "Marathi",
-  "Gujarati",
-  "Kannada",
-  "Malayalam",
-  "Punjabi",
-  "Sanskrit",
-  "Odia",
-  "Assamese",
+const IMAGES = {
+  hero: unsplash("photo-1548013146-72479768bada", 1920), // Taj Mahal, iconic Indian cultural monument
+  path: {
+    learn: unsplash("photo-1582510003544-4d00b7f74220", 900), // Mehrangarh Fort grand architectural heritage
+    practice: unsplash("photo-1598324789736-4861f89564a0", 900), // Traditional Indian palace courtyard
+    compete: unsplash("photo-1587474260584-136574528ed5", 900), // Historic Qutub Minar heritage
+    certify: unsplash("photo-1585135497273-1a86b09fe70e", 900), // Humayun's Tomb regal landmark
+  },
+  courseCovers: [
+    unsplash("photo-1548013146-72479768bada", 900), // Taj Mahal
+    unsplash("photo-1582510003544-4d00b7f74220", 900), // Mehrangarh Fort
+    unsplash("photo-1599661046289-e31897846e41", 900), // Golden Indian palace
+  ],
+  labs: unsplash("photo-1564507592333-c60657eea523", 1200), // Golden Temple Amritsar spiritual cultural heritage
+  sessions: unsplash("photo-1582510003544-4d00b7f74220", 1200), // Jodhpur heritage palace
+  workshops: unsplash("photo-1605649487212-47bdab064df8", 1200), // Indian cultural festive gathering
+  challenges: unsplash("photo-1587474260584-136574528ed5", 1200), // Historic landmark
+  teach: unsplash("photo-1609137144822-0d12792c3065", 1800), // Hawa Mahal Jaipur royal heritage
+  cta: unsplash("photo-1524492412937-b28074a5d7da", 1920), // Grand Taj Mahal
+};
+
+/* ── content ── */
+const GREETINGS = [
+  { lang: "Hindi", code: "hi", text: "नमस्ते" },
+  { lang: "Tamil", code: "ta", text: "வணக்கம்" },
+  { lang: "Bengali", code: "bn", text: "নমস্কার" },
+  { lang: "Telugu", code: "te", text: "నమస్కారం" },
+  { lang: "Kannada", code: "kn", text: "ನಮಸ್ಕಾರ" },
+  { lang: "Malayalam", code: "ml", text: "നമസ്കാരം" },
+  { lang: "Gujarati", code: "gu", text: "નમસ્તે" },
+  { lang: "Punjabi", code: "pa", text: "ਸਤ ਸ੍ਰੀ ਅਕਾਲ" },
+  { lang: "Marathi", code: "mr", text: "नमस्कार" },
 ];
 
-const learnerFeatures = [
-  {
-    icon: Mic,
-    title: "Native Voice & Pronunciation",
-    badge: "Audio-First",
-    text: "Hear native speakers pronounce regional intonations, retroflex consonants, and everyday conversational cadences.",
-  },
-  {
-    icon: Layers,
-    title: "Structured Modular Curriculum",
-    badge: "Step-by-Step",
-    text: "Progress logically from foundational scripts and phonetics into intermediate vocabulary and real-world conversation.",
-  },
-  {
-    icon: Award,
-    title: "Verifiable Certifications",
-    badge: "Accredited",
-    text: "Earn digitally verifiable certificates on course completion to showcase on your professional resume and LinkedIn.",
-  },
-  {
-    icon: GraduationCap,
-    title: "Permanent Lifetime Access",
-    badge: "One-Time ₹ Fee",
-    text: "Enroll once with transparent Indian Rupee (₹) pricing and retain lifetime course access with zero monthly subscription traps.",
-  },
+// Faint letters floating in the hero background
+const FLOATING_GLYPHS = [
+  { ch: "अ", code: "hi", top: "14%", left: "3%", size: "text-7xl", delay: 0 },
+  { ch: "த", code: "ta", top: "62%", left: "6%", size: "text-6xl", delay: 1.2 },
+  { ch: "ক", code: "bn", top: "10%", left: "46%", size: "text-5xl", delay: 2.1 },
+  { ch: "ક", code: "gu", top: "74%", left: "48%", size: "text-6xl", delay: 0.6 },
+  { ch: "ఋ", code: "te", top: "20%", left: "90%", size: "text-7xl", delay: 1.8 },
+  { ch: "ਸ", code: "pa", top: "70%", left: "92%", size: "text-5xl", delay: 2.6 },
 ];
 
-const educatorSteps = [
-  {
-    step: "01",
-    icon: BookOpen,
-    title: "Design Your Curriculum",
-    text: "Organize lessons into modules, record video masterclasses, and attach downloadable vocabulary & script guides.",
-  },
-  {
-    step: "02",
-    icon: IndianRupee,
-    title: "Set Your Course Pricing",
-    text: "Publish free community primers to build a loyal student following, or set a competitive one-time price in INR (₹).",
-  },
-  {
-    step: "03",
-    icon: Users,
-    title: "Teach & Receive Direct Payouts",
-    text: "Inspire passionate language learners across India and abroad, track student enrollments, and receive verified monthly settlements.",
-  },
+// Shown only if the languages API is unreachable
+const FALLBACK_LANGUAGES = [
+  "Hindi", "English", "Tamil", "Telugu", "Bengali", "Marathi", "Gujarati",
+  "Kannada", "Malayalam", "Punjabi", "Odia", "Assamese", "Urdu", "Sanskrit",
 ];
 
-const stats = [
-  { value: "22", label: "Scheduled Indian Languages", hint: "From Kashmiri to Tamil" },
-  { value: "100%", label: "Cultural Pedagogy", hint: "Script, idiom & dialect roots" },
-  { value: "₹0", label: "Free Foundation Modules", hint: "Start at zero cost" },
-  { value: "Native", label: "Instructor-Led", hint: "Authentic vernacular reviews" },
+type Status = "live" | "soon";
+
+// Flip a status to "live" here as each feature ships
+const STATUS: Record<
+  "courses" | "labs" | "challenges" | "certificates" | "sessions" | "workshops",
+  Status
+> = {
+  courses: "live",
+  labs: "soon",
+  challenges: "soon",
+  certificates: "soon",
+  sessions: "soon",
+  workshops: "soon",
+};
+
+const LEVELS = [
+  { name: "Foundation", note: "Read, write and handle everyday greetings." },
+  { name: "Intermediate", note: "Hold a conversation on familiar topics." },
+  { name: "Professional", note: "Use the language confidently at work." },
+  { name: "Mastery", note: "Nuance, idiom and fluent, formal writing." },
 ];
 
+const focusCls =
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF5500]";
+
+const dotGrid: CSSProperties = {
+  backgroundImage: "radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px)",
+  backgroundSize: "24px 24px",
+};
+
+const paperTexture: CSSProperties = {
+  backgroundImage:
+    "radial-gradient(rgba(120,80,30,0.10) 1px, transparent 1px), radial-gradient(rgba(120,80,30,0.06) 1px, transparent 1px)",
+  backgroundSize: "22px 22px, 11px 11px",
+  backgroundPosition: "0 0, 5px 5px",
+};
+
+/* ── small pieces ── */
+// Plain <img>, so no next.config remotePatterns needed. Falls back to a gradient if the URL fails.
+function Photo({ src, alt = "", className = "" }: { src: string; alt?: string; className?: string }) {
+  const [ok, setOk] = useState(true);
+  if (!ok) {
+    return <div aria-hidden className={`bg-gradient-to-br from-[#3a2412] via-[#22160d] to-[#14110e] ${className}`} />;
+  }
+  return (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img src={src} alt={alt} loading="lazy" onError={() => setOk(false)} className={`object-cover ${className}`} />
+  );
+}
+
+function Glow({ className }: { className: string }) {
+  return <div aria-hidden className={`pointer-events-none absolute rounded-full blur-3xl ${className}`} />;
+}
+
+function StatusChip({ status }: { status: Status }) {
+  return status === "live" ? (
+    <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30">
+      Live
+    </span>
+  ) : (
+    <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-black/40 text-stone-300 border border-white/15 backdrop-blur-sm">
+      Coming soon
+    </span>
+  );
+}
+
+function Check4({ children }: { children: React.ReactNode }) {
+  return (
+    <li className="flex items-start gap-3 text-stone-200">
+      <Check className="w-4 h-4 mt-1 text-[#FF7700] shrink-0" />
+      <span>{children}</span>
+    </li>
+  );
+}
+
+function PrimaryButton({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className={`inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#FF5500] hover:bg-[#FF6A1F] text-white font-semibold text-sm shadow-lg shadow-[#FF5500]/25 transition-colors ${focusCls}`}
+    >
+      {children}
+    </Link>
+  );
+}
+
+function GhostButton({ href, children }: { href: string; children: React.ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className={`inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/25 bg-black/20 backdrop-blur-sm hover:border-white/60 text-white font-semibold text-sm transition-colors ${focusCls}`}
+    >
+      {children}
+    </Link>
+  );
+}
+
+function Pill({ icon: Icon, children }: { icon: LucideIcon; children: React.ReactNode }) {
+  return (
+    <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/40 backdrop-blur-md px-4 py-2 text-sm text-stone-200">
+      <Icon className="w-4 h-4 text-[#FF7700]" />
+      {children}
+    </span>
+  );
+}
+
+function GreetingMarquee() {
+  const loop = [...GREETINGS, ...GREETINGS];
+  return (
+    <div className="relative overflow-hidden border-y border-white/10 bg-[#0d0b09] py-5" aria-hidden>
+      <div className="vl-marquee flex w-max items-center gap-12 whitespace-nowrap">
+        {loop.map((g, i) => (
+          <span key={`${g.lang}-${i}`} className="flex items-center gap-12">
+            <span lang={g.code} className="font-kalam text-2xl font-bold text-stone-200">
+              {g.text}
+            </span>
+            <span className="text-xs uppercase tracking-[0.25em] text-stone-500">{g.lang}</span>
+            <span className="w-1.5 h-1.5 rounded-full bg-[#FF5500]" />
+          </span>
+        ))}
+      </div>
+      <div className="pointer-events-none absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-[#0d0b09] to-transparent" />
+      <div className="pointer-events-none absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-[#0d0b09] to-transparent" />
+    </div>
+  );
+}
+
+/* ═══════════════════════════ PAGE ═══════════════════════════ */
 export default function HomePage() {
-  const router = useRouter();
-  const { isAuthenticated, isInstructor, loading: authLoading } = useAuth();
-  const [langTab, setLangTab] = useState<LanguageTab>("featured");
+  const { isAuthenticated, user } = useAuth();
+  const [languages, setLanguages] = useState<LanguageSummary[]>([]);
+  const [courses, setCourses] = useState<CourseCard[]>([]);
+  const [active, setActive] = useState(0);
 
-  // Fetch real counts from the backend API
-  const { data: apiLanguages } = useApi(() => learnAPI.languages());
+  // The highlighted greeting rotates (skipped for reduced motion)
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = setInterval(() => setActive((a) => (a + 1) % GREETINGS.length), 2600);
+    return () => clearInterval(id);
+  }, []);
 
-  const courseCounts = useMemo(() => {
-    const map = new Map<string, number>();
-    (apiLanguages ?? []).forEach((l) => {
-      const key = canonicalLanguage(l.language);
-      map.set(key, (map.get(key) ?? 0) + l.course_count);
-    });
-    return map;
-  }, [apiLanguages]);
+  // Real catalog data. If the API is down the page still renders with the static list.
+  useEffect(() => {
+    let alive = true;
+    learnAPI
+      .languages()
+      .then((l) => alive && setLanguages(l))
+      .catch(() => {});
+    learnAPI
+      .courses()
+      .then((list) => {
+        if (!alive) return;
+        const picked = [...list].sort((a, b) => Number(b.is_featured) - Number(a.is_featured)).slice(0, 3);
+        setCourses(picked);
+      })
+      .catch(() => {});
+    return () => {
+      alive = false;
+    };
+  }, []);
 
-  const goLearn = () => router.push(isAuthenticated ? "/dashboard" : "/learn");
-  const goTeach = () =>
-    router.push(isAuthenticated && isInstructor ? "/dashboard/instructor" : "/auth/login");
+  const languageList: LanguageSummary[] = languages.length
+    ? languages
+    : FALLBACK_LANGUAGES.map((language) => ({ language, course_count: 0 }));
 
-  // Filter languages according to the active tab
-  const displayedLanguages = useMemo(() => {
-    if (langTab === "featured") {
-      return LANGUAGE_CATALOG.filter((l) => FEATURED_INDIAN_NAMES.includes(l.name));
-    }
-    if (langTab === "scheduled22") {
-      return LANGUAGE_CATALOG.filter((l) => l.group === "indian");
-    }
-    // "world" includes English and Foreign languages
-    return LANGUAGE_CATALOG.filter((l) => l.group === "english" || l.group === "foreign");
-  }, [langTab]);
+  const primary = isAuthenticated
+    ? { href: "/dashboard", label: "Go to My Learning" }
+    : { href: "/auth/login", label: "Sign in with VartaLang" };
+  const isTeacher = isAuthenticated && (user?.role === "instructor" || user?.role === "admin");
+
+  const pathSteps = [
+    { icon: BookOpen, title: "Learn", img: IMAGES.path.learn, text: "Structured courses with video lessons and notes, taught by instructors who teach the language.", status: STATUS.courses },
+    { icon: Bot, title: "Practice", img: IMAGES.path.practice, text: "Speak or write with an AI partner and get your mistakes explained on the spot.", status: STATUS.labs },
+    { icon: Trophy, title: "Compete", img: IMAGES.path.compete, text: "Timed challenges that earn XP and put you on a leaderboard.", status: STATUS.challenges },
+    { icon: Award, title: "Certify", img: IMAGES.path.certify, text: "Level-based certificates with an ID that anyone can verify.", status: STATUS.certificates },
+  ];
 
   return (
-    <div className="min-h-screen bg-[#0e0c0a] text-white selection:bg-[#FF5500] selection:text-white relative overflow-hidden flex flex-col justify-between">
-      {/* Global Navbar */}
+    <div className="min-h-screen bg-[#0a0908] text-white flex flex-col justify-between">
+      <style>{`
+        @keyframes vl-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+        @keyframes vl-float { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-18px) rotate(4deg); } }
+        .vl-marquee { animation: vl-marquee 45s linear infinite; }
+        .vl-float { animation: vl-float 9s ease-in-out infinite; }
+        @media (prefers-reduced-motion: reduce) { .vl-marquee, .vl-float { animation: none; } }
+      `}</style>
+
       <Navbar />
 
-      {/* ── BACKGROUND INDIAN MONUMENT BACKDROP (VISIBLE & WARM) ───────── */}
-      <div
-        className="fixed inset-0 pointer-events-none -z-10 opacity-50 bg-cover bg-center scale-105 transition-opacity duration-1000"
-        style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=85')`,
-          filter: "contrast(112%) brightness(95%)",
-        }}
-      />
-      <div
-        className="fixed inset-0 pointer-events-none -z-10"
-        style={{
-          background: `
-            radial-gradient(ellipse 90% 70% at 50% 15%, rgba(255, 85, 0, 0.18), transparent 70%),
-            linear-gradient(180deg, rgba(14, 12, 10, 0.45) 0%, rgba(14, 12, 10, 0.72) 45%, #0e0c0a 100%)
-          `,
-        }}
-      />
-
-      {/* ── SECTION 1: HERO (REFINED SIZING & PRESTIGIOUS BRANDING) ────── */}
-      <section className="relative pt-32 pb-16 md:pt-40 md:pb-24 px-4 sm:px-6 text-center">
-        <div className="max-w-5xl mx-auto relative z-10">
-          {/* Badge */}
-          <div className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-amber-500/15 border border-amber-400/30 backdrop-blur-md mb-8 shadow-lg shadow-amber-500/10">
-            <Sparkles className="w-4 h-4 text-amber-400 animate-pulse" />
-            <span className="text-xs sm:text-sm font-semibold text-amber-200 tracking-wide uppercase">
-              India&apos;s Cultural &amp; Vernacular Learning Gateway
-            </span>
+      <main>
+        {/* ── HERO ── */}
+        <section className="relative overflow-hidden pt-36 pb-24">
+          <div className="absolute inset-0" aria-hidden>
+            <Photo src={IMAGES.hero} className="w-full h-full opacity-60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0908]/30 via-[#0a0908]/50 to-[#0a0908]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0908]/80 via-[#0a0908]/30 to-transparent" />
+            <div className="absolute inset-0" style={dotGrid} />
           </div>
+          <Glow className="w-[28rem] h-[28rem] bg-[#FF5500]/25 -top-32 -left-32" />
+          <Glow className="w-[24rem] h-[24rem] bg-amber-500/15 bottom-0 right-0" />
 
-          {/* Sized & Balanced Headline */}
-          <h1 className="font-kalam text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.12] tracking-tight max-w-4xl mx-auto drop-shadow-2xl">
-            Learn an Indian language.
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-orange-400 to-amber-500">
-              Or teach one and earn.
-            </span>
-          </h1>
-
-          {/* Sized Subtitle */}
-          <p className="mt-6 text-base sm:text-lg md:text-xl text-stone-300 max-w-2xl mx-auto leading-relaxed font-normal">
-            Master India&apos;s 22 scheduled languages, English, and in-demand world languages through
-            structured video courses, script training, speech intonation, and native mentorship.
-          </p>
-
-          {/* Action CTAs */}
-          <div className="mt-10 flex flex-wrap items-center justify-center gap-4">
-            <button
-              onClick={goLearn}
-              disabled={authLoading}
-              className="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-bold text-base shadow-xl shadow-orange-500/25 transition-all hover:scale-105 flex items-center gap-2.5 disabled:opacity-50"
-            >
-              <span>{isAuthenticated ? "Go to my dashboard" : "Start learning free"}</span>
-              <ArrowRight className="w-5 h-5" />
-            </button>
-
-            <button
-              onClick={goTeach}
-              disabled={authLoading}
-              className="px-8 py-3.5 rounded-2xl bg-[#16130F]/90 hover:bg-[#201B15] border border-amber-500/30 hover:border-amber-500/60 text-stone-200 hover:text-white font-bold text-base transition-all hover:scale-105 flex items-center gap-2 disabled:opacity-50"
-            >
-              <span>{isAuthenticated && isInstructor ? "Open instructor studio" : "Teach on VartaLang"}</span>
-            </button>
-
-            <Link
-              href="/learn"
-              className="px-5 py-3.5 text-stone-400 hover:text-amber-300 font-medium text-base flex items-center gap-1.5 transition-colors group"
-            >
-              <span>Explore catalog</span>
-              <ArrowUpRight className="w-4 h-4 text-stone-400 group-hover:text-amber-400 transition-colors" />
-            </Link>
-          </div>
-
-          {/* Value Stats Grid */}
-          <div className="mt-16 pt-10 border-t border-stone-800/80 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-            {stats.map((s, i) => (
-              <div key={i} className="space-y-1">
-                <p className="font-kalam text-3xl sm:text-4xl font-bold text-amber-300 tabular-nums">
-                  {s.value}
-                </p>
-                <p className="text-xs sm:text-sm font-semibold text-stone-200">
-                  {s.label}
-                </p>
-                <p className="text-[11px] text-stone-400">
-                  {s.hint}
-                </p>
-              </div>
+          {/* floating scripts */}
+          <div className="absolute inset-0 hidden md:block pointer-events-none select-none" aria-hidden>
+            {FLOATING_GLYPHS.map((g) => (
+              <span
+                key={g.ch}
+                lang={g.code}
+                className={`vl-float absolute font-kalam font-bold text-[#FF7700]/20 ${g.size}`}
+                style={{ top: g.top, left: g.left, animationDelay: `${g.delay}s` }}
+              >
+                {g.ch}
+              </span>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* ── SECTION 2: 3 CORE OFFERINGS (COURSES, WORKSHOPS & 1:1 SESSIONS) ── */}
-      <section className="relative px-4 sm:px-6 py-20 border-t border-stone-800/80">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center max-w-2xl mx-auto mb-14">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-3">
-              <GraduationCap className="w-3.5 h-3.5" />
-              <span>Complete Learning Ecosystem</span>
-            </div>
-            <h2 className="font-kalam text-3xl sm:text-4xl md:text-5xl font-bold text-white">
-              Three Ways to Master Any Language
-            </h2>
-            <p className="mt-3 text-stone-400 text-sm sm:text-base leading-relaxed">
-              Whether you prefer self-paced video modules, live group workshops, or private 1:1 native mentoring,
-              VartaLang provides the ideal environment.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-6">
-            {/* Offering 1: Courses (Live) */}
-            <div className="p-8 rounded-3xl bg-[#14110E]/85 border border-amber-500/40 backdrop-blur-md shadow-xl flex flex-col justify-between group hover:border-amber-400 transition-all">
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                    <BookOpen className="w-6 h-6" />
-                  </div>
-                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-300">
-                    Active &amp; Enrolling
-                  </span>
-                </div>
-                <h3 className="font-kalam text-2xl font-bold text-white mb-2 group-hover:text-amber-200 transition-colors">
-                  Structured Video Courses
-                </h3>
-                <p className="text-sm text-stone-300 leading-relaxed mb-6">
-                  Self-paced video modules with complete grammar frameworks, script introductions, and downloadable lesson materials.
-                </p>
-                <ul className="space-y-2 text-xs text-stone-400 mb-8">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>Permanent lifetime course access</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>Verified completion certificate</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>Zero recurring subscriptions</span>
-                  </li>
-                </ul>
-              </div>
-              <Link
-                href="/learn"
-                className="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-bold text-sm text-center transition-all flex items-center justify-center gap-2 shadow-lg shadow-amber-500/20"
-              >
-                <span>Browse courses</span>
-                <ArrowRight className="w-4 h-4" />
-              </Link>
-            </div>
-
-            {/* Offering 2: Workshops (Online & Offline Mock) */}
-            <div className="p-8 rounded-3xl bg-[#14110E]/85 border border-stone-800 backdrop-blur-md shadow-xl flex flex-col justify-between group hover:border-orange-500/40 transition-all">
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-orange-500/15 border border-orange-500/25 flex items-center justify-center text-orange-400">
-                    <Calendar className="w-6 h-6" />
-                  </div>
-                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-white/10 text-stone-400">
-                    Coming Soon
-                  </span>
-                </div>
-                <h3 className="font-kalam text-2xl font-bold text-white mb-2">
-                  Interactive Workshops
-                </h3>
-                <p className="text-sm text-stone-300 leading-relaxed mb-6">
-                  Immersive online cohorts and in-person weekend bootcamps for regional calligraphy, accent reduction, and cultural storytelling.
-                </p>
-                <ul className="space-y-2 text-xs text-stone-400 mb-8">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-orange-400 shrink-0" />
-                    <span>Virtual and physical city workshops</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-orange-400 shrink-0" />
-                    <span>Hands-on group conversation circles</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-orange-400 shrink-0" />
-                    <span>Guest sessions by vernacular authors</span>
-                  </li>
-                </ul>
-              </div>
-              <button
-                disabled
-                className="w-full py-3 rounded-xl bg-stone-800/80 border border-stone-700/60 text-stone-400 font-semibold text-sm cursor-not-allowed text-center"
-              >
-                Request Workshop Seat · Coming Soon
-              </button>
-            </div>
-
-            {/* Offering 3: 1:1 Live Sessions (Mock) */}
-            <div className="p-8 rounded-3xl bg-[#14110E]/85 border border-stone-800 backdrop-blur-md shadow-xl flex flex-col justify-between group hover:border-amber-500/40 transition-all">
-              <div>
-                <div className="flex items-center justify-between mb-6">
-                  <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400">
-                    <Video className="w-6 h-6" />
-                  </div>
-                  <span className="text-xs font-bold px-3 py-1 rounded-full bg-white/10 text-stone-400">
-                    Coming Soon
-                  </span>
-                </div>
-                <h3 className="font-kalam text-2xl font-bold text-white mb-2">
-                  1:1 Live Sessions
-                </h3>
-                <p className="text-sm text-stone-300 leading-relaxed mb-6">
-                  Private, dedicated speaking sessions with verified native language educators focused on your specific professional or travel needs.
-                </p>
-                <ul className="space-y-2 text-xs text-stone-400 mb-8">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>Tailored 30 &amp; 60 minute speaking slots</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>Immediate accent &amp; grammar feedback</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-amber-400 shrink-0" />
-                    <span>Flexible reschedule policy</span>
-                  </li>
-                </ul>
-              </div>
-              <button
-                disabled
-                className="w-full py-3 rounded-xl bg-stone-800/80 border border-stone-700/60 text-stone-400 font-semibold text-sm cursor-not-allowed text-center"
-              >
-                Book 1:1 Session · Coming Soon
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── SECTION 3: MULTILINGUAL DIRECTORY (PICK YOUR TARGET LANGUAGE) ── */}
-      <section className="relative px-4 sm:px-6 py-20 border-t border-stone-800/80">
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 mb-10">
-            <div>
-              <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-3">
-                <Globe className="w-3.5 h-3.5" />
-                <span>Multilingual Directory</span>
-              </div>
-              <h2 className="font-kalam text-3xl sm:text-4xl md:text-5xl font-bold text-white">
-                Pick Your Target Language
-              </h2>
-              <p className="mt-2 text-stone-400 text-sm sm:text-base max-w-xl">
-                Explore dedicated courses in native scripts with pronunciation audio and certified syllabus.
+          <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-14 items-center">
+            <div className="lg:col-span-6">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#FF5500]/40 bg-[#FF5500]/10 px-3 py-1 text-xs font-semibold text-[#FF9955]">
+                <Sparkles className="w-3.5 h-3.5" /> Built for Indian languages
+              </span>
+              <h1 className="mt-5 font-kalam text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.08] tracking-tight drop-shadow-lg">
+                Learn an Indian language.
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFA066] via-[#FF7700] to-[#E64A00]">
+                  Rooted in culture, spoken with pride.
+                </span>
+              </h1>
+              <p className="mt-6 text-base sm:text-lg text-stone-200 max-w-xl leading-relaxed">
+                Take courses in India&apos;s 22 scheduled languages, practice speech intonations with an AI partner, compete in challenges, and earn verified certificates.
               </p>
-            </div>
-
-            <Link
-              href="/learn"
-              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#14110E] border border-stone-700 hover:border-amber-500 text-amber-300 text-sm font-semibold transition-all hover:scale-105"
-            >
-              <span>View full catalog</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
-
-          {/* Segmented Filter Tabs */}
-          <div className="flex flex-wrap items-center gap-2 mb-8 p-1.5 rounded-2xl bg-stone-900/80 border border-stone-800 w-fit">
-            <button
-              onClick={() => setLangTab("featured")}
-              className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                langTab === "featured"
-                  ? "bg-gradient-to-r from-amber-500 to-orange-600 text-stone-950 font-bold shadow-md shadow-amber-500/20"
-                  : "text-stone-400 hover:text-white"
-              }`}
-            >
-              Featured Indian Languages
-            </button>
-            <button
-              onClick={() => setLangTab("scheduled22")}
-              className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                langTab === "scheduled22"
-                  ? "bg-gradient-to-r from-amber-500 to-orange-600 text-stone-950 font-bold shadow-md shadow-amber-500/20"
-                  : "text-stone-400 hover:text-white"
-              }`}
-            >
-              All 22 Scheduled Languages
-            </button>
-            <button
-              onClick={() => setLangTab("world")}
-              className={`px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
-                langTab === "world"
-                  ? "bg-gradient-to-r from-amber-500 to-orange-600 text-stone-950 font-bold shadow-md shadow-amber-500/20"
-                  : "text-stone-400 hover:text-white"
-              }`}
-            >
-              English &amp; World Languages
-            </button>
-          </div>
-
-          {/* Language Grid with real routing & real counts */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {displayedLanguages.map((l) => {
-              const pres = presentationFor(l.name);
-              const count = courseCounts.get(l.name) ?? 0;
-              const hasCourses = count > 0;
-              const targetHref = `/learn/${slugify(l.name)}`;
-
-              return (
-                <Link
-                  key={l.name}
-                  href={targetHref}
-                  className="group p-5 rounded-2xl border border-stone-800 hover:border-amber-500/60 bg-[#14110E]/85 backdrop-blur-md transition-all hover:-translate-y-1 shadow-lg hover:shadow-amber-500/10 flex flex-col justify-between"
-                >
-                  <div className="flex items-start justify-between gap-2 mb-4">
-                    <div className="flex items-center gap-3">
-                      <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-amber-500/20 to-orange-600/20 border border-amber-500/30 flex items-center justify-center text-amber-300 font-bold text-lg shrink-0">
-                        {pres.icon}
-                      </div>
-                      <div className="min-w-0">
-                        <p className="text-base font-bold text-white group-hover:text-amber-200 transition-colors truncate">
-                          {l.name}
-                        </p>
-                        <p className="text-xs text-stone-400 truncate">
-                          {l.native}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="pt-3 border-t border-stone-800/80 flex items-center justify-between text-xs">
-                    {hasCourses ? (
-                      <span className="font-semibold text-emerald-400 flex items-center gap-1.5">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                        {count} {count === 1 ? "course" : "courses"}
-                      </span>
-                    ) : (
-                      <span className="text-stone-500 font-medium">Coming soon</span>
-                    )}
-                    <span className="text-amber-400 opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1 text-[11px] font-semibold">
-                      Explore <ChevronRight className="w-3.5 h-3.5" />
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* ── SECTION 4: FOR LEARNERS (PEDAGOGY & FLUENCY) ──────────────── */}
-      <section className="relative px-4 sm:px-6 py-20 border-t border-stone-800/80">
-        <div className="max-w-6xl mx-auto">
-          <div className="max-w-2xl mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-amber-400 text-xs font-semibold uppercase tracking-wider mb-3">
-              <Award className="w-3.5 h-3.5" />
-              <span>Learner Experience</span>
-            </div>
-            <h2 className="font-kalam text-3xl sm:text-4xl md:text-5xl font-bold text-white">
-              Built for Genuine Conversational Fluency
-            </h2>
-            <p className="mt-3 text-stone-400 text-base leading-relaxed">
-              We go beyond isolated flashcards. Master authentic regional scripts, natural sentence structures,
-              and culturally nuanced expressions with native educators.
-            </p>
-          </div>
-
-          <div className="grid sm:grid-cols-2 gap-6">
-            {learnerFeatures.map(({ icon: Icon, title, badge, text }) => (
-              <div
-                key={title}
-                className="p-7 rounded-3xl bg-[#14110E]/85 border border-amber-500/20 hover:border-amber-500/50 backdrop-blur-md transition-all flex flex-col justify-between group shadow-lg"
-              >
-                <div>
-                  <div className="flex items-center justify-between mb-5">
-                    <div className="w-12 h-12 rounded-2xl bg-amber-500/15 border border-amber-500/25 flex items-center justify-center text-amber-400 group-hover:scale-105 transition-transform">
-                      <Icon className="w-6 h-6" />
-                    </div>
-                    <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-stone-800 text-stone-300 border border-stone-700/60">
-                      {badge}
-                    </span>
-                  </div>
-                  <h3 className="font-kalam text-2xl font-bold text-white mb-2 group-hover:text-amber-200 transition-colors">
-                    {title}
-                  </h3>
-                  <p className="text-sm text-stone-400 leading-relaxed">
-                    {text}
-                  </p>
-                </div>
+              <div className="mt-9 flex flex-wrap gap-3">
+                <PrimaryButton href={primary.href}>{primary.label}</PrimaryButton>
+                <GhostButton href="/learn">Browse courses</GhostButton>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── SECTION 5: FOR EDUCATORS (TEACH & EARN) ──────────────────── */}
-      <section className="relative px-4 sm:px-6 py-20 border-t border-stone-800/80">
-        <div className="max-w-6xl mx-auto">
-          <div className="max-w-2xl mb-12">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/25 text-orange-400 text-xs font-semibold uppercase tracking-wider mb-3">
-              <Users className="w-3.5 h-3.5" />
-              <span>For Language Educators</span>
+              <div className="mt-8 flex flex-wrap gap-3">
+                <Pill icon={Globe}>{languageList.length} languages</Pill>
+                <Pill icon={Video}>Video + notes</Pill>
+                <Pill icon={Check}>Free preview lessons</Pill>
+              </div>
             </div>
-            <h2 className="font-kalam text-3xl sm:text-4xl md:text-5xl font-bold text-white">
-              Teach Your Mother Tongue. Get Rewarded.
-            </h2>
-            <p className="mt-3 text-stone-400 text-base leading-relaxed">
-              Are you fluent in an Indian language or dialect? Create structured courses, set your price in INR (₹),
-              and build a dedicated nationwide following.
-            </p>
-          </div>
 
-          {/* 3 Step Sequence */}
-          <div className="grid md:grid-cols-3 gap-6 mb-12">
-            {educatorSteps.map((step) => {
-              const Icon = step.icon;
-              return (
-                <div
-                  key={step.title}
-                  className="p-7 rounded-3xl bg-[#14110E]/85 border border-stone-800 hover:border-orange-500/40 backdrop-blur-md flex flex-col justify-between transition-all shadow-lg"
-                >
-                  <div>
-                    <div className="flex items-center justify-between mb-5">
-                      <div className="w-12 h-12 rounded-2xl bg-orange-500/15 border border-orange-500/25 flex items-center justify-center text-orange-400">
-                        <Icon className="w-6 h-6" />
-                      </div>
-                      <span className="font-mono text-xs font-bold text-stone-500">
-                        STEP {step.step}
+            <div className="lg:col-span-6">
+              <div className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-md p-4 sm:p-5 shadow-2xl">
+                <div className="grid grid-cols-3 gap-3">
+                  {GREETINGS.map((g, i) => (
+                    <Link
+                      key={g.lang}
+                      href={`/learn/${slugify(g.lang)}`}
+                      onMouseEnter={() => setActive(i)}
+                      onFocus={() => setActive(i)}
+                      className={`rounded-xl border px-3 py-6 sm:py-8 text-center transition-all duration-500 ${focusCls} ${
+                        active === i
+                          ? "bg-[#FF5500] border-[#FF5500] text-white shadow-lg shadow-[#FF5500]/30 scale-[1.03]"
+                          : "bg-white/[0.04] border-white/10 text-stone-200 hover:border-white/40"
+                      }`}
+                    >
+                      <span lang={g.code} className="block text-2xl sm:text-3xl font-bold leading-snug">
+                        {g.text}
                       </span>
-                    </div>
+                      <span className={`block mt-2 text-xs ${active === i ? "text-white/85" : "text-stone-400"}`}>
+                        {g.lang}
+                      </span>
+                    </Link>
+                  ))}
+                </div>
+                <p className="mt-4 text-center text-sm text-stone-300">Hello, in nine scripts. Open one to see its courses.</p>
+              </div>
+            </div>
+          </div>
+        </section>
 
-                    <h3 className="font-kalam text-2xl font-bold text-white mb-2">
-                      {step.title}
-                    </h3>
-                    <p className="text-sm text-stone-400 leading-relaxed">
-                      {step.text}
+        <GreetingMarquee />
+
+        {/* ── THE PATH ── */}
+        <section className="relative overflow-hidden py-24">
+          <div className="absolute inset-0" style={dotGrid} aria-hidden />
+          <Glow className="w-96 h-96 bg-[#FF5500]/10 top-10 -right-24" />
+          <div className="relative max-w-7xl mx-auto px-6">
+            <h2 className="font-kalam text-4xl font-bold max-w-2xl">From first lesson to verifiable mastery</h2>
+            <p className="mt-3 text-stone-400 max-w-2xl">
+              VartaLang guides you every step of the way: learn foundational scripts, practice native speech intonations, compete on leaderboards, and earn verifiable credentials.
+            </p>
+
+            <ol className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              {pathSteps.map((s, i) => (
+                <li
+                  key={s.title}
+                  className="group relative rounded-2xl overflow-hidden border border-white/10 bg-white/[0.03] hover:border-white/30 transition-colors"
+                >
+                  <div className="relative h-44 overflow-hidden">
+                    <Photo src={s.img} className="w-full h-full transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#0a0908] via-[#0a0908]/40 to-transparent" />
+                    <span className="absolute top-3 left-3 w-8 h-8 rounded-full bg-black/60 backdrop-blur-sm border border-white/25 flex items-center justify-center text-sm font-semibold">
+                      {i + 1}
+                    </span>
+                    <span className="absolute top-3 right-3">
+                      <StatusChip status={s.status} />
+                    </span>
+                    <span className="absolute bottom-3 left-4 w-11 h-11 rounded-xl bg-[#FF5500] shadow-lg shadow-[#FF5500]/30 flex items-center justify-center">
+                      <s.icon className="w-5 h-5 text-white" />
+                    </span>
+                  </div>
+                  <div className="p-6">
+                    <h3 className="font-kalam text-2xl font-bold">{s.title}</h3>
+                    <p className="mt-2 text-sm text-stone-400 leading-relaxed">{s.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+
+        {/* ── COURSES ── */}
+        <section className="relative overflow-hidden py-24 border-t border-white/10 bg-gradient-to-b from-[#0d0a08] to-[#0a0908]">
+          <Glow className="w-[26rem] h-[26rem] bg-amber-500/10 -top-20 -left-20" />
+          <Glow className="w-[22rem] h-[22rem] bg-[#FF5500]/10 bottom-0 right-0" />
+          <div className="relative max-w-7xl mx-auto px-6">
+            <div className="flex flex-wrap items-end justify-between gap-4">
+              <div>
+                <h2 className="font-kalam text-4xl font-bold">Courses in your language</h2>
+                <p className="mt-3 text-stone-400 max-w-xl">
+                  Modules and lessons with video and study notes. Start with a free preview lesson before you commit.
+                </p>
+              </div>
+              <GhostButton href="/learn">See all courses</GhostButton>
+            </div>
+
+            <div className="mt-8 flex flex-wrap gap-2">
+              {languageList.map((l) => (
+                <Link
+                  key={l.language}
+                  href={`/learn/${slugify(l.language)}`}
+                  className={`px-4 py-2 rounded-full border border-white/15 bg-white/[0.03] hover:border-[#FF5500] hover:bg-[#FF5500]/10 text-sm text-stone-200 transition-colors ${focusCls}`}
+                >
+                  {l.language}
+                  {l.course_count > 0 && (
+                    <span className="ml-2 text-xs text-stone-500">
+                      {l.course_count} {l.course_count === 1 ? "course" : "courses"}
+                    </span>
+                  )}
+                </Link>
+              ))}
+            </div>
+
+            {courses.length > 0 && (
+              <div className="mt-10 grid md:grid-cols-3 gap-6">
+                {courses.map((c, i) => (
+                  <Link
+                    key={c.id}
+                    href={`/learn/${slugify(c.language)}/${c.id}`}
+                    className={`group rounded-2xl bg-white/[0.03] border border-white/10 hover:border-white/30 hover:-translate-y-1 overflow-hidden flex flex-col transition-all duration-300 ${focusCls}`}
+                  >
+                    <div className="relative h-44 overflow-hidden">
+                      <Photo
+                        src={IMAGES.courseCovers[i % IMAGES.courseCovers.length]}
+                        className="w-full h-full transition-transform duration-700 group-hover:scale-110"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0a0908]/90 via-transparent to-transparent" />
+                      <div className="absolute bottom-3 left-4 flex items-center gap-2 text-xs">
+                        <span className="px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-stone-100">{c.language}</span>
+                        <span className="px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-stone-200 capitalize">{c.level}</span>
+                      </div>
+                    </div>
+                    <div className="p-6 flex flex-col justify-between flex-1">
+                      <div>
+                        <h3 className="font-kalam text-2xl font-bold leading-snug">{c.title}</h3>
+                        <p className="mt-2 text-sm text-stone-400">by {c.instructor.full_name}</p>
+                      </div>
+                      <p className="mt-6 text-sm font-semibold text-amber-300">{c.is_free ? "Free" : `₹${Number(c.price)}`}</p>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
+          </div>
+        </section>
+
+        {/* ── AI PRACTICE LABS ── */}
+        <section className="relative overflow-hidden py-24 border-t border-white/10">
+          <div className="absolute inset-0" aria-hidden>
+            <Photo src={IMAGES.labs} className="w-full h-full opacity-30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0908] via-[#0a0908]/85 to-[#0a0908]/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0908] via-transparent to-[#0a0908]" />
+          </div>
+          <Glow className="w-96 h-96 bg-[#FF5500]/20 top-1/3 right-10" />
+
+          <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center">
+            <div>
+              <div className="flex items-center gap-3">
+                <span className="w-10 h-10 rounded-xl bg-[#FF5500]/15 border border-[#FF5500]/30 flex items-center justify-center">
+                  <Bot className="w-5 h-5 text-[#FF7700]" />
+                </span>
+                <StatusChip status={STATUS.labs} />
+              </div>
+              <h2 className="mt-4 font-kalam text-4xl font-bold">Practice with an AI partner that corrects you</h2>
+              <p className="mt-4 text-stone-300 leading-relaxed max-w-xl">
+                Lessons teach you the language. Labs make you use it. Pick a real-life scenario, speak or type, and get
+                each mistake explained so it sticks.
+              </p>
+              <ul className="mt-6 space-y-3 max-w-xl">
+                <Check4>Scenarios from daily life: markets, offices, travel, phone calls.</Check4>
+                <Check4>Corrections come with the reason, not just the right answer.</Check4>
+                <Check4>Practice any time, as many times as you like.</Check4>
+              </ul>
+            </div>
+
+            <div className="relative">
+              <div className="absolute -inset-2 rounded-[2rem] bg-gradient-to-br from-[#FF5500]/40 via-transparent to-amber-400/30 blur-xl" aria-hidden />
+              <div className="relative rounded-3xl bg-[#14110e]/90 backdrop-blur-xl border border-white/15 p-6 shadow-2xl">
+                <div className="flex items-center justify-between mb-4">
+                  <p className="text-xs text-stone-400">Sample session: ordering chai, Hindi</p>
+                  <span className="flex gap-1.5" aria-hidden>
+                    <span className="w-2.5 h-2.5 rounded-full bg-red-400/70" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-amber-400/70" />
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-400/70" />
+                  </span>
+                </div>
+                <div className="space-y-3 text-sm">
+                  <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-white/10 px-4 py-3">
+                    <span lang="hi">आप क्या लेंगे?</span>
+                    <span className="block text-xs text-stone-400 mt-1">What will you have?</span>
+                  </div>
+                  <div className="max-w-[85%] ml-auto rounded-2xl rounded-br-sm bg-[#FF5500] px-4 py-3">
+                    Mujhe ek chai chahiye
+                  </div>
+                  <div className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3">
+                    <p className="text-amber-200 font-semibold text-xs">Correction</p>
+                    <p className="mt-1">
+                      Try: <span lang="hi" className="font-semibold">मुझे एक चाय चाहिए।</span>
+                    </p>
+                    <p className="mt-1 text-xs text-stone-300">
+                      Your sentence is right. Practice writing it in Devanagari: <span lang="hi">चाय</span> has a long
+                      &ldquo;aa&rdquo; sound.
                     </p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
-
-          {/* Instructor Studio Teaser Card */}
-          <div className="p-8 md:p-12 rounded-3xl border border-amber-500/30 bg-gradient-to-br from-amber-500/15 via-[#14110E] to-[#14110E] shadow-2xl relative overflow-hidden backdrop-blur-md">
-            <div className="max-w-2xl">
-              <div className="flex flex-wrap items-center gap-3 mb-4">
-                <LayoutDashboard className="w-6 h-6 text-amber-400" />
-                <h3 className="font-kalam text-3xl font-bold text-white">
-                  Instructor Studio &amp; Analytics
-                </h3>
-                <span className="text-xs px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 font-semibold border border-amber-500/30">
-                  Dedicated Creator Suite
-                </span>
               </div>
-              <p className="text-stone-300 text-sm sm:text-base mb-8 leading-relaxed">
-                One unified portal to monitor student enrollments, course reviews, direct INR settlements,
-                and lesson materials.
-              </p>
-
-              <div className="grid sm:grid-cols-3 gap-4 mb-8">
-                {[
-                  { icon: Eye, label: "Content Control", desc: "Toggle free vs paid previews anytime" },
-                  { icon: BarChart3, label: "Student Metrics", desc: "Live enrollment & completion stats" },
-                  { icon: IndianRupee, label: "Direct INR Payouts", desc: "Monthly settlements to your bank" },
-                ].map((item, i) => {
-                  const SubIcon = item.icon;
-                  return (
-                    <div key={i} className="p-4 rounded-2xl bg-stone-900/80 border border-stone-800">
-                      <SubIcon className="w-5 h-5 text-amber-400 mb-2" />
-                      <p className="text-sm font-semibold text-white">{item.label}</p>
-                      <p className="text-xs text-stone-400 mt-1">{item.desc}</p>
-                    </div>
-                  );
-                })}
-              </div>
-
-              <button
-                onClick={goTeach}
-                disabled={authLoading}
-                className="px-7 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-bold text-sm transition-all hover:scale-105 flex items-center gap-2 shadow-lg shadow-amber-500/20 disabled:opacity-50"
-              >
-                <span>{isAuthenticated && isInstructor ? "Open Instructor Studio" : "Apply as an Instructor"}</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
             </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── SECTION 6: FINAL INVITATION CTA ──────────────────────────── */}
-      {!isAuthenticated && (
-        <section className="px-4 sm:px-6 py-20 border-t border-stone-800/80 bg-gradient-to-b from-[#0e0c0a] to-[#14110E]">
-          <div className="max-w-3xl mx-auto text-center">
-            <div className="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/30 flex items-center justify-center mx-auto mb-6 text-amber-400">
-              <Award className="w-8 h-8" />
-            </div>
-            <h2 className="font-kalam text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4">
-              Begin Your Linguistic Journey Today
-            </h2>
-            <p className="text-stone-300 text-sm sm:text-base mb-8 max-w-xl mx-auto leading-relaxed">
-              Create your account in under a minute. Start exploring free foundation modules across
-              every major Indian language.
-            </p>
-            <Link
-              href="/auth/login"
-              className="inline-flex items-center gap-2.5 px-9 py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-bold text-base shadow-xl shadow-orange-500/25 transition-all hover:scale-105"
-            >
-              <span>Get started for free</span>
-              <ArrowRight className="w-5 h-5" />
-            </Link>
           </div>
         </section>
-      )}
 
-      {/* Global Minimalist Footer */}
+        {/* ── LIVE, WITH PEOPLE ── */}
+        <section className="relative overflow-hidden py-24 border-t border-white/10 bg-[#0c0a08]">
+          <div className="absolute inset-0" style={dotGrid} aria-hidden />
+          <div className="relative max-w-7xl mx-auto px-6">
+            <h2 className="font-kalam text-4xl font-bold max-w-2xl">Learn live with your instructor</h2>
+            <p className="mt-3 text-stone-400 max-w-2xl">
+              Some things need a person: pronunciation, confidence, a conversation that goes off script.
+            </p>
+
+            <div className="mt-10 grid md:grid-cols-2 gap-6">
+              {[
+                {
+                  icon: Video,
+                  img: IMAGES.sessions,
+                  status: STATUS.sessions,
+                  title: "1:1 live sessions",
+                  text: "Book a private session with an instructor and spend the time on what you need.",
+                  points: [
+                    "Fix pronunciation with direct feedback.",
+                    "Rehearse an interview or an important conversation.",
+                    "Get stuck points from a course cleared up.",
+                  ],
+                },
+                {
+                  icon: Users,
+                  img: IMAGES.workshops,
+                  status: STATUS.workshops,
+                  title: "Workshops",
+                  text: "Small-group, single-topic sessions that end with you able to do something new.",
+                  points: [
+                    "Conversation circles to speak with other learners.",
+                    "Script weekends: learn to read a new script fast.",
+                    "Exam preparation and cultural deep-dives.",
+                  ],
+                },
+              ].map((card) => (
+                <div
+                  key={card.title}
+                  className="group relative rounded-3xl overflow-hidden border border-white/10 min-h-[480px] flex flex-col justify-end"
+                >
+                  <Photo
+                    src={card.img}
+                    className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0908] via-[#0a0908]/80 to-[#0a0908]/10" />
+                  <div className="relative p-8">
+                    <div className="flex items-center justify-between">
+                      <span className="w-11 h-11 rounded-xl bg-[#FF5500] shadow-lg shadow-[#FF5500]/30 flex items-center justify-center">
+                        <card.icon className="w-5 h-5 text-white" />
+                      </span>
+                      <StatusChip status={card.status} />
+                    </div>
+                    <h3 className="mt-5 font-kalam text-3xl font-bold">{card.title}</h3>
+                    <p className="mt-3 text-stone-200 leading-relaxed">{card.text}</p>
+                    <ul className="mt-5 space-y-3">
+                      {card.points.map((p) => (
+                        <Check4 key={p}>{p}</Check4>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* ── CHALLENGES ── */}
+        <section className="relative overflow-hidden py-24 border-t border-white/10">
+          <Glow className="w-[28rem] h-[28rem] bg-[#FF5500]/15 top-0 -left-24" />
+          <Glow className="w-80 h-80 bg-amber-500/10 bottom-0 right-0" />
+          <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center">
+            <div className="order-2 lg:order-1 relative rounded-3xl overflow-hidden border border-white/10 min-h-[460px] flex items-end">
+              <Photo src={IMAGES.challenges} className="absolute inset-0 w-full h-full" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#0a0908] via-[#0a0908]/50 to-[#0a0908]/10" />
+
+              <span className="absolute top-5 left-5 inline-flex items-center gap-2 rounded-full bg-black/60 backdrop-blur-md border border-white/15 px-3 py-1.5 text-xs font-semibold text-amber-300">
+                <Flame className="w-4 h-4" /> 7-day streak
+              </span>
+              <span className="absolute top-5 right-5 inline-flex items-center gap-2 rounded-full bg-[#FF5500] px-3 py-1.5 text-xs font-semibold shadow-lg shadow-[#FF5500]/30">
+                <Zap className="w-4 h-4" /> +120 XP
+              </span>
+
+              <div className="relative w-full m-4 rounded-2xl bg-[#14110e]/85 backdrop-blur-xl border border-white/15 p-5">
+                <p className="text-xs text-stone-400 mb-2">Sample challenges</p>
+                <ul className="divide-y divide-white/10">
+                  {[
+                    { name: "Match the script", type: "Vocabulary", level: "Easy", xp: 50 },
+                    { name: "Fix the sentence", type: "Grammar", level: "Medium", xp: 120 },
+                    { name: "Say it out loud", type: "Speaking", level: "Hard", xp: 250 },
+                  ].map((c) => (
+                    <li key={c.name} className="py-3 flex items-center justify-between gap-4">
+                      <div>
+                        <p className="font-semibold">{c.name}</p>
+                        <p className="text-xs text-stone-500 mt-0.5">{c.type}</p>
+                      </div>
+                      <div className="text-right shrink-0">
+                        <p className="text-sm text-amber-300 font-semibold">{c.xp} XP</p>
+                        <p className="text-xs text-stone-500 mt-0.5">{c.level}</p>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="order-1 lg:order-2">
+              <div className="flex items-center gap-3">
+                <span className="w-10 h-10 rounded-xl bg-[#FF5500]/15 border border-[#FF5500]/30 flex items-center justify-center">
+                  <Trophy className="w-5 h-5 text-[#FF7700]" />
+                </span>
+                <StatusChip status={STATUS.challenges} />
+              </div>
+              <h2 className="mt-4 font-kalam text-4xl font-bold">Challenges that make practice a habit</h2>
+              <p className="mt-4 text-stone-300 leading-relaxed max-w-xl">
+                Contest-style rounds for vocabulary, grammar and speaking. Beat the clock, earn XP, climb the leaderboard
+                and keep your daily streak alive.
+              </p>
+              <ul className="mt-6 space-y-3 max-w-xl">
+                <Check4>Short rounds you can finish in a few minutes.</Check4>
+                <Check4>Difficulty from easy warm-ups to hard speaking rounds.</Check4>
+                <Check4>A leaderboard per language.</Check4>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        {/* ── CERTIFICATIONS (light band) ── */}
+        <section className="relative overflow-hidden py-24 bg-[#F1E7D6] text-stone-900">
+          <div className="absolute inset-0" style={paperTexture} aria-hidden />
+          <div className="absolute -top-10 -left-10 w-80 h-80 rounded-full bg-[#FF7700]/15 blur-3xl" aria-hidden />
+          <div className="absolute -bottom-16 right-0 w-96 h-96 rounded-full bg-[#C2410C]/15 blur-3xl" aria-hidden />
+          {/* faint scripts */}
+          <div className="absolute inset-0 pointer-events-none select-none font-kalam font-bold text-[#C2410C]/[0.07]" aria-hidden>
+            <span lang="hi" className="absolute top-6 right-[8%] text-[9rem] leading-none">अ</span>
+            <span lang="ta" className="absolute bottom-4 left-[4%] text-[8rem] leading-none">த</span>
+            <span lang="bn" className="absolute top-1/2 left-[46%] text-[7rem] leading-none">ক</span>
+          </div>
+
+          <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center">
+            <div>
+              <div className="flex items-center gap-3">
+                <Award className="w-6 h-6 text-[#C2410C]" />
+                <span className="inline-flex px-2.5 py-0.5 rounded-full text-xs font-semibold bg-stone-900/10 text-stone-700 border border-stone-900/15">
+                  {STATUS.certificates === "live" ? "Live" : "Coming soon"}
+                </span>
+              </div>
+              <h2 className="mt-4 font-kalam text-4xl font-bold">Certificates you can prove</h2>
+              <p className="mt-4 text-stone-700 leading-relaxed max-w-xl">
+                Pass a level and get a certificate with its own ID. Share the ID and anyone can check that it is real.
+              </p>
+
+              <ul className="mt-8 divide-y divide-stone-900/15 max-w-xl border-y border-stone-900/15">
+                {LEVELS.map((l, i) => (
+                  <li key={l.name} className="py-3 flex items-center justify-between gap-6">
+                    <span className="flex items-center gap-3">
+                      <span className="w-7 h-7 rounded-full bg-stone-900 text-[#F1E7D6] text-xs font-bold flex items-center justify-center">
+                        {i + 1}
+                      </span>
+                      <span className="font-kalam text-xl font-bold">{l.name}</span>
+                    </span>
+                    <span className="text-sm text-stone-700 text-right">{l.note}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            <div className="mx-auto w-full max-w-md">
+              <div className="relative rotate-[-1.5deg]">
+                <div className="relative bg-[#FBF6EC] border-4 border-double border-stone-800 p-8 text-center shadow-2xl">
+                  <span className="absolute top-2 left-2 w-5 h-5 border-t-2 border-l-2 border-[#C2410C]" aria-hidden />
+                  <span className="absolute top-2 right-2 w-5 h-5 border-t-2 border-r-2 border-[#C2410C]" aria-hidden />
+                  <span className="absolute bottom-2 left-2 w-5 h-5 border-b-2 border-l-2 border-[#C2410C]" aria-hidden />
+                  <span className="absolute bottom-2 right-2 w-5 h-5 border-b-2 border-r-2 border-[#C2410C]" aria-hidden />
+
+                  <p className="text-xs uppercase tracking-[0.3em] text-stone-500">VartaLang</p>
+                  <p className="mt-1 text-sm text-stone-600">Certificate of proficiency</p>
+                  <div className="mx-auto mt-5 h-px w-24 bg-[#C2410C]/50" />
+                  <p className="mt-5 font-kalam text-3xl font-bold">Your name here</p>
+                  <p className="mt-2 text-stone-700">has reached the Intermediate level in</p>
+                  <p lang="hi" className="mt-2 font-kalam text-5xl font-bold text-[#C2410C]">
+                    हिन्दी
+                  </p>
+                  <p className="mt-6 text-xs text-stone-500">Sample. Real certificates carry a unique ID you can verify.</p>
+                </div>
+                <div className="absolute -bottom-7 -right-5 w-20 h-20 rounded-full bg-[#C2410C] ring-4 ring-[#F1E7D6] outline outline-2 outline-[#C2410C]/50 flex items-center justify-center shadow-xl rotate-12">
+                  <ShieldCheck className="w-9 h-9 text-[#FBF6EC]" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── TEACH ── */}
+        <section className="py-24">
+          <div className="max-w-7xl mx-auto px-6">
+            <div className="relative overflow-hidden rounded-3xl border border-white/10">
+              <Photo src={IMAGES.teach} className="absolute inset-0 w-full h-full" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#0a0908] via-[#0a0908]/85 to-[#0a0908]/50" />
+              <Glow className="w-80 h-80 bg-[#FF5500]/20 -top-20 -left-10" />
+
+              <div className="relative p-8 sm:p-14 grid lg:grid-cols-2 gap-10 items-center">
+                <div>
+                  <h2 className="font-kalam text-4xl font-bold">Teach your language on VartaLang</h2>
+                  <p className="mt-4 text-stone-200 leading-relaxed max-w-xl">
+                    Build a course from modules and lessons, set your own price and reach learners across India and the
+                    diaspora.
+                  </p>
+                  <div className="mt-7">
+                    <PrimaryButton href={isTeacher ? "/dashboard/instructor" : "/auth/login"}>
+                      {isTeacher ? "Open Instructor Studio" : "Sign in to start teaching"}
+                    </PrimaryButton>
+                  </div>
+                </div>
+                <ul className="space-y-4 rounded-2xl border border-white/15 bg-black/40 backdrop-blur-md p-6">
+                  <Check4>Add lessons with YouTube videos and study notes.</Check4>
+                  <Check4>Every course is reviewed before it goes live, so learners can trust what they find.</Check4>
+                  <Check4>You get a public instructor profile once your first course is approved.</Check4>
+                  <Check4>Teachers sign up as a teacher on VartaLang, and the studio opens here.</Check4>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* ── FINAL CTA ── */}
+        <section className="relative overflow-hidden py-32 border-t border-white/10">
+          <div className="absolute inset-0" aria-hidden>
+            <Photo src={IMAGES.cta} className="w-full h-full opacity-50" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[#0a0908] via-[#0a0908]/75 to-[#0a0908]/30" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#0a0908] via-transparent to-[#0a0908]/60" />
+          </div>
+          <Glow className="w-[30rem] h-[30rem] bg-[#FF5500]/25 -bottom-40 left-1/4" />
+          <div className="relative max-w-7xl mx-auto px-6">
+            <h2 className="font-kalam text-5xl font-bold max-w-3xl leading-tight drop-shadow-lg">
+              Pick a language and take your first lesson today.
+            </h2>
+            <div className="mt-8 flex flex-wrap gap-3">
+              <PrimaryButton href={primary.href}>{primary.label}</PrimaryButton>
+              <GhostButton href="/learn">Browse courses</GhostButton>
+            </div>
+          </div>
+        </section>
+      </main>
+
       <Footer />
     </div>
   );
