@@ -29,7 +29,7 @@ export default function PricingPage() {
       badge: "Per Course",
       desc: "Comprehensive multi-lesson video courses with structured curriculum and downloadable notes.",
       pricingRule: "Priced individually by the instructor based on curriculum depth and lesson hours.",
-      link: "/courses",
+      link: "/learn",
       linkText: "Browse Courses",
     },
     {
@@ -56,9 +56,18 @@ export default function PricingPage() {
     <div className="min-h-screen bg-[#0a0908] text-stone-200 relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
-      <div className="fixed inset-0 bg-gradient-to-b from-amber-950/15 via-transparent to-stone-950 pointer-events-none" />
+      {/* Background Indian Monument Backdrop */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=1920&q=80')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
 
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16 sm:pb-20 w-full">
+      <main className="relative z-10 max-w-5xl mx-auto px-6 pt-36 pb-20 w-full">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-stone-400 hover:text-amber-400 transition-colors mb-10 group text-sm"
@@ -202,7 +211,7 @@ export default function PricingPage() {
             <span>Payments securely processed by Razorpay in Indian Rupees (INR, ₹).</span>
           </div>
           <Link
-            href="/courses"
+            href="/learn"
             className="px-4 py-2 rounded-xl bg-amber-500 text-stone-950 font-bold hover:bg-amber-400 transition-colors shrink-0 text-xs"
           >
             Start Exploring

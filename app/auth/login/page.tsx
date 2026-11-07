@@ -63,8 +63,19 @@ export default function LoginPage() {
     "w-full bg-white/5 border border-white/10 rounded-xl px-3.5 py-2.5 text-white placeholder-white/25 text-sm outline-none focus:border-[#FF5500]";
 
   return (
-    <div className="min-h-screen bg-[#0B0A08] flex flex-col justify-between">
-      <div className="flex-1 flex items-center justify-center px-4 py-16">
+    <div className="min-h-screen bg-[#0B0A08] relative overflow-hidden flex flex-col justify-between">
+      {/* Background Indian Monument Backdrop */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1564507592333-c60657eea523?w=1920&q=80')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0B0A08]/80 via-[#0B0A08]/90 to-[#0B0A08] pointer-events-none" />
+
+      <div className="relative z-10 flex-1 flex items-center justify-center px-4 py-16">
         <div className="w-full max-w-md bg-[#14120E]/90 border border-white/10 rounded-3xl p-6 sm:p-10 shadow-2xl shadow-black/80">
           <div className="flex flex-col items-center text-center mb-8">
             <img src="/logo.png" alt="VartaLang Logo" className="h-14 w-auto object-contain mb-3 drop-shadow-lg" />

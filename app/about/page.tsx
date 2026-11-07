@@ -66,9 +66,18 @@ export default function AboutPage() {
     <div className="min-h-screen bg-[#0a0908] text-stone-200 relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
-      <div className="fixed inset-0 bg-gradient-to-b from-amber-950/15 via-transparent to-stone-950 pointer-events-none" />
+      {/* Background Indian Monument Backdrop */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1599661046289-e31897846e41?w=1920&q=80')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
 
-      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16 sm:pb-20 w-full">
+      <main className="relative z-10 max-w-5xl mx-auto px-6 pt-36 pb-20 w-full">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-stone-400 hover:text-amber-400 transition-colors mb-10 group text-sm"

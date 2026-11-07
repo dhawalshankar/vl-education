@@ -26,20 +26,21 @@ export default function HelpPage() {
   );
 
   return (
-    <div className="cultural-page min-h-screen relative overflow-hidden">
+    <div className="min-h-screen bg-[#0a0908] relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
-      {/* Background */}
+      {/* Background Indian Monument Backdrop */}
       <div
-        className="fixed inset-0 opacity-25 pointer-events-none"
+        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1920&q=80')`,
-          backgroundSize: 'cover', backgroundPosition: 'center', backgroundAttachment: 'fixed'
+          backgroundImage: `url('https://images.unsplash.com/photo-1605649487212-47bdab064df8?w=1920&q=80')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
         }}
       />
-      <div className="fixed inset-0 bg-gradient-to-b from-amber-900/10 via-transparent to-orange-900/10 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
 
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-24 sm:pt-32 pb-12">
+      <div className="relative z-10 max-w-4xl mx-auto px-6 pt-36 pb-20">
 
         <Link href="/home" className="inline-flex items-center gap-2 text-stone-400 hover:text-amber-400 transition-colors mb-12 group">
           <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />

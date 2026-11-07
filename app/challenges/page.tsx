@@ -20,18 +20,27 @@ export default function ChallengesPage() {
   const { data: board, error: boardError, loading: boardLoading } = useApi(() => challengeAPI.leaderboard());
 
   return (
-    <div className="cultural-page min-h-screen relative overflow-hidden">
+    <div className="min-h-screen bg-[#0a0908] relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
-      <div className="fixed inset-0 bg-gradient-to-b from-red-900/10 via-transparent to-orange-900/10 pointer-events-none" />
+      {/* Background Indian Monument Backdrop */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1587474260584-136574528ed5?w=1920&q=80')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-24 sm:pt-32 pb-16 sm:pb-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/15 border border-amber-400/30 mb-5">
             <Clock className="w-4 h-4 text-amber-300" />
             <span className="text-sm font-semibold text-amber-200">Coming soon</span>
           </div>
-          <h1 className="font-kalam text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-5 leading-[1.1]">
+          <h1 className="font-kalam text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
             Challenges
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-300 via-orange-200 to-amber-300">

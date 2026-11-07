@@ -5,7 +5,7 @@ import { ArrowRight, BookOpen, Sparkles, MessageCircle, Briefcase } from "lucide
 
 export default function Hero({ onExploreClick }: { onExploreClick: () => void }) {
   return (
-    <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-20 px-4 sm:px-8 max-w-7xl mx-auto bg-ambient-glow">
+    <section className="relative pt-36 pb-20 sm:pt-40 sm:pb-24 px-6 sm:px-8 max-w-7xl mx-auto bg-ambient-glow">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
         
         {/* Left Column: Heading & CTAs */}

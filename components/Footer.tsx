@@ -18,7 +18,7 @@ import { CONTACT_DETAILS, SOCIAL_LINKS } from "@/app/lib/constants";
 
 export default function Footer() {
   const exploreLinks = [
-    { label: "Courses", href: "/courses" },
+    { label: "Courses", href: "/learn" },
     { label: "Live 1:1 Sessions", href: "/sessions" },
     { label: "Workshops (Online & Offline)", href: "/workshops" },
     { label: "Pricing", href: "/pricing" },

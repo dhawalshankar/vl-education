@@ -4,7 +4,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { BookOpen, Globe, GraduationCap, Layers, Linkedin, Twitter, Users, Youtube, type LucideIcon } from "lucide-react";
+import { BookOpen, Clock, Globe, GraduationCap, Layers, Linkedin, Sparkles, Twitter, Users, Video, Youtube, type LucideIcon } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { instructorAPI, learnAPI } from "@/app/lib/api";
@@ -98,10 +98,21 @@ export default function PublicInstructorPage() {
     const totalLessons = courses.reduce((a, c) => a + (c.lessons_count || 0), 0);
 
     return (
-        <div className="min-h-screen bg-[#0a0908] text-white flex flex-col justify-between">
+        <div className="min-h-screen bg-[#0a0908] text-white relative overflow-hidden flex flex-col justify-between">
             <Navbar />
 
-            <main className="max-w-5xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16 sm:pb-20 w-full">
+            {/* Background Indian Monument Backdrop */}
+            <div
+                className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+                style={{
+                    backgroundImage: `url('https://images.unsplash.com/photo-1582510003544-4d00b7f74220?w=1920&q=80')`,
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                }}
+            />
+            <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
+
+            <main className="relative z-10 max-w-5xl mx-auto px-6 pt-36 pb-20 w-full">
                 {loading ? (
                     <div className="space-y-6">
                         <div className="h-44 rounded-3xl bg-white/5 border border-white/10 animate-pulse" />
@@ -160,6 +171,21 @@ export default function PublicInstructorPage() {
                                         ))}
                                     </div>
                                 )}
+
+                                {/* Mock 1:1 Session Request Action */}
+                                <div className="mt-5 flex flex-wrap items-center justify-center sm:justify-start gap-2.5">
+                                    <button
+                                        disabled
+                                        className="px-4 py-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-200 text-xs font-semibold flex items-center gap-2 cursor-not-allowed opacity-80"
+                                        title="1:1 Live Speaking Mentorship coming soon"
+                                    >
+                                        <Video className="w-3.5 h-3.5 text-amber-400" />
+                                        <span>Request 1:1 Live Session</span>
+                                        <span className="text-[10px] uppercase font-bold px-1.5 py-0.5 rounded-full bg-white/10 text-stone-300">
+                                            Coming Soon
+                                        </span>
+                                    </button>
+                                </div>
                             </div>
                         </section>
 
@@ -169,6 +195,34 @@ export default function PublicInstructorPage() {
                             <Stat icon={Users} value={totalStudents} label="Students" />
                             <Stat icon={Layers} value={totalLessons} label="Lessons" />
                             <Stat icon={GraduationCap} value={profile.experienceYears ?? 0} label="Years teaching" />
+                        </section>
+
+                        {/* 1:1 Live Mentorship Showcase Banner */}
+                        <section className="mt-10 p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-amber-500/10 via-stone-900/70 to-stone-950 border border-amber-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 relative overflow-hidden">
+                            <div className="space-y-3 max-w-xl relative z-10">
+                                <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-semibold">
+                                    <Video className="w-3.5 h-3.5" />
+                                    <span>1:1 Live Speaking Mentorship</span>
+                                    <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-amber-500/30 text-amber-200">
+                                        Coming Soon
+                                    </span>
+                                </div>
+                                <h3 className="font-kalam text-2xl sm:text-3xl font-bold text-white leading-tight">
+                                    Practice 1:1 with {profile.name.split(" ")[0]}
+                                </h3>
+                                <p className="text-stone-300 text-xs sm:text-sm leading-relaxed">
+                                    Get personalized pronunciation correction, accent coaching, and tailored conversation drills in live video sessions directly with {profile.name}.
+                                </p>
+                            </div>
+                            <div className="shrink-0 w-full md:w-auto relative z-10">
+                                <button
+                                    disabled
+                                    className="w-full sm:w-auto px-6 py-3.5 rounded-xl bg-stone-800 text-stone-400 font-bold text-xs sm:text-sm border border-stone-700/70 cursor-not-allowed opacity-80 flex items-center justify-center gap-2.5 shadow-lg"
+                                >
+                                    <Clock className="w-4 h-4 text-amber-400" />
+                                    <span>Request 1:1 Session (Coming Soon)</span>
+                                </button>
+                            </div>
                         </section>
 
                         {/* Bio */}

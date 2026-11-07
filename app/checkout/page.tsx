@@ -148,29 +148,29 @@ function CheckoutContent() {
 
   if (paymentSuccess) {
     return (
-      <div className="max-w-2xl mx-auto py-16 px-6 text-center">
-        <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto mb-6">
-          <CheckCircle2 className="w-8 h-8 text-emerald-400" />
+      <div className="min-h-[70vh] flex flex-col items-center justify-center pt-40 pb-24 px-6 text-center max-w-2xl mx-auto w-full relative z-10">
+        <div className="w-20 h-20 rounded-full bg-emerald-500/20 border-2 border-emerald-500/30 flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-950/40">
+          <CheckCircle2 className="w-10 h-10 text-emerald-400" />
         </div>
-        <h1 className="font-kalam text-3xl sm:text-4xl font-bold text-white mb-3">
+        <h1 className="font-kalam text-3xl sm:text-5xl font-bold text-white mb-4">
           Payment Successful!
         </h1>
-        <p className="text-stone-300 text-sm mb-6">
+        <p className="text-stone-300 text-base max-w-lg mx-auto mb-8 leading-relaxed">
           You are successfully registered for <strong className="text-white">{title}</strong>.
           A confirmation receipt and access instructions have been sent to your email.
         </p>
-        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <div className="flex flex-col sm:flex-row gap-4 justify-center w-full max-w-md">
           <Link
             href="/dashboard"
-            className="px-6 py-3 rounded-xl bg-amber-500 text-stone-950 font-bold text-sm hover:bg-amber-400 transition-colors"
+            className="flex-1 px-6 py-3.5 rounded-xl bg-amber-500 text-stone-950 font-bold text-sm hover:bg-amber-400 transition-colors shadow-lg shadow-amber-950/30 text-center"
           >
-            Go to My Learning Dashboard
+            Go to My Learning
           </Link>
           <Link
-            href="/courses"
-            className="px-6 py-3 rounded-xl bg-stone-800 text-stone-200 font-semibold text-sm hover:bg-stone-700 transition-colors"
+            href="/learn"
+            className="flex-1 px-6 py-3.5 rounded-xl bg-stone-800 text-stone-200 font-semibold text-sm hover:bg-stone-700 transition-colors border border-stone-700/60 text-center"
           >
-            Browse More Offerings
+            Browse More Courses
           </Link>
         </div>
       </div>
@@ -178,7 +178,7 @@ function CheckoutContent() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16 sm:pb-20 w-full">
+    <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 pt-36 pb-20 w-full">
       <Link
         href="/courses"
         className="inline-flex items-center gap-2 text-stone-400 hover:text-amber-400 transition-colors mb-10 group text-sm"
@@ -346,11 +346,21 @@ export default function CheckoutPage() {
   return (
     <div className="min-h-screen bg-[#0a0908] text-stone-200 relative overflow-hidden flex flex-col justify-between">
       <Navbar />
-      <div className="fixed inset-0 bg-gradient-to-b from-amber-950/15 via-transparent to-stone-950 pointer-events-none" />
+
+      {/* Background Indian Monument Backdrop */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1564507592333-c60657eea523?w=1920&q=80')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
 
       <Suspense
         fallback={
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-28 sm:pt-36 pb-16 sm:pb-20 text-center text-stone-500">
+          <div className="max-w-4xl mx-auto px-4 sm:px-6 pt-40 pb-20 text-center text-stone-500 relative z-10">
             Loading checkout details…
           </div>
         }

@@ -108,12 +108,12 @@ export default function HomePage() {
     router.push(isAuthenticated && isInstructor ? "/dashboard/instructor" : "/auth/login");
 
   return (
-    <div className="cultural-page min-h-screen text-white selection:bg-[#FF5500] selection:text-black">
+    <div className="min-h-screen bg-[#090807] text-white selection:bg-[#FF5500] selection:text-black">
       {/* Global Navbar */}
       <Navbar />
 
       {/* ── HERO SECTION WITH HERITAGE ARCHITECTURE BACKDROP ─────────── */}
-      <section className="relative pt-28 pb-16 sm:pt-36 sm:pb-24 md:pt-40 md:pb-28 px-4 sm:px-6 overflow-hidden">
+      <section className="relative pt-40 pb-24 md:pt-48 md:pb-32 px-6 overflow-hidden">
         {/* Background Unsplash Image: Indian Heritage Architecture & Warmth */}
         <div
           className="absolute inset-0 pointer-events-none opacity-30 mix-blend-luminosity scale-105 transition-transform duration-1000"
@@ -131,7 +131,7 @@ export default function HomePage() {
           style={{
             background: `
               radial-gradient(ellipse 90% 70% at 50% 20%, rgba(255, 85, 0, 0.16), transparent 70%),
-              linear-gradient(180deg, rgba(23, 18, 13, 0.35) 0%, rgba(23, 18, 13, 0.82) 60%, #17120d 100%)
+              linear-gradient(180deg, rgba(9, 8, 7, 0.4) 0%, rgba(9, 8, 7, 0.85) 60%, #090807 100%)
             `,
           }}
         />
@@ -154,7 +154,7 @@ export default function HomePage() {
           </div>
 
           {/* Headline */}
-          <h1 className="font-kalam text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.08] tracking-tight max-w-4xl drop-shadow-2xl">
+          <h1 className="font-kalam text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-[1.06] tracking-tight max-w-4xl drop-shadow-2xl">
             Learn an Indian language.
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFA066] via-[#FF7700] to-[#E64A00]">
@@ -163,7 +163,7 @@ export default function HomePage() {
           </h1>
 
           {/* Subheading */}
-          <p className="mt-6 text-base sm:text-lg md:text-xl text-stone-300 max-w-2xl leading-relaxed font-normal">
+          <p className="mt-8 text-lg sm:text-xl md:text-2xl text-stone-300 max-w-2xl leading-relaxed font-normal">
             VartaLang connects India&apos;s native language educators with eager learners through
             structured modules, speech evaluation, and community mentorship.
           </p>
@@ -173,7 +173,7 @@ export default function HomePage() {
             <button
               onClick={goLearn}
               disabled={loading}
-              className="px-6 py-3 rounded-xl bg-gradient-to-r from-[#FF5500] to-[#E64A00] hover:from-[#FF6600] hover:to-[#FF5500] font-bold text-white text-sm sm:text-base shadow-xl shadow-[#FF5500]/25 transition-all hover:scale-105 flex items-center gap-2.5 disabled:opacity-50"
+              className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#FF5500] to-[#E64A00] hover:from-[#FF6600] hover:to-[#FF5500] font-bold text-white text-base shadow-xl shadow-[#FF5500]/25 transition-all hover:scale-105 flex items-center gap-2.5 disabled:opacity-50"
             >
               <span>{isAuthenticated ? "Go to my dashboard" : "Start learning free"}</span>
               <ArrowRight className="w-5 h-5" />

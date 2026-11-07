@@ -59,22 +59,21 @@ export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<Tab>("About");
 
   return (
-    <div className="cultural-page min-h-screen relative overflow-hidden flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0a0908] relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
-      {/* Background */}
+      {/* Background Indian Monument Backdrop */}
       <div
-        className="fixed inset-0 opacity-25 pointer-events-none"
+        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
         style={{
-          backgroundImage: `url('https://images.unsplash.com/photo-1580582932707-520aed937b7b?w=1920&q=80')`,
+          backgroundImage: `url('https://images.unsplash.com/photo-1561361513-2d000a50f0dc?w=1920&q=80')`,
           backgroundSize: "cover",
           backgroundPosition: "center",
-          backgroundAttachment: "fixed",
         }}
       />
-      <div className="fixed inset-0 bg-gradient-to-b from-amber-900/10 via-transparent to-orange-900/10 pointer-events-none" />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-24 sm:pt-32 pb-16 sm:pb-20 w-full">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20 w-full">
         {/* Page Header */}
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/20 border border-amber-400/30 mb-6">

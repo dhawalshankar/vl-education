@@ -42,10 +42,21 @@ export default function StudentDashboard() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#0a0908] text-white flex flex-col justify-between">
+    <div className="min-h-screen bg-[#0a0908] text-white relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-14 sm:pb-16 w-full">
+      {/* Background Indian Monument Backdrop */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1548013146-72479768bada?w=1920&q=80')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
+
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20 w-full">
         <h1 className="text-3xl font-bold mb-1">Welcome, {user.full_name} 👋</h1>
         <p className="text-stone-500 text-sm mb-10">{user.email}</p>
 

@@ -132,7 +132,7 @@ export default function RootTeaserPage() {
   ];
 
   return (
-    <div className="cultural-page min-h-screen text-white relative overflow-hidden flex flex-col justify-between selection:bg-amber-500 selection:text-black">
+    <div className="min-h-screen bg-[#090807] text-white relative overflow-hidden flex flex-col justify-between selection:bg-amber-500 selection:text-black">
       {/* ── HEADER ── */}
       <header className="fixed top-5 left-0 right-0 z-50 px-4 sm:px-8 max-w-7xl mx-auto">
         <nav className="rounded-full px-5 py-3 flex items-center justify-between shadow-2xl border border-white/10 bg-[#14110E]/85 backdrop-blur-xl">
@@ -155,7 +155,7 @@ export default function RootTeaserPage() {
           {/* Navigation Links */}
           <div className="flex items-center gap-3 sm:gap-5">
             <Link
-              href="/courses"
+              href="/learn"
               className="hidden md:inline-flex items-center gap-1.5 text-xs text-stone-300 hover:text-amber-300 transition-colors"
             >
               Courses
@@ -267,7 +267,7 @@ export default function RootTeaserPage() {
           {/* Public Exploration CTAs */}
           <div className="max-w-xl mx-auto flex flex-col sm:flex-row items-center justify-center gap-4 mb-14">
             <Link
-              href="/courses"
+              href="/learn"
               className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 rounded-xl font-bold font-kalam text-lg shadow-xl shadow-amber-500/25 transition-all hover:scale-105 flex items-center justify-center gap-2"
             >
               <span>Explore Courses</span>

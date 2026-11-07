@@ -33,10 +33,19 @@ export default function CertificationsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0908] relative overflow-hidden">
+    <div className="min-h-screen bg-[#0a0908] relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
-      <div className="fixed inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" />
+      {/* Background Indian Monument Backdrop */}
+      <div
+        className="fixed inset-0 pointer-events-none opacity-20 mix-blend-luminosity scale-105"
+        style={{
+          backgroundImage: `url('https://images.unsplash.com/photo-1585135497273-1a86b09fe70e?w=1920&q=80')`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="fixed inset-0 bg-gradient-to-b from-[#0a0908]/80 via-[#0a0908]/90 to-[#0a0908] pointer-events-none" />
 
       <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20">
         <div className="text-center mb-16">
