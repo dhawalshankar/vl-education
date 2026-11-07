@@ -47,7 +47,7 @@ export default function LanguagePage() {
       <Navbar />
       <div className="fixed inset-0 bg-gradient-to-b from-amber-900/10 via-transparent to-orange-900/10 pointer-events-none" />
 
-      <section className="relative pt-28 pb-8 sm:pt-32 sm:pb-10 px-4 sm:px-6">
+      <section className="relative pt-32 pb-10 px-6">
         <div className="max-w-7xl mx-auto relative z-10">
           <Link
             href="/learn"
@@ -71,7 +71,7 @@ export default function LanguagePage() {
         </div>
       </section>
 
-      <section className="relative px-4 sm:px-6 pb-8">
+      <section className="relative px-6 pb-8">
         <div className="max-w-7xl mx-auto relative z-10">
           <div className="p-6 rounded-2xl bg-stone-900/60 border border-stone-700/50 flex flex-col md:flex-row gap-4">
             <div className="relative flex-1">
@@ -105,7 +105,7 @@ export default function LanguagePage() {
         </div>
       </section>
 
-      <section className="relative px-4 sm:px-6 pb-16 sm:pb-24">
+      <section className="relative px-6 pb-24">
         <div className="max-w-7xl mx-auto relative z-10">
           {courses.error && (
             <div className="mb-6 px-4 py-3 rounded-xl text-sm bg-red-500/10 border border-red-500/20 text-red-300">

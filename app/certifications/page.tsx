@@ -33,18 +33,18 @@ export default function CertificationsPage() {
   };
 
   return (
-    <div className="cultural-page min-h-screen relative overflow-hidden">
+    <div className="min-h-screen bg-[#0a0908] relative overflow-hidden">
       <Navbar />
 
       <div className="fixed inset-0 bg-gradient-to-b from-purple-900/10 via-transparent to-blue-900/10 pointer-events-none" />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-24 sm:pt-32 pb-16 sm:pb-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20">
         <div className="text-center mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/15 border border-amber-400/30 mb-5">
             <Clock className="w-4 h-4 text-amber-300" />
             <span className="text-sm font-semibold text-amber-200">Coming soon</span>
           </div>
-          <h1 className="font-kalam text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-5 leading-[1.1]">
+          <h1 className="font-kalam text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
             Certifications
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-blue-200 to-cyan-300">

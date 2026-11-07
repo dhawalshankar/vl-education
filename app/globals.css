@@ -2,22 +2,17 @@
 @import "tailwindcss";
 
 :root {
-  --bg-primary: #17120d;
-  --bg-secondary: #211a13;
-  --bg-surface: #2a2118;
-  --border-subtle: rgba(255, 237, 213, 0.14);
+  --bg-primary: #0B0A08;
+  --bg-secondary: #13110E;
+  --bg-surface: #181511;
+  --border-subtle: rgba(255, 255, 255, 0.08);
   --border-highlight: rgba(255, 102, 0, 0.35);
   --brand-orange: #FF5500;
   --brand-orange-light: #FF7700;
   --brand-amber: #F59E0B;
-  --text-primary: #fffaf3;
-  --text-secondary: #c9bbaa;
-  --text-muted: #958675;
-}
-
-html {
-  font-size: 15px;
-  background: var(--bg-primary);
+  --text-primary: #FFFFFF;
+  --text-secondary: #A39E93;
+  --text-muted: #6B665C;
 }
 
 body {
@@ -26,7 +21,6 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   overflow-x: hidden;
   min-height: 100vh;
-  line-height: 1.55;
 }
 
 h1, h2, h3, h4, h5, h6, .font-display {
@@ -35,7 +29,7 @@ h1, h2, h3, h4, h5, h6, .font-display {
 
 /* Ambient Amber Radial Glow */
 .bg-ambient-glow {
-  background: radial-gradient(circle at 35% 20%, rgba(255, 126, 54, 0.2) 0%, rgba(245, 158, 11, 0.08) 35%, transparent 70%);
+  background: radial-gradient(circle at 35% 20%, rgba(255, 85, 0, 0.16) 0%, rgba(245, 158, 11, 0.06) 35%, transparent 70%);
 }
 
 .bg-radial-card {
@@ -58,18 +52,6 @@ h1, h2, h3, h4, h5, h6, .font-display {
   border-color: rgba(255, 85, 0, 0.4);
   transform: translateY(-2px);
   box-shadow: 0 12px 30px -10px rgba(255, 85, 0, 0.18);
-}
-
-.cultural-page {
-  background:
-    linear-gradient(180deg, rgba(23, 18, 13, 0.88), rgba(23, 18, 13, 0.97)),
-    url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?w=1920&q=80') center top / cover fixed;
-}
-
-@media (max-width: 640px) {
-  .cultural-page {
-    background-attachment: scroll;
-  }
 }
 
 /* Orange gradient button */
@@ -107,10 +89,10 @@ h1, h2, h3, h4, h5, h6, .font-display {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #17120d;
+  background: #0B0A08;
 }
 ::-webkit-scrollbar-thumb {
-  background: #5a4430;
+  background: #2A251E;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {

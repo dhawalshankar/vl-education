@@ -60,7 +60,7 @@ export default function LearnPage() {
       <Navbar />
       <div className="fixed inset-0 bg-gradient-to-b from-amber-900/10 via-transparent to-orange-900/10 pointer-events-none" />
 
-      <section className="relative pt-28 pb-8 sm:pt-36 sm:pb-10 px-4 sm:px-6">
+      <section className="relative pt-36 pb-10 px-6">
         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-amber-500/20 border-2 border-amber-400/30 mb-10">
             <BookOpen className="w-4 h-4 text-amber-300" />
@@ -84,7 +84,7 @@ export default function LearnPage() {
         </div>
       </section>
 
-      <section className="relative px-4 sm:px-6 pb-8">
+      <section className="relative px-6 pb-8">
         <div className="max-w-3xl mx-auto relative z-10">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400/60" />
@@ -99,7 +99,7 @@ export default function LearnPage() {
         </div>
       </section>
 
-      <section className="relative py-8 px-4 sm:px-6 pb-16 sm:pb-24">
+      <section className="relative py-8 px-6 pb-24">
         <div className="max-w-7xl mx-auto relative z-10 space-y-14">
           {error && (
             <div className="px-4 py-3 rounded-xl text-sm bg-red-500/10 border border-red-500/20 text-red-300">
