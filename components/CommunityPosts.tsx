@@ -252,11 +252,11 @@ export default function CommunityPosts({
 
       {selectedPost && (
         <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-5"
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start justify-center px-5 pt-28 pb-6 sm:pt-32"
           onClick={() => setSelectedPost(null)}
         >
           <article
-            className="relative w-full max-w-2xl max-h-[85vh] overflow-y-auto rounded-2xl bg-stone-950 border border-amber-500/30 shadow-2xl p-7 sm:p-10"
+            className="relative w-full max-w-2xl max-h-[calc(100vh-9rem)] overflow-y-auto rounded-2xl bg-stone-950 border border-amber-500/30 shadow-2xl p-7 sm:p-10"
             onClick={(event) => event.stopPropagation()}
           >
             <button
