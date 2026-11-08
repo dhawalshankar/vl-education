@@ -463,6 +463,22 @@ export interface CourseInput {
   tags: string[];
 }
 
+export interface InstructorSalesCourse {
+  courseId: string;
+  courseTitle: string;
+  coursePrice: number;
+  currency: string;
+  salesCount: number;
+  totalRevenue: number;
+}
+
+export interface InstructorSales {
+  totalCourses: number;
+  totalSales: number;
+  totalRevenue: number;
+  courses: InstructorSalesCourse[];
+}
+
 export interface LessonInput {
   title: string;
   description?: string;
@@ -474,6 +490,7 @@ export interface LessonInput {
 
 export const instructorAPI = {
   myCourses: () => getJSON<CourseCard[]>("/courses/instructor/mine"),
+  sales: () => getJSON<InstructorSales>("/instructor/sales"),
   course: (id: string) => getJSON<CourseDetail>("/courses/" + id),
 
   // New courses are created as drafts. Going live needs submit() + admin approval.
