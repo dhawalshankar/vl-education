@@ -20,7 +20,7 @@ type NavItem = { label: string; href: string; ready: boolean };
 
 const NAV_ITEMS: NavItem[] = [
   { label: "My Learning", href: "/dashboard", ready: true },
-  { label: "Learn", href: "/learn", ready: true },
+  { label: "Explore", href: "/learn", ready: true },
   { label: "Practice Labs", href: "/practice", ready: false },
   { label: "Challenges", href: "/challenges", ready: false },
   { label: "Certifications", href: "/certifications", ready: false },
