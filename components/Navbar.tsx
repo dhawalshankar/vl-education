@@ -88,7 +88,7 @@ export default function Navbar() {
     <header className="fixed top-5 left-0 right-0 z-50 px-4 sm:px-8 max-w-7xl mx-auto">
       <nav className="glass-panel rounded-full px-5 py-3 flex items-center justify-between shadow-2xl border border-white/10 bg-[#16130F]/85 backdrop-blur-xl">
         {/* Brand Logo */}
-        <Link href={isAuthenticated ? "/dashboard" : "/home"} className="flex items-center gap-2 group">
+        <Link href={isAuthenticated ? "/home" : "/"} className="flex items-center gap-2 group">
           <img
             src="/logo.png"
             alt="VartaLang Logo"
