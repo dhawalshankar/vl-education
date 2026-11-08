@@ -3,6 +3,7 @@
 
 import { useEffect, useMemo, useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Activity,
   Check,
@@ -393,6 +394,14 @@ export default function AdminDashboard() {
         <div className="mb-8">
           <h1 className="font-kalam text-4xl sm:text-5xl font-bold tracking-tight">Admin Dashboard</h1>
           <p className="text-stone-400 text-sm mt-1">Review courses, manage users, and monitor logins.</p>
+          <div className="flex flex-wrap gap-3 mt-4">
+            <Link href="/admin/reports" className="px-4 py-2 rounded-xl bg-amber-500/15 border border-amber-500/30 text-amber-300 text-xs font-semibold hover:bg-amber-500/25">
+              Instructor revenue reports
+            </Link>
+            <Link href="/admin/enrollments" className="px-4 py-2 rounded-xl bg-stone-900 border border-stone-700 text-stone-300 text-xs font-semibold hover:bg-stone-800">
+              Enrollment payments
+            </Link>
+          </div>
         </div>
 
         {message && (

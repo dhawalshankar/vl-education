@@ -570,11 +570,81 @@ export interface AdminInstructor {
   avatar_url?: string | null;
 }
 
+export interface AdminInstructorEnrollment {
+  instructor_id: string;
+  instructor_name: string;
+  instructor_email: string;
+  course_id: string;
+  course_title: string;
+  course_price: string | number;
+  total_enrollments: number;
+  paid_enrollments: number;
+  total_paid_amount: string | number;
+  currency: string;
+}
+
+export interface AdminEnrollmentPayment {
+  status: string;
+  amount?: string | number | null;
+  currency?: string | null;
+  razorpay_order_id?: string | null;
+  razorpay_payment_id?: string | null;
+  paid_at?: string | null;
+}
+
+export interface AdminEnrollmentFinancial {
+  id: string;
+  student_name: string;
+  student_email: string;
+  course_id: string;
+  course_title: string;
+  instructor_id: string;
+  instructor_name: string;
+  course_price: string | number;
+  enrollment_status: string;
+  enrolled_at: string;
+  completed_at?: string | null;
+  payment: AdminEnrollmentPayment | null;
+}
+
+export interface AdminEnrollmentFinancialPage {
+  items: AdminEnrollmentFinancial[];
+  total?: number;
+}
+
 export const adminAPI = {
   stats: () => getJSON<AdminStats>("/admin/stats"),
   users: () => getJSON<AdminUser[]>("/admin/users"),
   courses: () => getJSON<AdminCourse[]>("/admin/courses"),
   instructors: () => getJSON<AdminInstructor[]>("/admin/instructors"),
+  instructorEnrollments: (filters: { instructor_id?: string; course_id?: string } = {}) => {
+    const params = new URLSearchParams();
+    if (filters.instructor_id) params.set("instructor_id", filters.instructor_id);
+    if (filters.course_id) params.set("course_id", filters.course_id);
+    const query = params.toString();
+    return getJSON<AdminInstructorEnrollment[]>("/admin/instructor-enrollments" + (query ? "?" + query : ""));
+  },
+  enrollmentFinancials: (
+    filters: {
+      instructor_id?: string;
+      course_id?: string;
+      enrollment_status?: string;
+      search?: string;
+      skip?: number;
+      limit?: number;
+    } = {}
+  ) => {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== "") params.set(key, String(value));
+    });
+    const query = params.toString();
+    return getJSON<AdminEnrollmentFinancial[] | AdminEnrollmentFinancialPage>(
+      "/admin/enrollment-financials" + (query ? "?" + query : "")
+    ).then((response) =>
+      Array.isArray(response) ? { items: response } : response
+    );
+  },
   deleteUser: (id: string) => getJSON<{ ok: boolean }>("/admin/users/" + id, send("DELETE")),
   deleteCourse: (id: string) => getJSON<{ archived: boolean }>("/admin/courses/" + id, send("DELETE")),
 
