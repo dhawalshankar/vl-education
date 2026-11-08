@@ -26,6 +26,7 @@ export const SOCIAL_LINKS = {
   INSTAGRAM: "https://www.instagram.com/cosmoindiaprakashan/",
   TWITTER: "https://x.com/IndiaCosmo",
   YOUTUBE: "https://www.youtube.com/@cosmoindiaprakashan",
+  WHATSAPP: "https://whatsapp.com/channel/0029VbC1rr59MF8yb3dpXh0g",
 } as const;
 
 export type ContactDetails = typeof CONTACT_DETAILS;

@@ -16,6 +16,7 @@ import {
   Instagram,
   Youtube,
   Facebook,
+  MessageCircle,
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -35,11 +36,19 @@ export default function ContactPage() {
     e.preventDefault();
     setLoading(true);
 
-    // Provide friendly feedback and prepare mailto fallback if desired
-    setTimeout(() => {
-      setLoading(false);
-      setSubmitted(true);
-    }, 600);
+    const body = [
+      `Name: ${form.name}`,
+      `Email: ${form.email}`,
+      "",
+      form.message,
+    ].join("\n");
+    const mailto = `${CONTACT_DETAILS.SUPPORT_EMAIL_MAILTO}?subject=${encodeURIComponent(
+      form.subject,
+    )}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailto;
+    setLoading(false);
+    setSubmitted(true);
   };
 
   return (
@@ -212,6 +221,16 @@ export default function ContactPage() {
                   >
                     <Facebook className="w-4 h-4" />
                   </a>
+                  <a
+                    href={SOCIAL_LINKS.WHATSAPP}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title="WhatsApp Channel"
+                    aria-label="WhatsApp Channel"
+                    className="w-9 h-9 rounded-xl bg-stone-950 border border-stone-800 hover:border-amber-500/50 hover:bg-stone-800 text-stone-400 hover:text-amber-400 flex items-center justify-center transition-all hover:scale-105"
+                  >
+                    <MessageCircle className="w-4 h-4" />
+                  </a>
                 </div>
               </div>
             </div>
@@ -226,7 +245,7 @@ export default function ContactPage() {
                 </div>
                 <h3 className="font-kalam text-2xl font-bold text-white">Thank You, {form.name}!</h3>
                 <p className="text-stone-300 text-sm max-w-md mx-auto">
-                  Your message has been recorded. Our team responds during support hours ({CONTACT_DETAILS.SUPPORT_HOURS}) within 24 to 48 hours.
+                  Your email app should now be open with your message addressed to our support team. Please send it to complete your inquiry. Our team responds during support hours ({CONTACT_DETAILS.SUPPORT_HOURS}) within 24 to 48 hours.
                 </p>
                 <div className="pt-4">
                   <button

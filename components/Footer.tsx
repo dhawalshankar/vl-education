@@ -13,6 +13,7 @@ import {
   Instagram,
   Youtube,
   Facebook,
+  MessageCircle,
 } from "lucide-react";
 import { CONTACT_DETAILS, SOCIAL_LINKS } from "@/app/lib/constants";
 
@@ -63,6 +64,11 @@ export default function Footer() {
       name: "Facebook",
       href: SOCIAL_LINKS.FACEBOOK,
       icon: Facebook,
+    },
+    {
+      name: "WhatsApp Channel",
+      href: SOCIAL_LINKS.WHATSAPP,
+      icon: MessageCircle,
     },
   ];
 
@@ -246,18 +252,6 @@ export default function Footer() {
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-stone-500">
           <div>
             {CONTACT_DETAILS.COPYRIGHT_LINE}
-          </div>
-
-          <div className="flex flex-wrap items-center gap-4 text-stone-500">
-            {legalLinks.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="hover:text-amber-400 transition-colors"
-              >
-                {link.label}
-              </Link>
-            ))}
           </div>
         </div>
       </div>
