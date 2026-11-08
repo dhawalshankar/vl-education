@@ -5,9 +5,10 @@ import { useState } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import CommunityPosts from "@/components/CommunityPosts";
 import {
   Heart, Globe, Shield, Award, Users, Target, BookOpen,
-  Clock, ArrowRight, Briefcase, MapPin, ArrowLeft,
+  Clock, ArrowRight, Briefcase, MapPin,
 } from "lucide-react";
 
 /* ─── DATA ───────────────────────────────────────────────────────── */
@@ -46,16 +47,6 @@ const stats = [
   { value: "2026", label: "Founded", icon: Award },
 ];
 
-/* ── Articles & Publications (Placeholder Data) ─────────────────
- * TODO: Connect to backend API: GET /api/v1/articles
- * Replace static placeholders with database articles.
- */
-const posts = [
-  { title: "Why Learning Hindi Opens Doors Across India", excerpt: "With over 500 million speakers, Hindi is a bridge to opportunities in government, media, and culture.", date: "Sep 2026", readTime: "5 min", tag: "Hindi", color: "from-orange-500 to-red-500", emoji: "📚" },
-  { title: "Tamil: The Language That Never Stopped Evolving", excerpt: "One of the oldest classical languages with a rich literary history and contemporary relevance.", date: "Sep 2026", readTime: "6 min", tag: "Tamil", color: "from-red-500 to-pink-500", emoji: "🌴" },
-  { title: "5 Proven Tips to Accelerate Your Language Learning", excerpt: "Expert strategies from polyglots — from spaced repetition to daily conversational immersion.", date: "Aug 2026", readTime: "8 min", tag: "Learning Tips", color: "from-blue-500 to-cyan-500", emoji: "🧠" },
-];
-
 /* ── Career Openings (Placeholder Data) ─────────────────────────
  * TODO: Connect to backend API: GET /api/v1/careers/jobs
  * Replace static placeholders with dynamic job openings loaded from the database.
@@ -70,6 +61,15 @@ const openings = [
 
 export default function CommunityPage() {
   const [activeTab, setActiveTab] = useState<Tab>("About");
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+
+  const toggleTag = (tag: string) => {
+    setSelectedTags((current) =>
+      current.some((selectedTag) => selectedTag.toLowerCase() === tag.toLowerCase())
+        ? current.filter((selectedTag) => selectedTag.toLowerCase() !== tag.toLowerCase())
+        : [...current, tag],
+    );
+  };
 
   return (
     <div className="cultural-page min-h-screen text-white relative overflow-hidden flex flex-col justify-between">
@@ -231,39 +231,11 @@ export default function CommunityPage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {posts.map((post, i) => (
-                <article
-                  key={i}
-                  className="group p-6 rounded-2xl bg-stone-900/60 border border-stone-700/50 hover:border-amber-500/40 transition-all hover:-translate-y-1 flex flex-col justify-between"
-                >
-                  <div>
-                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${post.color} flex items-center justify-center text-2xl mb-5 group-hover:scale-105 transition-transform shadow-lg`}>
-                      {post.emoji}
-                    </div>
-                    <div className="flex items-center gap-2 mb-3">
-                      <span className="text-xs px-2.5 py-0.5 rounded-full bg-amber-500/20 border border-amber-500/30 text-amber-300 font-semibold">
-                        {post.tag}
-                      </span>
-                    </div>
-                    <h3 className="font-kalam text-xl font-bold text-white mb-3 leading-snug group-hover:text-amber-200 transition-colors">
-                      {post.title}
-                    </h3>
-                    <p className="text-stone-400 text-sm leading-relaxed mb-4">{post.excerpt}</p>
-                  </div>
-                  <div className="flex items-center justify-between pt-4 border-t border-stone-700/50">
-                    <div className="flex items-center gap-3 text-xs text-stone-500">
-                      <span>{post.date}</span>
-                      <span>•</span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" />{post.readTime} read
-                      </span>
-                    </div>
-                    <ArrowRight className="w-4 h-4 text-stone-600 group-hover:text-amber-400 group-hover:translate-x-1 transition-all" />
-                  </div>
-                </article>
-              ))}
-            </div>
+            <CommunityPosts
+              selectedTags={selectedTags}
+              onToggleTag={toggleTag}
+              onClearTags={() => setSelectedTags([])}
+            />
           </div>
         )}
 
