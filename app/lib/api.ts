@@ -606,6 +606,9 @@ export interface AdminEnrollmentFinancial {
   instructor_id: string;
   instructor_name: string;
   course_price: string | number;
+  progress_percentage: number;
+  completed_lessons: number;
+  total_lessons: number;
   payments: AdminEnrollmentPayment[];
 }
 
