@@ -1,3 +1,4 @@
+// app/community/page.tsx
 "use client";
 
 import { useState } from "react";
@@ -230,7 +231,7 @@ export default function CommunityPage() {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {posts.map((post, i) => (
                 <article
                   key={i}
@@ -262,22 +263,6 @@ export default function CommunityPage() {
                   </div>
                 </article>
               ))}
-            </div>
-
-            {/* Newsletter */}
-            <div className="text-center p-10 rounded-3xl bg-stone-900/60 border border-stone-700/50 max-w-3xl mx-auto">
-              <h2 className="font-kalam text-3xl font-bold text-white mb-3">Stay Updated</h2>
-              <p className="text-stone-400 text-sm mb-6">Get new articles delivered to your inbox every week</p>
-              <div className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <input
-                  type="email"
-                  placeholder="Your email address"
-                  className="flex-1 px-5 py-3 rounded-xl bg-stone-950/80 border border-stone-700/50 text-white placeholder-stone-500 focus:outline-none focus:border-amber-500 transition-colors text-sm"
-                />
-                <button className="px-6 py-3 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-bold rounded-xl transition-all font-kalam text-sm">
-                  Subscribe
-                </button>
-              </div>
             </div>
           </div>
         )}
