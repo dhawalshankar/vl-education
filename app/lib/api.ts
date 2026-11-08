@@ -577,23 +577,28 @@ export interface AdminInstructorEnrollment {
   course_id: string;
   course_title: string;
   course_price: string | number;
-  total_enrollments: number;
-  paid_enrollments: number;
+  enrollment_count: number;
+  paid_enrollment_count: number;
   total_paid_amount: string | number;
   currency: string;
 }
 
 export interface AdminEnrollmentPayment {
+  id: string;
   status: string;
-  amount?: string | number | null;
-  currency?: string | null;
+  amount: string | number;
+  currency: string;
   razorpay_order_id?: string | null;
   razorpay_payment_id?: string | null;
-  paid_at?: string | null;
+  created_at: string;
 }
 
 export interface AdminEnrollmentFinancial {
-  id: string;
+  enrollment_id: string;
+  enrolled_at: string;
+  completed_at?: string | null;
+  enrollment_status: string;
+  student_id: string;
   student_name: string;
   student_email: string;
   course_id: string;
@@ -601,10 +606,7 @@ export interface AdminEnrollmentFinancial {
   instructor_id: string;
   instructor_name: string;
   course_price: string | number;
-  enrollment_status: string;
-  enrolled_at: string;
-  completed_at?: string | null;
-  payment: AdminEnrollmentPayment | null;
+  payments: AdminEnrollmentPayment[];
 }
 
 export interface AdminEnrollmentFinancialPage {

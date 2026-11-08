@@ -66,7 +66,7 @@ export default function AdminReportsPage() {
                 rows.map((row) => <tr key={`${row.instructor_id}-${row.course_id}`} className="border-b border-stone-800/50">
                   <td className="p-4"><p>{row.instructor_name}</p><p className="text-xs text-stone-500">{row.instructor_email}</p></td>
                   <td className="p-4">{row.course_title}</td><td className="p-4">{money(row.course_price, row.currency)}</td>
-                  <td className="p-4">{row.total_enrollments}</td><td className="p-4">{row.paid_enrollments}</td>
+                  <td className="p-4">{row.enrollment_count}</td><td className="p-4">{row.paid_enrollment_count}</td>
                   <td className="p-4 font-semibold text-emerald-300">{money(row.total_paid_amount, row.currency)}</td><td className="p-4">{row.currency}</td>
                 </tr>)}
           </tbody>
