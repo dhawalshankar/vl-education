@@ -6,6 +6,7 @@ import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import CommunityPosts from "@/components/CommunityPosts";
+import RequireAuth from "@/components/RequireAuth";
 import {
   Heart, Globe, Shield, Award, Users, Target, BookOpen,
   Clock, ArrowRight, Briefcase, MapPin,
@@ -72,7 +73,8 @@ export default function CommunityPage() {
   };
 
   return (
-    <div className="cultural-page min-h-screen text-white relative overflow-hidden flex flex-col justify-between">
+    <RequireAuth>
+      <div className="cultural-page min-h-screen text-white relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
       {/* Background Indian Monument Backdrop */}
@@ -308,6 +310,7 @@ export default function CommunityPage() {
       </div>
 
       <Footer />
-    </div>
+      </div>
+    </RequireAuth>
   );
 }

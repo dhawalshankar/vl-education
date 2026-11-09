@@ -5,6 +5,7 @@ import { useState, FormEvent } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import RequireAuth from "@/components/RequireAuth";
 import { ArrowRight, Award, Clock, Search, ShieldCheck, ShieldX } from "lucide-react";
 import { certificationAPI, CertificationVerifyResponse } from "@/app/lib/api";
 import { useApi } from "@/app/lib/useApi";
@@ -33,7 +34,8 @@ export default function CertificationsPage() {
   };
 
   return (
-    <div className="cultural-page min-h-screen relative overflow-hidden flex flex-col justify-between">
+    <RequireAuth>
+      <div className="cultural-page min-h-screen relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
       {/* Background Indian Monument Backdrop */}
@@ -186,6 +188,7 @@ export default function CertificationsPage() {
       </div>
 
       <Footer />
-    </div>
+      </div>
+    </RequireAuth>
   );
 }

@@ -78,8 +78,11 @@ const FLOATING_GLYPHS = [
 
 // Shown only if the languages API is unreachable
 const FALLBACK_LANGUAGES = [
-  "Hindi", "English", "Tamil", "Telugu", "Bengali", "Marathi", "Gujarati",
-  "Kannada", "Malayalam", "Punjabi", "Odia", "Assamese", "Urdu", "Sanskrit",
+  "Assamese", "Bengali", "Bodo", "Dogri", "Gujarati", "Hindi", "Kannada",
+  "Kashmiri", "Konkani", "Maithili", "Malayalam", "Manipuri", "Marathi",
+  "Nepali", "Odia", "Punjabi", "Sanskrit", "Santali", "Sindhi", "Tamil",
+  "Telugu", "Urdu", "English", "Spanish", "French", "German", "Japanese",
+  "Korean", "Mandarin Chinese", "Arabic",
 ];
 
 type Status = "live" | "soon";
@@ -181,7 +184,7 @@ function GhostButton({ href, children }: { href: string; children: React.ReactNo
 
 function Pill({ icon: Icon, children }: { icon: LucideIcon; children: React.ReactNode }) {
   return (
-    <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-black/40 backdrop-blur-md px-4 py-2 text-sm text-stone-200">
+    <span className="inline-flex max-w-full flex-wrap items-center gap-2 rounded-full border border-white/15 bg-black/40 backdrop-blur-md px-4 py-2 text-sm text-stone-200">
       <Icon className="w-4 h-4 text-[#FF7700]" />
       {children}
     </span>
@@ -322,7 +325,7 @@ export default function HomePage() {
                 <GhostButton href="/learn">Browse courses</GhostButton>
               </div>
               <div className="mt-8 flex flex-wrap gap-3">
-                <Pill icon={Globe}>{languageList.length} languages</Pill>
+                <Pill icon={Globe}>22 Indian languages + English + in-demand foreign languages</Pill>
                 <Pill icon={Video}>Video + notes</Pill>
                 <Pill icon={Check}>Free preview lessons</Pill>
               </div>

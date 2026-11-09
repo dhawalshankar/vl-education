@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import RequireAuth from "@/components/RequireAuth";
 import { useAuth } from "@/app/context/AuthContext";
 import { enrollmentAPI, learnAPI } from "@/app/lib/api";
 import { useApi } from "@/app/lib/useApi";
@@ -108,7 +109,8 @@ export default function LanguagePage() {
   ];
 
   return (
-    <div className="cultural-page min-h-screen relative overflow-hidden flex flex-col justify-between">
+    <RequireAuth>
+      <div className="cultural-page min-h-screen relative overflow-hidden flex flex-col justify-between">
       <Navbar />
 
       {/* Background Indian Monument Backdrop */}
@@ -618,6 +620,7 @@ export default function LanguagePage() {
       </section>
 
       <Footer />
-    </div>
+      </div>
+    </RequireAuth>
   );
 }
