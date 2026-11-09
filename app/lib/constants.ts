@@ -8,7 +8,7 @@ export const CONTACT_DETAILS = {
   BUSINESS_NAME: "VartaLang (operated by Dhawal Shukla)",
   OPERATING_NAME: "Dhawal Shukla",
   BRAND_NAME: "VartaLang",
-  BUSINESS_ADDRESS: "Sector A, 24 Gujaini, Chanakyapuri, Uttar Pradesh, India",
+  BUSINESS_ADDRESS: "Sector A, 24 Gujaini, Kanpur, Uttar Pradesh, India",
   PHONE: "+91 7388270331",
   PHONE_DISPLAY: "+91 73882 70331",
   PHONE_TEL: "tel:+917388270331",
