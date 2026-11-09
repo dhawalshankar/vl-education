@@ -195,7 +195,7 @@ function GreetingMarquee() {
       <div className="vl-marquee flex w-max items-center gap-12 whitespace-nowrap">
         {loop.map((g, i) => (
           <span key={`${g.lang}-${i}`} className="flex items-center gap-12">
-            <span lang={g.code} className="font-kalam text-2xl font-bold text-stone-200">
+            <span lang={g.code} className="font-kalam text-xl sm:text-2xl font-bold leading-tight">
               {g.text}
             </span>
             <span className="text-xs uppercase tracking-[0.25em] text-stone-500">{g.lang}</span>
@@ -299,9 +299,14 @@ export default function HomePage() {
 
           <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-14 items-center">
             <div className="lg:col-span-6">
-              <span className="inline-flex items-center gap-2 rounded-full border border-[#FF5500]/40 bg-[#FF5500]/10 px-3 py-1 text-xs font-semibold text-[#FF9955]">
-                <Sparkles className="w-3.5 h-3.5" /> Built for Indian languages
-              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-2 rounded-full border border-[#FF5500]/40 bg-[#FF5500]/10 px-3 py-1 text-xs font-semibold text-[#FF9955]">
+                  <Sparkles className="w-3.5 h-3.5" /> Built for Indian languages
+                </span>
+                <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-xs font-semibold text-amber-200">
+                  <Award className="w-3.5 h-3.5" /> Accepted into Sarvam Startup Program
+                </span>
+              </div>
               <h1 className="mt-5 font-kalam text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.08] tracking-tight drop-shadow-lg">
                 Learn an Indian language.
                 <br />
@@ -332,16 +337,16 @@ export default function HomePage() {
                       href={`/learn/${slugify(g.lang)}`}
                       onMouseEnter={() => setActive(i)}
                       onFocus={() => setActive(i)}
-                      className={`rounded-xl border px-3 py-6 sm:py-8 text-center transition-all duration-500 ${focusCls} ${
+                      className={`min-w-0 rounded-xl border px-2 py-5 sm:px-3 sm:py-8 text-center transition-all duration-500 ${focusCls} ${
                         active === i
                           ? "bg-[#FF5500] border-[#FF5500] text-white shadow-lg shadow-[#FF5500]/30 scale-[1.03]"
                           : "bg-white/[0.04] border-white/10 text-stone-200 hover:border-white/40"
                       }`}
                     >
-                      <span lang={g.code} className="block text-2xl sm:text-3xl font-bold leading-snug">
+                      <span lang={g.code} className="block text-xl sm:text-3xl font-bold leading-tight break-words">
                         {g.text}
                       </span>
-                      <span className={`block mt-2 text-xs ${active === i ? "text-white/85" : "text-stone-400"}`}>
+                      <span className={`block mt-2 text-xs leading-tight break-words ${active === i ? "text-white/85" : "text-stone-400"}`}>
                         {g.lang}
                       </span>
                     </Link>
@@ -414,7 +419,7 @@ export default function HomePage() {
                 <Link
                   key={l.language}
                   href={`/learn/${slugify(l.language)}`}
-                  className={`px-4 py-2 rounded-full border border-white/15 bg-white/[0.03] hover:border-[#FF5500] hover:bg-[#FF5500]/10 text-sm text-stone-200 transition-colors ${focusCls}`}
+                  className={`max-w-full break-words px-4 py-2 rounded-full border border-white/15 bg-white/[0.03] hover:border-[#FF5500] hover:bg-[#FF5500]/10 text-sm text-stone-200 transition-colors ${focusCls}`}
                 >
                   {l.language}
                   {l.course_count > 0 && (
@@ -501,7 +506,7 @@ export default function HomePage() {
                 </div>
                 <div className="space-y-3 text-sm">
                   <div className="max-w-[85%] rounded-2xl rounded-bl-sm bg-white/10 px-4 py-3">
-                    <span lang="hi">आप क्या लेंगे?</span>
+                    <span lang="hi" className="break-words">आप क्या लेंगे?</span>
                     <span className="block text-xs text-stone-400 mt-1">What will you have?</span>
                   </div>
                   <div className="max-w-[85%] ml-auto rounded-2xl rounded-br-sm bg-[#FF5500] px-4 py-3">
@@ -510,7 +515,7 @@ export default function HomePage() {
                   <div className="rounded-xl border border-amber-400/30 bg-amber-400/10 px-4 py-3">
                     <p className="text-amber-200 font-semibold text-xs">Correction</p>
                     <p className="mt-1">
-                      Try: <span lang="hi" className="font-semibold">मुझे एक चाय चाहिए।</span>
+                      Try: <span lang="hi" className="font-semibold break-words">मुझे एक चाय चाहिए।</span>
                     </p>
                     <p className="mt-1 text-xs text-stone-300">
                       Your sentence is right. Practice writing it in Devanagari: <span lang="hi">चाय</span> has a long
@@ -702,7 +707,7 @@ export default function HomePage() {
                   <div className="mx-auto mt-5 h-px w-24 bg-[#C2410C]/50" />
                   <p className="mt-5 font-kalam text-3xl font-bold">Your name here</p>
                   <p className="mt-2 text-stone-700">has reached the Intermediate level in</p>
-                  <p lang="hi" className="mt-2 font-kalam text-5xl font-bold text-[#C2410C]">
+                  <p lang="hi" className="mt-2 font-kalam text-4xl sm:text-5xl leading-tight break-words font-bold text-[#C2410C]">
                     हिन्दी
                   </p>
                   <p className="mt-6 text-xs text-stone-500">Sample. Real certificates carry a unique ID you can verify.</p>

@@ -58,6 +58,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (u) setUser(normalize(u));
         else localStorage.removeItem(TOKEN_KEY);
       })
+      .catch((error) => {
+        console.error("Could not restore saved session:", error);
+      })
       .finally(() => setLoading(false));
   }, []);
 

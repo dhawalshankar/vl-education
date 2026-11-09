@@ -150,15 +150,30 @@ export function recordDailyActivity(userEmailOrId?: string | null): UserStreak {
 }
 
 /** React hook for managing and observing user streak */
-export function useUserStreak(userEmailOrId?: string | null) {
-  const [streak, setStreak] = useState<UserStreak>(() => getUserStreak(userEmailOrId));
+export function useUserStreak(userEmailOrId?: string | null, enabled = true) {
+  const [streak, setStreak] = useState<UserStreak>(() =>
+    enabled && userEmailOrId
+      ? getUserStreak(userEmailOrId)
+      : {
+          currentStreak: 0,
+          longestStreak: 0,
+          lastVisitDate: "",
+          totalDaysActive: 0,
+          history: [],
+        }
+  );
 
   const refreshStreak = useCallback(() => {
+    if (!enabled || !userEmailOrId) return;
     const updated = recordDailyActivity(userEmailOrId);
     setStreak(updated);
-  }, [userEmailOrId]);
+  }, [enabled, userEmailOrId]);
 
   useEffect(() => {
+    if (!enabled || !userEmailOrId) {
+      return;
+    }
+
     refreshStreak();
 
     const handleUpdate = (e: Event) => {
@@ -179,8 +194,7 @@ export function useUserStreak(userEmailOrId?: string | null) {
       window.removeEventListener(STREAK_EVENT, handleUpdate);
       window.removeEventListener("storage", handleUpdate);
     };
-  }, [userEmailOrId, refreshStreak]);
+  }, [enabled, userEmailOrId, refreshStreak]);
 
   return { streak, recordActivity: refreshStreak };
 }
-

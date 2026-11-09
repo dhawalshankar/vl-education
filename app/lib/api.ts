@@ -176,13 +176,12 @@ export const authAPI = {
     return res.json();
   },
   getMe: async () => {
-    try {
-      const res = await authFetch("/auth/me");
-      if (!res.ok) return null;
-      return res.json();
-    } catch {
-      return null;
+    const res = await authFetch("/auth/me");
+    if (res.status === 401 || res.status === 403) return null;
+    if (!res.ok) {
+      throw new Error(`Could not restore session (${res.status})`);
     }
+    return res.json();
   },
 };
 

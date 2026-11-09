@@ -34,7 +34,8 @@ export default function Navbar() {
   const [showMenu, setShowMenu] = useState(false);
   const [showMobile, setShowMobile] = useState(false);
   const [showStreak, setShowStreak] = useState(false);
-  const { streak } = useUserStreak(user?.email || user?.id);
+  const streakUserId = user?.email || user?.id;
+  const { streak } = useUserStreak(streakUserId, isAuthenticated);
 
   // UserStreak has no `totalActiveDays` in its type. Read it defensively so the row only
   // shows if the hook actually provides it (add the field to UserStreak to make it permanent).
@@ -97,73 +98,77 @@ export default function Navbar() {
         </Link>
 
         {/* Center Nav Links (desktop) */}
-        <div className="hidden lg:flex items-center gap-6 font-medium">
-          {NAV_ITEMS.map((item) => renderItem(item))}
-        </div>
+        {isAuthenticated && (
+          <div className="hidden lg:flex items-center gap-6 font-medium">
+            {NAV_ITEMS.map((item) => renderItem(item))}
+          </div>
+        )}
 
         {/* Right side */}
         <div className="flex items-center gap-3">
           {/* Daily Streak Indicator */}
-          <div className="relative">
-            <button
-              onClick={() => {
-                setShowStreak(!showStreak);
-                setShowMenu(false);
-              }}
-              title={`Daily Streak: ${streak.currentStreak} day${streak.currentStreak === 1 ? "" : "s"}`}
-              aria-label="Daily Streak"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 text-orange-400 hover:text-orange-300 transition-all group"
-            >
-              <Flame className="w-4 h-4 fill-orange-500 text-orange-400 group-hover:scale-110 transition-transform animate-pulse" />
-              <span className="text-xs font-bold font-mono tracking-tight text-orange-200">
-                {streak.currentStreak}
-              </span>
-            </button>
+          {isAuthenticated && (
+            <div className="relative">
+              <button
+                onClick={() => {
+                  setShowStreak(!showStreak);
+                  setShowMenu(false);
+                }}
+                title={`Daily Streak: ${streak.currentStreak} day${streak.currentStreak === 1 ? "" : "s"}`}
+                aria-label="Daily Streak"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 text-orange-400 hover:text-orange-300 transition-all group"
+              >
+                <Flame className="w-4 h-4 fill-orange-500 text-orange-400 group-hover:scale-110 transition-transform animate-pulse" />
+                <span className="text-xs font-bold font-mono tracking-tight text-orange-200">
+                  {streak.currentStreak}
+                </span>
+              </button>
 
-            {/* Streak Details Popover */}
-            {showStreak && (
-              <>
-                <div
-                  className="fixed inset-0 z-40 sm:hidden bg-black/40 backdrop-blur-xs"
-                  onClick={() => setShowStreak(false)}
-                />
-                <div className="fixed top-20 left-4 right-4 max-w-xs mx-auto sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-2 sm:w-72 sm:max-w-72 rounded-2xl bg-[#16130F]/95 border border-orange-500/30 shadow-2xl p-4 z-50 backdrop-blur-2xl">
-                  <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/10">
-                    <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center shrink-0">
-                      <Flame className="w-5 h-5 text-orange-400 fill-orange-500" />
+              {/* Streak Details Popover */}
+              {showStreak && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40 sm:hidden bg-black/40 backdrop-blur-xs"
+                    onClick={() => setShowStreak(false)}
+                  />
+                  <div className="fixed top-20 left-4 right-4 max-w-xs mx-auto sm:absolute sm:top-full sm:left-auto sm:right-0 sm:mt-2 sm:w-72 sm:max-w-72 rounded-2xl bg-[#16130F]/95 border border-orange-500/30 shadow-2xl p-4 z-50 backdrop-blur-2xl">
+                    <div className="flex items-center gap-3 mb-3 pb-3 border-b border-white/10">
+                      <div className="w-10 h-10 rounded-xl bg-orange-500/20 border border-orange-500/30 flex items-center justify-center shrink-0">
+                        <Flame className="w-5 h-5 text-orange-400 fill-orange-500" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-white">
+                          {streak.currentStreak} Day Streak
+                        </p>
+                        <p className="text-xs text-orange-300/80">
+                          {streak.currentStreak > 0
+                            ? "Great consistency! Keep learning."
+                            : "Start your streak today!"}
+                        </p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-sm font-bold text-white">
-                        {streak.currentStreak} Day Streak
-                      </p>
-                      <p className="text-xs text-orange-300/80">
-                        {streak.currentStreak > 0
-                          ? "Great consistency! Keep learning."
-                          : "Start your streak today!"}
-                      </p>
-                    </div>
-                  </div>
 
-                  <div className="space-y-2 text-xs">
-                    <div className="flex justify-between text-stone-400">
-                      <span>Longest Streak</span>
-                      <span className="font-mono font-semibold text-white">
-                        {streak.longestStreak} days
-                      </span>
-                    </div>
-                    {totalActiveDays !== undefined && (
+                    <div className="space-y-2 text-xs">
                       <div className="flex justify-between text-stone-400">
-                        <span>Total Active Days</span>
+                        <span>Longest Streak</span>
                         <span className="font-mono font-semibold text-white">
-                          {totalActiveDays}
+                          {streak.longestStreak} days
                         </span>
                       </div>
-                    )}
+                      {totalActiveDays !== undefined && (
+                        <div className="flex justify-between text-stone-400">
+                          <span>Total Active Days</span>
+                          <span className="font-mono font-semibold text-white">
+                            {totalActiveDays}
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </>
-            )}
-          </div>
+                </>
+              )}
+            </div>
+          )}
 
           {/* User profile dropdown or Sign In */}
           {isAuthenticated && user ? (
@@ -274,7 +279,7 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile menu panel */}
-      {showMobile && (
+      {showMobile && isAuthenticated && (
         <div className="lg:hidden mt-2 rounded-3xl bg-[#16130F]/95 border border-white/10 backdrop-blur-xl p-3 flex flex-col shadow-2xl gap-1">
           {NAV_ITEMS.map((item) => renderItem(item, true))}
           <div className="pt-2 mt-1 border-t border-white/10 flex items-center justify-between px-3 py-1.5 text-xs text-stone-400">
