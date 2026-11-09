@@ -255,12 +255,20 @@ export default function Navbar() {
             )}
             </div>
           ) : (
-            <Link
-              href="/auth/login"
-              className="px-4 py-2 rounded-full bg-[#FF5500] hover:bg-[#FF6600] text-white text-xs font-semibold transition-colors"
-            >
-              Sign In
-            </Link>
+            <>
+              <Link
+                href="/auth/login"
+                className="px-4 py-2 rounded-full bg-[#FF5500] hover:bg-[#FF6600] text-white text-xs font-semibold transition-colors"
+              >
+                Login
+              </Link>
+              <Link
+                href="https://vartalang.in/auth/signup"
+                className="px-4 py-2 rounded-full border border-[#FF5500]/50 bg-[#FF5500]/10 hover:bg-[#FF5500]/20 text-[#FF9955] text-xs font-semibold transition-colors"
+              >
+                Sign Up
+              </Link>
+            </>
           )}
 
           {/* Mobile menu toggle */}
