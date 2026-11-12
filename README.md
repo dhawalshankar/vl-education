@@ -9,6 +9,7 @@
 - **Landing and marketing pages** — hero, language highlights, learning paths, certifications, and platform information (`app/page.tsx`)
 - **Language catalog and courses** — browse 22 scheduled Indian languages, English, foreign languages, and backend-provided courses (`app/learn`, `app/learn/[language]`, `app/learn/[language]/[courseId]`)
 - **Role-based dashboards** — student, instructor, and admin views with role-aware access (`app/dashboard`, `app/dashboard/instructor`, `app/dashboard/admin`)
+- **Admin YouTube playlist importing** — admins can turn a public YouTube playlist into a free draft course with generated modules and lessons
 - **Authentication** — email/password and Google sign-in, SSO exchange, protected routes, and password recovery (`app/auth/login`, `app/context/AuthContext.tsx`)
 - **Learning activity** — enrollments, course progress, streak tracking, practice labs, challenges, community, and upcoming modules (`app/lib/streak.ts`, `app/practice`, `app/challenges`, `app/community`)
 - **Instructor profiles** — public instructor pages with dynamic IDs (`app/instructors/[id]`)
@@ -59,6 +60,9 @@ NEXT_PUBLIC_VARTALANG_URL=https://vartalang.in
 
 The defaults allow the app to start locally, but authenticated features require reachable backend services and a configured Google OAuth client.
 
+The YouTube API key is configured only in the backend. Do not add it to this frontend
+repository or to any `NEXT_PUBLIC_*` variable.
+
 ### Run the development server
 
 ```bash
@@ -82,6 +86,48 @@ The Razorpay checkout flow is covered by the Vitest suite in
 `components/RazorpayCheckout.test.tsx`. The tests mock the Razorpay browser SDK
 and backend client, so they do not create real orders or payments. Run them with
 `npm test`.
+
+## Course creation workflows
+
+### Instructor-created courses
+
+Instructors use `/dashboard/instructor` to:
+
+1. Create a course draft with its language, level, category, price, tags, and description.
+2. Add modules, lessons, YouTube video IDs, previews, and learning resources in the curriculum editor.
+3. Submit the completed course for admin review.
+4. Edit or withdraw drafts and rejected courses. Published and pending-review courses are locked until moved back to draft.
+
+An admin must approve an instructor submission before it becomes visible in the public catalog.
+
+### Admin-created courses
+
+Admins use `/dashboard/admin` to create a course on behalf of an instructor, assign ownership,
+edit its curriculum, and publish it directly when appropriate.
+
+### YouTube playlist importer
+
+The admin Courses tab includes **Import YouTube playlist**. The admin supplies a public playlist
+URL, instructor, and language. The backend reads the playlist's public video titles and creates:
+
+- A free course draft
+- One module per public video, named from the video title
+- One lesson per module, linked to the YouTube video
+- The first lesson as a preview
+
+The importer stores YouTube video IDs and embeds the original videos; it does not download or
+copy video content. Imported courses remain drafts so an admin can review the generated structure
+before publishing.
+
+The importer requires the backend's `YOUTUBE_API_KEY` setting. See the backend README for Google
+Cloud setup and security guidance.
+
+## Language catalog ordering
+
+The language catalog is defined in `app/lib/languages.ts`. The
+`Choose Your Linguistic Journey` page uses a frontend-only curated popularity order for display,
+with course count used as a fallback. This ordering is presentation logic and does not change
+backend language data.
 
 ## Project Structure
 

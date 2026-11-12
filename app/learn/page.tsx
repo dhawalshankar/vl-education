@@ -33,6 +33,38 @@ const SECTIONS: { key: Section; title: string; sub?: string }[] = [
   { key: "other", title: "More languages" },
 ];
 
+const POPULARITY_ORDER = [
+  "Hindi",
+  "English",
+  "Bengali",
+  "Marathi",
+  "Telugu",
+  "Tamil",
+  "Gujarati",
+  "Urdu",
+  "Kannada",
+  "Malayalam",
+  "Punjabi",
+  "Odia",
+  "Assamese",
+  "Sanskrit",
+  "German",
+  "French",
+  "Spanish",
+  "Japanese",
+  "Korean",
+  "Arabic",
+  "Mandarin Chinese",
+  "Russian",
+  "Portuguese",
+  "Italian",
+];
+
+const popularityRank = (name: string) => {
+  const index = POPULARITY_ORDER.indexOf(name);
+  return index === -1 ? POPULARITY_ORDER.length : index;
+};
+
 export default function LearnPage() {
   const [query, setQuery] = useState("");
   const { data, error, loading } = useApi(() => learnAPI.languages());
@@ -140,8 +172,9 @@ export default function LearnPage() {
             </div>
           ) : (
             SECTIONS.map((section) => {
-              // languages with courses first, then the rest in catalog order
-              const list = visible.filter((r) => r.group === section.key).sort((a, b) => b.count - a.count);
+              const list = visible
+                .filter((r) => r.group === section.key)
+                .sort((a, b) => popularityRank(a.name) - popularityRank(b.name) || b.count - a.count);
               if (list.length === 0) return null;
               return (
                 <div key={section.key}>
