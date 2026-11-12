@@ -27,17 +27,10 @@ const values = [
 const team = [
   {
     name: "Dhawal Shukla",
-    role: "Founder",
+    role: "Founder & DevRel Engineer",
     image: "https://thewittyswan.space/assets/img/dhawal.jpg",
     bio: "Passionate about vernacular education, linguistic preservation, and empowering native educators across India.",
     accent: "border-amber-500/40 shadow-amber-500/10",
-  },
-  {
-    name: "Dhruv Khanna",
-    role: "CTO & Co-Founder",
-    image: "https://media.licdn.com/dms/image/v2/D5603AQFt86gOPMryGg/profile-displayphoto-scale_400_400/B56Z8zmAJVKgAg-/0/1783277028870?e=1795651200&v=beta&t=nvzT0dfn0eXbrspaKa0q-vZB_Q1ZzNvTVLBXD3sxHmA",
-    bio: "Architecting scalable multilingual platforms, AI speech analysis, and high-performance educational systems.",
-    accent: "border-orange-500/40 shadow-orange-500/10",
   },
 ];
 
