@@ -187,7 +187,16 @@ Daily streaks are currently stored per user in browser `localStorage` by `app/li
 
 ## Deployment
 
-The app can be deployed on any Next.js-compatible host (e.g. [Vercel](https://vercel.com/new)). Make sure `NEXT_PUBLIC_API_URL` is set to your production backend URL in the hosting platform's environment settings.
+The LMS frontend is deployed on Vercel at `https://learn.vartalang.in`. Its separate
+FastAPI backend is deployed independently on Render. The app communicates with the
+backend through `NEXT_PUBLIC_API_URL`, while authentication is exchanged with the
+main VartaLang platform. Google Tag Manager container `GTM-MQKLS7VH` is loaded once
+from the root layout for site analytics and tag management.
+
+The app is part of the wider VartaLang service ecosystem alongside the main
+`vartalang.in` frontend, the Node.js main-platform backend, the LMS backend, and
+serverless challenge functionality. Make sure `NEXT_PUBLIC_API_URL` is set to the
+production LMS backend URL in Vercel.
 
 ## Ownership & License
 
