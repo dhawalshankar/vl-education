@@ -586,6 +586,15 @@ export interface AdminInstructor {
   avatar_url?: string | null;
 }
 
+export interface YouTubePlaylistImport {
+  id: string;
+  title: string;
+  language: string;
+  lessons_imported: number;
+  modules_imported: number;
+  status: string;
+}
+
 export interface AdminInstructorEnrollment {
   instructor_id: string;
   instructor_name: string;
@@ -680,6 +689,15 @@ export const adminAPI = {
   // Create a course on behalf of an instructor (admin-managed)
   createCourse: (body: CourseInput & { instructor_id: string; publish: boolean }) =>
     getJSON<CourseDetail>("/admin/courses", send("POST", { ...body, isPublished: body.publish })),
+  importYouTubePlaylist: (body: {
+    playlist_url: string;
+    instructor_id: string;
+    language: string;
+    title?: string;
+    description?: string;
+    level?: string;
+    category?: string;
+  }) => getJSON<YouTubePlaylistImport>("/admin/courses/import-youtube-playlist", send("POST", body)),
 };
 
 export default authFetch;

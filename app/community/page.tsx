@@ -31,6 +31,27 @@ const team = [
     image: "https://thewittyswan.space/assets/img/dhawal.jpg",
     bio: "Passionate about vernacular education, linguistic preservation, and empowering native educators across India.",
     accent: "border-amber-500/40 shadow-amber-500/10",
+    featured: true,
+  },
+  {
+    role: "CTO",
+    bio: "Building reliable technology that makes language learning accessible, engaging, and ready to grow.",
+    accent: "border-orange-500/40 shadow-orange-500/10",
+  },
+  {
+    role: "CISO",
+    bio: "Protecting our learners, educators, and platform with thoughtful privacy and security practices.",
+    accent: "border-blue-500/40 shadow-blue-500/10",
+  },
+  {
+    role: "Educators",
+    bio: "Native speakers and language experts bringing authentic teaching, culture, and lived experience to every lesson.",
+    accent: "border-purple-500/40 shadow-purple-500/10",
+  },
+  {
+    role: "All Learners",
+    bio: "A growing community of curious learners who inspire us to preserve languages and keep learning together.",
+    accent: "border-green-500/40 shadow-green-500/10",
   },
 ];
 
@@ -167,11 +188,11 @@ export default function CommunityPage() {
             {/* Team */}
             <div>
               <h2 className="font-kalam text-3xl sm:text-4xl font-bold text-white mb-8 text-center">The Team</h2>
-              <div className="grid sm:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                {team.map((member, i) => (
+              <div className="flex justify-center mb-6">
+                {team.filter((member) => member.featured).map((member, i) => (
                   <div
                     key={i}
-                    className={`p-7 rounded-3xl bg-[#14110E]/85 border ${member.accent} backdrop-blur-md text-center hover:scale-[1.02] transition-all shadow-xl flex flex-col items-center`}
+                    className={`w-full max-w-sm p-7 rounded-3xl bg-[#14110E]/85 border ${member.accent} backdrop-blur-md text-center hover:scale-[1.02] transition-all shadow-xl flex flex-col items-center`}
                   >
                     <div className="relative w-28 h-28 mb-4">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -185,6 +206,20 @@ export default function CommunityPage() {
                     <h3 className="font-kalam text-2xl font-bold text-white mb-1">{member.name}</h3>
                     <p className="text-amber-400 text-xs uppercase tracking-wider font-bold mb-3">{member.role}</p>
                     <p className="text-stone-300 text-xs sm:text-sm leading-relaxed">{member.bio}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="flex flex-wrap justify-center gap-6 max-w-5xl mx-auto">
+                {team.filter((member) => !member.featured).map((member, i) => (
+                  <div
+                    key={i}
+                    className={`w-full sm:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)] p-6 rounded-3xl bg-[#14110E]/85 border ${member.accent} backdrop-blur-md text-center hover:scale-[1.02] transition-all shadow-xl flex flex-col items-center`}
+                  >
+                    <div className="w-20 h-20 mb-4 rounded-2xl border-2 border-amber-500/30 bg-gradient-to-br from-stone-800 to-stone-950 flex items-center justify-center">
+                      <Users className="w-9 h-9 text-amber-400" />
+                    </div>
+                    <p className="text-amber-400 text-xs uppercase tracking-wider font-bold mb-3">{member.role}</p>
+                    <p className="text-stone-300 text-xs leading-relaxed">{member.bio}</p>
                   </div>
                 ))}
               </div>
