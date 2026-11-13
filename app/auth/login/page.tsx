@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   AlertCircle,
@@ -67,6 +68,11 @@ export default function LoginPage() {
       await auth.loginWithGoogle(result.access_token);
       router.replace("/dashboard");
     } catch (caught) {
+      if (caught instanceof SSOError && caught.kind === "ACCOUNT_NOT_FOUND") {
+        window.location.assign(`${VARTALANG_URL}/auth/signup`);
+        return;
+      }
+
       setError(
         caught instanceof SSOError
           ? caught
@@ -84,13 +90,11 @@ export default function LoginPage() {
   });
 
   const errorMessage =
-    error?.kind === "ACCOUNT_NOT_FOUND"
-      ? "No VartaLang account for this Google email. Create a free account at vartalang.in first, then come back."
-      : error?.kind === "SERVER_BUSY"
-        ? "The server is waking up. This can take up to a minute."
-        : error?.kind === "INACTIVE"
-          ? "Your account is inactive. Please contact VartaLang support."
-          : error?.message || null;
+    error?.kind === "SERVER_BUSY"
+      ? "The server is waking up. This can take up to a minute."
+      : error?.kind === "INACTIVE"
+        ? "Your account is inactive. Please contact VartaLang support."
+        : error?.message || null;
   const loadingNote = LOADING_NOTES[loadingNoteIndex];
 
   return (
@@ -151,9 +155,9 @@ export default function LoginPage() {
         <section className="mx-auto w-full max-w-md">
           <div className="rounded-[2rem] border border-white/10 bg-[#14120E]/90 p-6 shadow-2xl shadow-black/50 backdrop-blur-xl sm:p-9">
             <div className="mb-8 text-center">
-              <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl border border-orange-300/20 bg-gradient-to-br from-orange-400/20 to-amber-300/10 shadow-lg shadow-orange-950/30">
-                <img src="/logo.png" alt="VartaLang Logo" className="h-11 w-auto object-contain" />
-              </div>
+              <Link href="/home" aria-label="VartaLang home" className="mb-4 inline-flex">
+                <img src="/logo.png" alt="VartaLang Logo" className="h-14 w-auto object-contain" />
+              </Link>
               <h2 className="text-2xl font-bold text-white">Welcome back!</h2>
               <p className="mt-2 text-sm text-stone-400">Sign in and pick up where your story left off.</p>
             </div>
@@ -200,11 +204,6 @@ export default function LoginPage() {
               <button type="button" onClick={() => googleLogin()} className="mt-4 w-full py-2.5 text-sm text-amber-300 hover:text-amber-200">
                 Try again
               </button>
-            )}
-            {error?.kind === "ACCOUNT_NOT_FOUND" && (
-              <a href={`${VARTALANG_URL}/auth/signup`} className="mt-4 flex items-center justify-center gap-2 text-sm text-amber-300 hover:underline">
-                Create a free VartaLang account <ExternalLink className="h-3.5 w-3.5" />
-              </a>
             )}
             <div className="my-6 flex items-center gap-3 text-[11px] text-stone-600">
               <span className="h-px flex-1 bg-white/10" />
