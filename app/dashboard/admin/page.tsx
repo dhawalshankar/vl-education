@@ -116,7 +116,7 @@ function IconBtn({
       disabled={disabled}
       title={title}
       aria-label={title}
-      className={`p-2 text-stone-500 rounded-lg transition-all disabled:opacity-40 ${TONES[tone]}`}
+      className={`inline-flex h-9 w-9 shrink-0 items-center justify-center p-2 text-stone-500 rounded-lg transition-all disabled:opacity-40 ${TONES[tone]}`}
     >
       {children}
     </button>
@@ -690,28 +690,30 @@ export default function AdminDashboard() {
           <div className="space-y-4">
             {coursesQ.error && <div className={errBoxCls}>Could not load courses: {coursesQ.error}</div>}
             {instructorsQ.error && <div className={errBoxCls}>Could not load instructors: {instructorsQ.error}</div>}
-            <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
               <input
                 type="text"
                 placeholder="Search by title, language or instructor…"
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className={searchCls}
+                className={`${searchCls} max-w-none lg:max-w-sm lg:flex-1`}
               />
-              <button
-                onClick={() => setCourseForm({ mode: "create" })}
-                disabled={instructorsQ.loading}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-bold text-xs flex items-center gap-2 disabled:opacity-50"
-              >
-                <Plus className="w-4 h-4" /> New course for an instructor
-              </button>
-              <button
-                onClick={() => setYoutubeImportOpen(true)}
-                disabled={instructorsQ.loading}
-                className="px-5 py-2.5 rounded-xl border border-red-500/30 bg-red-500/10 hover:bg-red-500/20 text-red-300 font-bold text-xs flex items-center gap-2 disabled:opacity-50"
-              >
-                <Youtube className="w-4 h-4" /> Import YouTube playlist
-              </button>
+              <div className="flex flex-col gap-2 sm:flex-row lg:ml-auto">
+                <button
+                  onClick={() => setCourseForm({ mode: "create" })}
+                  disabled={instructorsQ.loading}
+                  className="flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 px-4 py-2.5 text-xs font-bold text-stone-950 hover:from-amber-400 hover:to-orange-500 disabled:opacity-50 sm:w-auto"
+                >
+                  <Plus className="h-4 w-4 shrink-0" /> New course for an instructor
+                </button>
+                <button
+                  onClick={() => setYoutubeImportOpen(true)}
+                  disabled={instructorsQ.loading}
+                  className="flex w-full items-center justify-center gap-2 whitespace-nowrap rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-2.5 text-xs font-bold text-red-300 hover:bg-red-500/20 disabled:opacity-50 sm:w-auto"
+                >
+                  <Youtube className="h-4 w-4 shrink-0" /> Import YouTube playlist
+                </button>
+              </div>
             </div>
 
             <div className="rounded-2xl bg-stone-900/60 border border-stone-700/50 overflow-hidden">
@@ -752,7 +754,7 @@ export default function AdminDashboard() {
                         <div className="col-span-3 sm:col-span-1 sm:text-center">
                           <span className="text-xs font-semibold text-amber-400">{c.enrolled_count}</span>
                         </div>
-                        <div className="col-span-12 sm:col-span-4 flex justify-end gap-0.5">
+                        <div className="col-span-12 sm:col-span-4 flex flex-wrap justify-end gap-1">
                           {c.status === "pending_review" && (
                             <IconBtn title="Approve & publish" tone="green" disabled={busy} onClick={() => approve(c)}>
                               <Check className="w-4 h-4" />
