@@ -3,7 +3,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Search } from "lucide-react";
+import { ArrowRight, BookOpen, ChevronDown, Search } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import RequireAuth from "@/components/RequireAuth";
@@ -67,6 +67,12 @@ const popularityRank = (name: string) => {
 
 export default function LearnPage() {
   const [query, setQuery] = useState("");
+  const [openSections, setOpenSections] = useState<Record<Section, boolean>>({
+    indian: true,
+    english: false,
+    foreign: false,
+    other: false,
+  });
   const { data, error, loading } = useApi(() => learnAPI.languages());
 
   // Real course counts from the backend (aliases merged into one canonical name)
@@ -87,6 +93,10 @@ export default function LearnPage() {
   const q = query.trim().toLowerCase();
   const visible = rows.filter((r) => q === "" || r.name.toLowerCase().includes(q) || r.native.toLowerCase().includes(q));
   const withCourses = rows.filter((r) => r.count > 0).length;
+
+  const toggleSection = (key: Section) => {
+    setOpenSections((prev) => ({ ...prev, [key]: !prev[key] }));
+  };
 
   return (
     <RequireAuth>
@@ -176,53 +186,74 @@ export default function LearnPage() {
                 .filter((r) => r.group === section.key)
                 .sort((a, b) => popularityRank(a.name) - popularityRank(b.name) || b.count - a.count);
               if (list.length === 0) return null;
+
+              const expanded = q ? list.length > 0 : openSections[section.key];
+
               return (
-                <div key={section.key}>
-                  <div className="mb-5">
-                    <h2 className="font-kalam text-3xl font-bold text-white">{section.title}</h2>
-                    {section.sub && <p className="text-sm text-stone-500 mt-1">{section.sub}</p>}
-                  </div>
+                <div key={section.key} className="rounded-[30px] border border-white/10 bg-stone-900/55 shadow-[0_20px_60px_rgba(0,0,0,0.35)] backdrop-blur-sm overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => toggleSection(section.key)}
+                    className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
+                  >
+                    <div>
+                      <h2 className="font-kalam text-3xl font-bold text-white">{section.title}</h2>
+                      {section.sub && <p className="text-sm text-stone-500 mt-1">{section.sub}</p>}
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-xs font-medium text-stone-300">
+                        {list.length}
+                      </span>
+                      <ChevronDown
+                        className={`h-5 w-5 text-amber-300 transition-transform ${expanded ? "rotate-180" : ""}`}
+                      />
+                    </div>
+                  </button>
 
-                  <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
-                    {list.map((r) => {
-                      const p = presentationFor(r.name);
-                      const tile = (
-                        <>
-                          <div
-                            className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center text-2xl text-white mb-3 shadow-lg ${
-                              r.count === 0 ? "opacity-50" : ""
-                            }`}
-                          >
-                            {p.icon}
-                          </div>
-                          <h3 className="font-kalam text-xl font-bold text-white leading-tight">{r.name}</h3>
-                          <p className="text-amber-300 mb-3">{p.native}</p>
-                          <div className="flex items-center justify-between pt-3 border-t border-stone-700/50">
-                            <span className={`text-sm ${r.count > 0 ? "text-stone-300" : "text-stone-600"}`}>
-                              {r.count > 0 ? `${r.count} course${r.count !== 1 ? "s" : ""}` : "Coming soon"}
-                            </span>
-                            {r.count > 0 && (
-                              <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition-transform" />
-                            )}
-                          </div>
-                        </>
-                      );
+                  {expanded && (
+                    <div className="px-5 pb-5">
+                      <div className="grid md:grid-cols-2 xl:grid-cols-4 gap-5 pt-2">
+                        {list.map((r) => {
+                          const p = presentationFor(r.name);
+                          const tile = (
+                            <>
+                              <div
+                                className={`w-12 h-12 rounded-xl bg-gradient-to-br ${p.color} flex items-center justify-center text-2xl text-white mb-3 shadow-lg ${
+                                  r.count === 0 ? "opacity-50" : ""
+                                }`}
+                              >
+                                {p.icon}
+                              </div>
+                              <h3 className="font-kalam text-xl font-bold text-white leading-tight">{r.name}</h3>
+                              <p className="text-amber-300 mb-3">{p.native}</p>
+                              <div className="flex items-center justify-between pt-3 border-t border-stone-700/50">
+                                <span className={`text-sm ${r.count > 0 ? "text-stone-300" : "text-stone-600"}`}>
+                                  {r.count > 0 ? `${r.count} course${r.count !== 1 ? "s" : ""}` : "Coming soon"}
+                                </span>
+                                {r.count > 0 && (
+                                  <ArrowRight className="w-4 h-4 text-amber-400 group-hover:translate-x-1 transition-transform" />
+                                )}
+                              </div>
+                            </>
+                          );
 
-                      return r.count > 0 ? (
-                        <Link
-                          key={r.name}
-                          href={`/learn/${slugify(r.name)}`}
-                          className="group p-5 rounded-2xl bg-stone-900/60 border border-stone-700/50 hover:border-amber-500/50 transition-all hover:-translate-y-1"
-                        >
-                          {tile}
-                        </Link>
-                      ) : (
-                        <div key={r.name} className="p-5 rounded-2xl bg-stone-900/30 border border-stone-800/60">
-                          {tile}
-                        </div>
-                      );
-                    })}
-                  </div>
+                          return r.count > 0 ? (
+                            <Link
+                              key={r.name}
+                              href={`/learn/${slugify(r.name)}`}
+                              className="group p-5 rounded-2xl bg-stone-900/60 border border-stone-700/50 hover:border-amber-500/50 transition-all hover:-translate-y-1"
+                            >
+                              {tile}
+                            </Link>
+                          ) : (
+                            <div key={r.name} className="p-5 rounded-2xl bg-stone-900/30 border border-stone-800/60">
+                              {tile}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })
