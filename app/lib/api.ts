@@ -1,10 +1,10 @@
 ﻿// app/lib/api.ts
-const BASE = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000") + "/api/v1";
+const BASE = (process.env.NEXT_PUBLIC_LMS_API_URL || "https://vl-lms-backend.onrender.com").replace(/\/$/, "") + "/api/v1";
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 const authFetch = async (endpoint: string, options: RequestInit = {}) => {
-  const token = typeof window !== "undefined" ? localStorage.getItem("accessToken") : null;
+  const token = typeof window !== "undefined" ? localStorage.getItem("lms_access_token") : null;
   const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(options.headers as Record<string, string>),
@@ -47,6 +47,11 @@ function errorMessage(err: any, fallback: string): string {
 async function getJSON<T>(endpoint: string, options?: RequestInit): Promise<T> {
   const res = await authFetch(endpoint, options);
   if (!res.ok) {
+    if (res.status === 401 && typeof window !== "undefined") {
+      localStorage.removeItem("lms_access_token");
+      localStorage.removeItem("lms_user");
+      window.location.replace("/auth/login");
+    }
     const err = await res.json().catch(() => ({}));
     throw new Error(errorMessage(err, `Request failed (${res.status})`));
   }
@@ -161,23 +166,8 @@ export interface CertificationVerifyResponse {
 
 /* ── APIs ── */
 export const authAPI = {
-  ssoExchange: async (code: string) => {
-    const res = await authFetch("/auth/sso/exchange", {
-      method: "POST",
-      body: JSON.stringify({ code }),
-    });
-    if (!res.ok) {
-      const errData = await res.json().catch(() => ({}));
-      const msg = errorMessage(errData, "Failed to exchange SSO code");
-      const err = new Error(msg);
-      (err as any).status = res.status;
-      throw err;
-    }
-    return res.json();
-  },
   getMe: async () => {
     const res = await authFetch("/auth/me");
-    if (res.status === 401 || res.status === 403) return null;
     if (!res.ok) {
       throw new Error(`Could not restore session (${res.status})`);
     }
