@@ -98,7 +98,7 @@ export default function ContactPage() {
 
         <div className="grid lg:grid-cols-5 gap-8 items-start">
           {/* Contact Details Card */}
-          <div className="lg:col-span-2 space-y-6 p-7 rounded-3xl bg-stone-900/60 border border-stone-800">
+          <div className="lg:col-span-2 space-y-6 p-5 sm:p-7 rounded-3xl bg-stone-900/60 border border-stone-800">
             <div>
               <p className="text-xs uppercase tracking-wider text-amber-400 font-bold mb-1">
                 Operating Name
@@ -180,7 +180,7 @@ export default function ContactPage() {
               {/* Social Channels */}
               <div className="pt-3 border-t border-stone-800">
                 <span className="block text-xs text-stone-400 font-medium mb-2.5">Official Social Channels</span>
-                <div className="flex items-center gap-2.5">
+                <div className="flex flex-wrap items-center gap-2">
                   <a
                     href={SOCIAL_LINKS.TWITTER}
                     target="_blank"
@@ -237,7 +237,7 @@ export default function ContactPage() {
           </div>
 
           {/* Form Card */}
-          <div className="lg:col-span-3 p-8 rounded-3xl bg-stone-900/60 border border-stone-800">
+          <div className="lg:col-span-3 p-5 sm:p-8 rounded-3xl bg-stone-900/60 border border-stone-800">
             {submitted ? (
               <div className="py-12 text-center space-y-4">
                 <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/30 flex items-center justify-center mx-auto">

@@ -91,10 +91,10 @@ export default function StudentDashboard() {
         }}
       />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20 w-full">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-36 pb-20 w-full">
         {/* User Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 mb-10 pb-8 border-b border-white/10">
-          <div className="flex items-center gap-4">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             {user.avatar_url && !avatarFailed ? (
               // eslint-disable-next-line @next/next/no-img-element
               <img
@@ -109,14 +109,14 @@ export default function StudentDashboard() {
                 {user.full_name?.charAt(0).toUpperCase() || "?"}
               </div>
             )}
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2.5 flex-wrap">
-                <h1 className="text-3xl font-bold">Welcome, {user.full_name}! 👋</h1>
+                <h1 className="break-words text-2xl sm:text-3xl font-bold">Welcome, {user.full_name}! 👋</h1>
                 <span className="rounded-full bg-amber-500/15 border border-amber-500/30 px-3 py-0.5 text-xs font-semibold uppercase tracking-wider text-amber-300">
                   {user.role}
                 </span>
               </div>
-              <p className="text-stone-400 text-sm mt-1">{user.email}</p>
+              <p className="break-all text-stone-400 text-sm mt-1">{user.email}</p>
             </div>
           </div>
 

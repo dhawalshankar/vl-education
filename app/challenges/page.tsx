@@ -49,7 +49,7 @@ export default function ChallengesPage() {
             <Clock className="w-4 h-4 text-amber-300" />
             <span className="text-sm font-semibold text-amber-200">Coming soon</span>
           </div>
-          <h1 className="font-kalam text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
+          <h1 className="font-kalam text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
             Challenges
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-300 via-orange-200 to-amber-300">

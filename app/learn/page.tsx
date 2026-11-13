@@ -117,7 +117,7 @@ export default function LearnPage() {
             <BookOpen className="w-4 h-4 text-amber-300" />
             <span className="text-sm font-semibold text-amber-100 tracking-wide">Courses</span>
           </div>
-          <h1 className="font-kalam text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
+          <h1 className="font-kalam text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
             Choose Your
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-200 to-amber-300">

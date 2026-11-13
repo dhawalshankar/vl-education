@@ -157,7 +157,7 @@ export default function RazorpayCheckout({
           {itemName && (
             <div className="flex justify-between items-start gap-2">
               <span className="text-stone-400">Item:</span>
-              <span className="text-stone-200 font-medium text-right">{itemName}</span>
+              <span className="min-w-0 break-words text-stone-200 font-medium text-right">{itemName}</span>
             </div>
           )}
           {instructor && (

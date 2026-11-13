@@ -86,8 +86,8 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-5 left-0 right-0 z-50 px-4 sm:px-8 max-w-7xl mx-auto">
-      <nav className="glass-panel rounded-full px-5 py-3 flex items-center justify-between shadow-2xl border border-white/10 bg-[#16130F]/85 backdrop-blur-xl">
+    <header className="fixed top-5 left-0 right-0 z-50 px-3 sm:px-8 max-w-7xl mx-auto">
+      <nav className="glass-panel rounded-full px-3 sm:px-5 py-3 flex items-center justify-between shadow-2xl border border-white/10 bg-[#16130F]/85 backdrop-blur-xl">
         {/* Brand Logo */}
         <Link href={isAuthenticated ? "/home" : "/"} className="flex items-center gap-2 group">
           <img
@@ -272,17 +272,19 @@ export default function Navbar() {
           )}
 
           {/* Mobile menu toggle */}
-          <button
-            aria-label="Menu"
-            onClick={() => {
-              setShowMobile(!showMobile);
-              setShowStreak(false);
-              setShowMenu(false);
-            }}
-            className="lg:hidden w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/80"
-          >
-            {showMobile ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
-          </button>
+          {isAuthenticated && (
+            <button
+              aria-label="Menu"
+              onClick={() => {
+                setShowMobile(!showMobile);
+                setShowStreak(false);
+                setShowMenu(false);
+              }}
+              className="lg:hidden w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/80"
+            >
+              {showMobile ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            </button>
+          )}
         </div>
       </nav>
 

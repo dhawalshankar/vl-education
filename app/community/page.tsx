@@ -132,7 +132,7 @@ export default function CommunityPage() {
                 key={tab}
                 id={`community-tab-${tab.toLowerCase()}`}
                 onClick={() => setActiveTab(tab)}
-                className={`px-7 py-2.5 rounded-xl text-sm font-semibold font-kalam transition-all ${
+                className={`px-3 sm:px-7 py-2.5 rounded-xl text-xs sm:text-sm font-semibold font-kalam transition-all ${
                   activeTab === tab
                     ? "bg-gradient-to-r from-amber-500 to-orange-600 text-white shadow-lg shadow-amber-500/30"
                     : "text-stone-400 hover:text-white"
@@ -148,8 +148,8 @@ export default function CommunityPage() {
         {activeTab === "About" && (
           <div className="space-y-16">
             {/* Story */}
-            <div id="story" className="p-10 rounded-3xl bg-stone-900/60 border border-stone-700/50">
-              <h2 className="font-kalam text-4xl font-bold text-white mb-6">Our Story</h2>
+            <div id="story" className="p-5 sm:p-10 rounded-3xl bg-stone-900/60 border border-stone-700/50">
+              <h2 className="font-kalam text-3xl sm:text-4xl font-bold text-white mb-6">Our Story</h2>
               <div className="space-y-4 text-stone-300 leading-relaxed">
                 <p>
                   VartaLang was born in 2026 from a simple frustration: despite India having 22
@@ -170,7 +170,7 @@ export default function CommunityPage() {
 
             {/* Values */}
             <div>
-              <h2 className="font-kalam text-4xl font-bold text-white mb-10 text-center">What We Stand For</h2>
+              <h2 className="font-kalam text-3xl sm:text-4xl font-bold text-white mb-10 text-center">What We Stand For</h2>
               <div className="grid md:grid-cols-2 gap-6">
                 {values.map((val, i) => {
                   const Icon = val.icon;
@@ -226,11 +226,11 @@ export default function CommunityPage() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-6">
               {stats.map((stat, i) => {
                 const Icon = stat.icon;
                 return (
-                  <div key={i} className="text-center p-6 rounded-2xl bg-stone-900/60 border border-stone-700/50">
+                  <div key={i} className="text-center p-4 sm:p-6 rounded-2xl bg-stone-900/60 border border-stone-700/50">
                     <Icon className="w-6 h-6 text-amber-400 mx-auto mb-3" />
                     <div className="font-kalam text-3xl font-bold text-white mb-1">{stat.value}</div>
                     <div className="text-xs text-stone-500 uppercase tracking-wider">{stat.label}</div>
@@ -255,7 +255,7 @@ export default function CommunityPage() {
         {activeTab === "Blog" && (
           <div>
             <div className="text-center mb-12">
-              <h2 className="font-kalam text-5xl font-bold text-white mb-4">Language, Culture &amp; Learning</h2>
+              <h2 className="font-kalam text-3xl sm:text-5xl font-bold text-white mb-4">Language, Culture &amp; Learning</h2>
               <p className="text-xl text-stone-400 max-w-2xl mx-auto">
                 Insights, guides, and stories for passionate language learners
               </p>
@@ -277,7 +277,7 @@ export default function CommunityPage() {
                 <Briefcase className="w-4 h-4 text-amber-400" />
                 <span className="text-sm font-bold text-amber-200">We&apos;re Hiring</span>
               </div>
-              <h2 className="font-kalam text-5xl font-bold text-white mb-4">Join Our Team</h2>
+              <h2 className="font-kalam text-3xl sm:text-5xl font-bold text-white mb-4">Join Our Team</h2>
               <p className="text-lg text-stone-400 max-w-2xl mx-auto">
                 Help us preserve India&apos;s linguistic heritage. We&apos;re a remote-first team passionate
                 about education, technology, and languages.
@@ -320,7 +320,7 @@ export default function CommunityPage() {
               ))}
             </div>
 
-            <div className="text-center p-10 rounded-3xl bg-stone-900/60 border border-stone-700/50 max-w-3xl mx-auto">
+            <div className="text-center p-5 sm:p-10 rounded-3xl bg-stone-900/60 border border-stone-700/50 max-w-3xl mx-auto">
               <h2 className="font-kalam text-3xl font-bold text-white mb-2">Don&apos;t See Your Role?</h2>
               <p className="text-stone-400 text-sm mb-6 max-w-xl mx-auto">
                 We&apos;re always looking for talented people. Send us your CV and tell us how you&apos;d contribute.

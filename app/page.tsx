@@ -135,7 +135,7 @@ export default function RootTeaserPage() {
     <div className="cultural-page min-h-screen text-white relative overflow-hidden flex flex-col justify-between selection:bg-amber-500 selection:text-black">
       {/* ── HEADER ── */}
       <header className="fixed top-5 left-0 right-0 z-50 px-4 sm:px-8 max-w-7xl mx-auto">
-        <nav className="rounded-full px-5 py-3 flex items-center justify-between shadow-2xl border border-white/10 bg-[#14110E]/85 backdrop-blur-xl">
+        <nav className="rounded-full px-3 sm:px-5 py-3 flex items-center justify-between shadow-2xl border border-white/10 bg-[#14110E]/85 backdrop-blur-xl">
           {/* External Brand Logo */}
           <Link
             href="/"
@@ -147,7 +147,7 @@ export default function RootTeaserPage() {
               alt="VartaLang"
               className="h-9 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow"
             />
-            <span className="font-kalam text-xl font-bold text-white tracking-tight group-hover:text-amber-300 transition-colors">
+            <span className="hidden sm:inline font-kalam text-xl font-bold text-white tracking-tight group-hover:text-amber-300 transition-colors">
               VartaLang
             </span>
           </Link>
@@ -177,9 +177,10 @@ export default function RootTeaserPage() {
               href="https://vartalang.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-bold text-xs transition-all shadow-md shadow-amber-500/20 hover:scale-105"
+              className="inline-flex items-center gap-2 px-3 sm:px-4 py-2 rounded-full bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-stone-950 font-bold text-xs transition-all shadow-md shadow-amber-500/20 hover:scale-105"
             >
-              <span>Visit vartalang.in</span>
+              <span className="sm:hidden">VartaLang.in</span>
+              <span className="hidden sm:inline">Visit vartalang.in</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
           </div>

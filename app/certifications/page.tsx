@@ -62,7 +62,7 @@ export default function CertificationsPage() {
             <Clock className="w-4 h-4 text-amber-300" />
             <span className="text-sm font-semibold text-amber-200">Coming soon</span>
           </div>
-          <h1 className="font-kalam text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
+          <h1 className="font-kalam text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
             Certifications
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-blue-200 to-cyan-300">
@@ -128,21 +128,21 @@ export default function CertificationsPage() {
         )}
 
         {/* Verify a certificate */}
-        <div className="p-10 rounded-3xl bg-gradient-to-br from-purple-500/10 via-stone-900/60 to-blue-500/10 border-2 border-purple-500/20 max-w-2xl mx-auto">
+        <div className="p-5 sm:p-10 rounded-3xl bg-gradient-to-br from-purple-500/10 via-stone-900/60 to-blue-500/10 border-2 border-purple-500/20 max-w-2xl mx-auto">
           <h2 className="font-kalam text-3xl font-bold text-white mb-2 text-center">Verify a Certificate</h2>
           <p className="text-stone-400 text-sm mb-6 text-center">Enter a certificate ID to check that it is genuine.</p>
 
-          <form onSubmit={handleVerify} className="flex gap-3">
+          <form onSubmit={handleVerify} className="flex flex-col gap-3 sm:flex-row">
             <input
               value={certId}
               onChange={(e) => setCertId(e.target.value)}
               placeholder="Certificate ID"
-              className="flex-1 px-4 py-3 rounded-xl bg-stone-950/80 border border-stone-700/50 text-white placeholder-stone-500 focus:outline-none focus:border-purple-400 text-sm"
+              className="min-w-0 flex-1 px-4 py-3 rounded-xl bg-stone-950/80 border border-stone-700/50 text-white placeholder-stone-500 focus:outline-none focus:border-purple-400 text-sm"
             />
             <button
               type="submit"
               disabled={checking || !certId.trim()}
-              className="px-5 py-3 rounded-xl bg-purple-500 hover:bg-purple-400 disabled:opacity-40 text-white font-semibold text-sm flex items-center gap-2"
+              className="w-full sm:w-auto justify-center px-5 py-3 rounded-xl bg-purple-500 hover:bg-purple-400 disabled:opacity-40 text-white font-semibold text-sm flex items-center gap-2"
             >
               <Search className="w-4 h-4" />
               {checking ? "Checking…" : "Verify"}

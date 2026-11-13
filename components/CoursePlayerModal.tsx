@@ -125,17 +125,17 @@ export default function CoursePlayerModal({
       <div className="w-full max-w-6xl h-[90vh] bg-[#14110E] border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden">
         
         {/* Top Header */}
-        <div className="px-6 py-4 border-b border-white/10 flex items-center justify-between bg-[#181512]/90">
-          <div className="flex items-center gap-3">
+      <div className="px-3 sm:px-6 py-4 border-b border-white/10 flex items-center justify-between gap-2 bg-[#181512]/90">
+        <div className="min-w-0 flex-1 flex items-center gap-2 sm:gap-3">
             <span className="px-3 py-1 rounded-full bg-[#FF5500]/15 text-[#FF7700] text-xs font-semibold">
               {course.language} • {course.level}
             </span>
-            <h2 className="text-white text-base sm:text-lg font-bold truncate max-w-md">
+          <h2 className="min-w-0 text-white text-sm sm:text-lg font-bold truncate max-w-md">
               {course.title}
             </h2>
           </div>
 
-          <div className="flex items-center gap-4">
+        <div className="shrink-0 flex items-center gap-2 sm:gap-4">
             {/* Live Progress Indicator */}
             <div className="hidden sm:flex items-center gap-3 px-3 py-1.5 rounded-full bg-white/5 border border-white/10">
               <span className="text-xs text-white/70 font-medium">Progress:</span>
@@ -159,10 +159,10 @@ export default function CoursePlayerModal({
         </div>
 
         {/* Main Content Grid: Video Player + Syllabus Sidebar */}
-        <div className="flex-1 grid grid-cols-1 lg:grid-cols-12 overflow-hidden">
+        <div className="min-h-0 flex-1 grid grid-cols-1 grid-rows-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:grid-cols-12 lg:grid-rows-1 overflow-hidden">
           
           {/* Left Area (8 cols): Video Player & Notes */}
-          <div className="lg:col-span-8 p-4 sm:p-6 flex flex-col justify-between overflow-y-auto bg-black/30">
+          <div className="min-h-0 lg:col-span-8 p-4 sm:p-6 flex flex-col justify-between overflow-y-auto bg-black/30">
             {activeLesson ? (
               <div className="space-y-4">
                 {/* Video Embed or Lock Card */}
@@ -216,8 +216,8 @@ export default function CoursePlayerModal({
 
                 {/* Mark Complete Checkbox CTA */}
                 {activeLesson.is_unlocked && (
-                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                  <div className="p-4 rounded-2xl bg-white/5 border border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                    <div className="min-w-0 flex items-center gap-3">
                       <button
                         onClick={() => handleToggle(activeLesson)}
                         disabled={toggling === activeLesson.id}
@@ -239,7 +239,7 @@ export default function CoursePlayerModal({
                     <button
                       onClick={() => handleToggle(activeLesson)}
                       disabled={toggling === activeLesson.id}
-                      className={`text-xs px-4 py-2 rounded-xl font-semibold transition-all ${
+                      className={`w-full sm:w-auto text-xs px-4 py-2 rounded-xl font-semibold transition-all ${
                         completedLessonIds.includes(activeLesson.id)
                           ? "bg-white/10 text-white/80 hover:bg-white/15"
                           : "btn-primary"
@@ -256,7 +256,7 @@ export default function CoursePlayerModal({
           </div>
 
           {/* Right Area (4 cols): Interactive Syllabus Accordion */}
-          <div className="lg:col-span-4 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#16130F] flex flex-col h-full overflow-hidden">
+          <div className="min-h-0 lg:col-span-4 border-t lg:border-t-0 lg:border-l border-white/10 bg-[#16130F] flex flex-col h-full overflow-hidden">
             <div className="p-4 border-b border-white/10">
               <h4 className="text-xs font-bold uppercase tracking-wider text-white/50">Course Curriculum</h4>
             </div>

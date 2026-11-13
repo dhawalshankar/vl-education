@@ -25,7 +25,7 @@ export default function NotFound() {
 
       <div className="relative z-10 text-center max-w-2xl mx-auto">
         {/* 404 Number */}
-        <div className="font-kalam text-[10rem] font-bold leading-none text-transparent bg-clip-text bg-gradient-to-br from-amber-400/30 to-orange-600/30 mb-4 select-none">
+        <div className="font-kalam text-8xl sm:text-[10rem] font-bold leading-none text-transparent bg-clip-text bg-gradient-to-br from-amber-400/30 to-orange-600/30 mb-4 select-none">
           404
         </div>
 

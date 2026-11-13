@@ -98,10 +98,10 @@ export default function LoginPage() {
   const loadingNote = LOADING_NOTES[loadingNoteIndex];
 
   return (
-    <div className="cultural-page min-h-screen relative overflow-hidden flex items-center justify-center px-4 py-10 sm:px-6">
+    <div className="cultural-page min-h-screen relative overflow-hidden flex items-center justify-center px-4 py-8 sm:px-6 sm:py-10">
       <div className="pointer-events-none absolute -top-32 left-1/4 h-80 w-80 rounded-full bg-orange-500/10 blur-3xl" />
-      <main className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-12 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
-        <section className="mx-auto w-full max-w-xl">
+      <main className="relative z-10 mx-auto grid w-full max-w-6xl items-center gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20">
+        <section className="order-2 mx-auto w-full max-w-xl lg:order-1">
           <div className="inline-flex items-center gap-2 rounded-full border border-orange-400/25 bg-orange-400/10 px-3.5 py-2 text-xs font-semibold text-orange-200">
             <Sparkles className="h-4 w-4 text-amber-300" />
             Your next favorite word is waiting
@@ -118,7 +118,7 @@ export default function LoginPage() {
             Let&apos;s get you learning.
           </p>
 
-          <div className="mt-9 grid max-w-lg grid-cols-3 gap-3">
+          <div className="mt-9 grid max-w-lg grid-cols-3 gap-2 sm:gap-3">
             {[
               { icon: Globe, label: "22+ languages", color: "text-orange-300", bg: "bg-orange-400/10" },
               { icon: BookOpen, label: "Bite-size lessons", color: "text-amber-300", bg: "bg-amber-400/10" },
@@ -126,7 +126,7 @@ export default function LoginPage() {
             ].map(({ icon: Icon, label, color, bg }) => (
               <div
                 key={label}
-                className="rounded-2xl border border-white/10 bg-white/[0.04] p-3 text-center backdrop-blur-sm sm:p-4"
+                className="rounded-2xl border border-white/10 bg-white/[0.04] p-2.5 text-center backdrop-blur-sm sm:p-4"
               >
                 <span className={`mx-auto flex h-10 w-10 items-center justify-center rounded-xl ${bg} ${color}`}>
                   <Icon className="h-5 w-5" />
@@ -144,7 +144,7 @@ export default function LoginPage() {
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-stone-500">A little hello goes far</p>
-              <p className="mt-0.5 truncate font-kalam text-lg font-bold text-white sm:text-xl">
+              <p className="mt-0.5 break-words font-kalam text-base font-bold text-white sm:text-xl">
                 Namaste <span className="text-orange-300">·</span> வணக்கம் <span className="text-orange-300">·</span> নমস্কার
               </p>
             </div>
@@ -152,8 +152,8 @@ export default function LoginPage() {
           </div>
         </section>
 
-        <section className="mx-auto w-full max-w-md">
-          <div className="rounded-[2rem] border border-white/10 bg-[#14120E]/90 p-6 shadow-2xl shadow-black/50 backdrop-blur-xl sm:p-9">
+        <section className="order-1 mx-auto w-full max-w-md lg:order-2">
+          <div className="rounded-[2rem] border border-white/10 bg-[#14120E]/90 p-5 shadow-2xl shadow-black/50 backdrop-blur-xl sm:p-9">
             <div className="mb-8 text-center">
               <Link href="/home" aria-label="VartaLang home" className="mb-4 inline-flex">
                 <img src="/logo.png" alt="VartaLang Logo" className="h-14 w-auto object-contain" />

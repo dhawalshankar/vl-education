@@ -109,7 +109,7 @@ export default function PracticePage() {
             <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
           </div>
 
-          <h1 className="font-kalam text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-[1.1] drop-shadow-2xl">
+          <h1 className="font-kalam text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-[1.1] drop-shadow-2xl">
             Practice Labs
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-amber-200 to-orange-300">

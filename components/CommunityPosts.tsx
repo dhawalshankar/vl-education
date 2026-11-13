@@ -290,7 +290,7 @@ export default function CommunityPosts({
                 </span>
               ))}
             </div>
-            <div className="whitespace-pre-line text-stone-300 leading-8 text-sm sm:text-base">
+            <div className="break-words whitespace-pre-line text-stone-300 leading-8 text-sm sm:text-base">
               {selectedPost.content}
             </div>
           </article>
