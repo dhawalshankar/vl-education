@@ -2,17 +2,18 @@
 
 import { createContext, useCallback, useContext, useEffect, useState, ReactNode } from "react";
 import { authAPI } from "@/app/lib/api";
+import {
+  exchangeCode,
+  loginWithGoogleAccessToken,
+  SSOError,
+  SSOUser,
+} from "@/lib/sso";
 
-const MAIN_API = process.env.NEXT_PUBLIC_MAIN_API_URL || "http://localhost:5000";
-const TOKEN_KEY = "accessToken";
+const TOKEN_KEY = "lms_access_token";
+const USER_KEY = "lms_user";
 
-export interface LMSUser {
-  id: string;
-  email: string;
-  full_name: string;
-  name: string; // alias of full_name, for older pages
-  role: string;
-  avatar_url?: string | null;
+export interface LMSUser extends SSOUser {
+  name: string;
 }
 
 interface AuthContextType {
@@ -23,100 +24,79 @@ interface AuthContextType {
   isInstructor: boolean;
   isStudent: boolean;
   login: (email: string, password: string) => Promise<LMSUser>;
-  loginWithGoogle: (accessToken: string, email: string, name: string) => Promise<LMSUser>;
+  loginWithGoogle: (accessToken: string) => Promise<LMSUser>;
+  loginWithCode: (code: string) => Promise<LMSUser>;
   logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-const ADMIN_EMAILS = ["cosmoindiaprakashan@gmail.com"];
-
-const normalize = (u: any): LMSUser => {
-  const isSuperAdmin = ADMIN_EMAILS.includes(u?.email?.toLowerCase());
-  return {
-    ...u,
-    name: u?.full_name || u?.name || "",
-    role: isSuperAdmin ? "admin" : (u?.role || "student"),
-  };
-};
-
-const errText = (d: any, fallback: string) =>
-  typeof d?.error === "string" ? d.error : typeof d?.detail === "string" ? d.detail : fallback;
+const normalize = (user: SSOUser): LMSUser => ({
+  ...user,
+  name: user.full_name,
+});
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<LMSUser | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!localStorage.getItem(TOKEN_KEY)) {
-      setLoading(false);
+    const storedToken = localStorage.getItem(TOKEN_KEY);
+    const storedUser = localStorage.getItem(USER_KEY);
+    if (!storedToken) {
+      queueMicrotask(() => setLoading(false));
       return;
+    }
+    if (storedUser) {
+      try {
+        const restoredUser = normalize(JSON.parse(storedUser) as SSOUser);
+        queueMicrotask(() => setUser(restoredUser));
+      } catch {
+        localStorage.removeItem(USER_KEY);
+      }
     }
     authAPI
       .getMe()
-      .then((u) => {
-        if (u) setUser(normalize(u));
-        else localStorage.removeItem(TOKEN_KEY);
+      .then((currentUser) => {
+        const normalized = normalize(currentUser);
+        setUser(normalized);
+        localStorage.setItem(USER_KEY, JSON.stringify(normalized));
       })
-      .catch((error) => {
-        console.error("Could not restore saved session:", error);
+      .catch(() => {
+        localStorage.removeItem(TOKEN_KEY);
+        localStorage.removeItem(USER_KEY);
+        setUser(null);
       })
       .finally(() => setLoading(false));
   }, []);
 
-  // Shared steps 2 and 3: main-backend token -> SSO code -> LMS session
-  const finishSso = useCallback(async (mainToken: string) => {
-    const r2 = await fetch(`${MAIN_API}/sso/code`, {
-      method: "POST",
-      headers: { Authorization: `Bearer ${mainToken}` },
-    });
-    const d2 = await r2.json().catch(() => ({}));
-    if (!r2.ok || !d2.code) throw new Error(errText(d2, "Could not start SSO"));
-
-    const d3 = await authAPI.ssoExchange(d2.code);
-
-    localStorage.setItem(TOKEN_KEY, d3.access_token);
-    const u = normalize(d3.user);
-    setUser(u);
-    return u;
+  const saveSession = useCallback((session: { access_token: string; user: SSOUser }) => {
+    const normalized = normalize(session.user);
+    localStorage.setItem(TOKEN_KEY, session.access_token);
+    localStorage.setItem(USER_KEY, JSON.stringify(normalized));
+    setUser(normalized);
+    return normalized;
   }, []);
 
-  const login = useCallback(
-    async (email: string, password: string) => {
-      const r1 = await fetch(`${MAIN_API}/auth/login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const d1 = await r1.json().catch(() => ({}));
-      if (!r1.ok || !d1.token) throw new Error(errText(d1, "Login failed"));
-      return finishSso(d1.token);
-    },
-    [finishSso]
+  const loginWithGoogle = useCallback(
+    async (accessToken: string) => saveSession(await loginWithGoogleAccessToken(accessToken)),
+    [saveSession]
   );
 
-  const loginWithGoogle = useCallback(
-    async (accessToken: string, email: string, name: string) => {
-      const r1 = await fetch(`${MAIN_API}/auth/google-login`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ googleAccessToken: accessToken, email, name }),
-      });
-      const d1 = await r1.json().catch(() => ({}));
-      if (!r1.ok || !d1.token) {
-        const err: any = new Error(errText(d1, "Google login failed"));
-        err.status = r1.status;
-        err.notFound = r1.status === 404 || /not found/i.test(errText(d1, ""));
-        throw err;
-      }
-      return finishSso(d1.token);
-    },
-    [finishSso]
+  const loginWithCode = useCallback(
+    async (code: string) => saveSession(await exchangeCode(code)),
+    [saveSession]
   );
+
+  const login = useCallback(async () => {
+    throw new SSOError("Email and password login is no longer available.", "UNKNOWN");
+  }, []);
 
   const logout = useCallback(async () => {
     localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USER_KEY);
     setUser(null);
+    window.location.replace("/auth/login");
   }, []);
 
   return (
@@ -125,11 +105,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         user,
         loading,
         isAuthenticated: !!user,
-        isAdmin: user?.role === "admin" || (!!user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase())),
+        isAdmin: user?.role === "admin",
         isInstructor: user?.role === "instructor",
         isStudent: user?.role === "student",
         login,
         loginWithGoogle,
+        loginWithCode,
         logout,
       }}
     >
