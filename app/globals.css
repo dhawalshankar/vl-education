@@ -76,6 +76,31 @@ body {
     0 0 0 3rem rgba(255, 85, 0, 0.035);
 }
 
+.cultural-page::before {
+  animation: cultural-orbit 36s linear infinite;
+}
+
+.cultural-page::after {
+  animation: cultural-orbit-reverse 28s linear infinite;
+}
+
+@keyframes cultural-orbit {
+  from { transform: rotate(45deg); }
+  to { transform: rotate(405deg); }
+}
+
+@keyframes cultural-orbit-reverse {
+  from { transform: rotate(45deg); }
+  to { transform: rotate(-315deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cultural-page::before,
+  .cultural-page::after {
+    animation: none;
+  }
+}
+
 h1, h2, h3, h4, h5, h6, .font-display {
   font-family: 'Plus Jakarta Sans', 'Inter', system-ui, sans-serif;
 }

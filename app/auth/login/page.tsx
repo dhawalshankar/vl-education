@@ -20,18 +20,48 @@ import { SSOError } from "@/lib/sso";
 
 const VARTALANG_URL = "https://vartalang.in";
 
+const LOADING_NOTES = [
+  {
+    text: "Cosmo India Prakashan, VartaLang's parent organization, has been publishing since 1982.",
+    source: "Cosmo India Prakashan",
+    href: "https://cosmoindiaprakashan.in",
+  },
+  {
+    text: "Dhawal Shukla's The Witty Swan brings together systems, security, and literature.",
+    source: "The Witty Swan",
+    href: "https://thewittyswan.space/home/",
+  },
+  {
+    text: "Explore India's 22 scheduled languages, plus English and more, in the VartaLang catalog.",
+    source: "Explore languages",
+    href: "/learn",
+  },
+];
+
 export default function LoginPage() {
   const auth = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<SSOError | null>(null);
+  const [loadingNoteIndex, setLoadingNoteIndex] = useState(0);
 
   useEffect(() => {
     if (!auth.loading && auth.isAuthenticated) router.replace("/dashboard");
   }, [auth.loading, auth.isAuthenticated, router]);
 
+  useEffect(() => {
+    if (!loading) return;
+
+    const intervalId = window.setInterval(() => {
+      setLoadingNoteIndex((index) => (index + 1) % LOADING_NOTES.length);
+    }, 4000);
+
+    return () => window.clearInterval(intervalId);
+  }, [loading]);
+
   const handleGoogleSuccess = async (result: { access_token: string }) => {
     setLoading(true);
+    setLoadingNoteIndex(0);
     setError(null);
     try {
       await auth.loginWithGoogle(result.access_token);
@@ -61,6 +91,7 @@ export default function LoginPage() {
         : error?.kind === "INACTIVE"
           ? "Your account is inactive. Please contact VartaLang support."
           : error?.message || null;
+  const loadingNote = LOADING_NOTES[loadingNoteIndex];
 
   return (
     <div className="cultural-page min-h-screen relative overflow-hidden flex items-center justify-center px-4 py-10 sm:px-6">
@@ -142,10 +173,29 @@ export default function LoginPage() {
               {loading ? "Signing you in..." : "Continue with Google"}
               {!loading && <ArrowRight className="h-4 w-4" />}
             </button>
-            <div className="mt-4 flex items-center justify-center gap-1.5 text-xs text-stone-500">
-              <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
-              Secure sign-in with your VartaLang account
-            </div>
+            {loading ? (
+              <div aria-live="polite" className="mt-5 min-h-24 rounded-2xl border border-amber-400/15 bg-amber-400/[0.06] p-4">
+                <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-300">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  While you wait
+                </p>
+                <p className="mt-2 text-sm leading-relaxed text-stone-200">{loadingNote.text}</p>
+                <a
+                  href={loadingNote.href}
+                  target={loadingNote.href.startsWith("http") ? "_blank" : undefined}
+                  rel={loadingNote.href.startsWith("http") ? "noreferrer" : undefined}
+                  className="mt-2 inline-flex items-center gap-1 text-xs text-amber-300 hover:text-amber-200 hover:underline"
+                >
+                  {loadingNote.source}
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </div>
+            ) : (
+              <div className="mt-4 flex items-center justify-center gap-1.5 text-xs text-stone-500">
+                <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+                Secure sign-in with your VartaLang account
+              </div>
+            )}
             {error?.kind === "SERVER_BUSY" && (
               <button type="button" onClick={() => googleLogin()} className="mt-4 w-full py-2.5 text-sm text-amber-300 hover:text-amber-200">
                 Try again
