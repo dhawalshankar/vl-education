@@ -272,7 +272,7 @@ export default function HomePage() {
         @media (prefers-reduced-motion: reduce) { .vl-marquee, .vl-float { animation: none; } }
       `}</style>
 
-      <Navbar />
+      <Navbar compactMobile />
 
       <main>
         {/* ── HERO ── */}

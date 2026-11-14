@@ -27,7 +27,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Community", href: "/community", ready: true },
 ];
 
-export default function Navbar() {
+export default function Navbar({ compactMobile = false }: { compactMobile?: boolean }) {
   const { user, logout, isAuthenticated } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
@@ -108,7 +108,7 @@ export default function Navbar() {
         <div className="shrink-0 flex items-center gap-1 sm:gap-3">
           {/* Daily Streak Indicator */}
           {isAuthenticated && (
-            <div className="relative hidden sm:block">
+            <div className={`relative ${compactMobile ? "hidden sm:block" : ""}`}>
               <button
                 onClick={() => {
                   setShowStreak(!showStreak);
@@ -172,7 +172,7 @@ export default function Navbar() {
 
           {/* User profile dropdown or Sign In */}
           {isAuthenticated && user ? (
-            <div className="relative">
+            <div className={`relative ${compactMobile ? "hidden sm:block" : ""}`}>
               <button
                 onClick={() => {
                   setShowMenu(!showMenu);
@@ -292,6 +292,44 @@ export default function Navbar() {
       {showMobile && isAuthenticated && (
         <div className="lg:hidden mt-2 rounded-3xl bg-[#16130F]/95 border border-white/10 backdrop-blur-xl p-3 flex flex-col shadow-2xl gap-1">
           {NAV_ITEMS.map((item) => renderItem(item, true))}
+          {compactMobile && user && (
+            <>
+              {(user.role === "admin" ||
+                user.email?.toLowerCase() === "cosmoindiaprakashan@gmail.com") && (
+                <Link
+                  href="/dashboard/admin"
+                  onClick={() => setShowMobile(false)}
+                  className="px-3 py-2.5 rounded-xl text-sm text-amber-300 hover:bg-white/10 flex items-center gap-2"
+                >
+                  <Shield className="w-4 h-4 text-amber-400" />
+                  <span>Admin Portal</span>
+                </Link>
+              )}
+              {(user.role === "instructor" ||
+                user.role === "admin" ||
+                user.email?.toLowerCase() === "cosmoindiaprakash@gmail.com") && (
+                <Link
+                  href="/dashboard/instructor"
+                  onClick={() => setShowMobile(false)}
+                  className="px-3 py-2.5 rounded-xl text-sm text-sky-300 hover:bg-white/10 flex items-center gap-2"
+                >
+                  <BookOpen className="w-4 h-4 text-sky-400" />
+                  <span>Instructor Studio</span>
+                </Link>
+              )}
+              <div className="px-3 pt-2 mt-1 border-t border-white/10">
+                <p className="text-sm font-semibold text-white truncate">{user.full_name}</p>
+                <p className="text-xs text-stone-500 truncate">{user.email}</p>
+                <button
+                  onClick={handleLogout}
+                  className="mt-2 w-full text-left py-2 text-sm text-rose-400 flex items-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Log Out</span>
+                </button>
+              </div>
+            </>
+          )}
           <div className="pt-2 mt-1 border-t border-white/10 flex items-center justify-between px-3 py-1.5 text-xs text-stone-400">
             <div className="flex items-center gap-1.5 text-orange-400 font-semibold">
               <Flame className="w-4 h-4 fill-orange-500" />
