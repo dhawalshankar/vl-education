@@ -1,5 +1,21 @@
 ﻿// app/lib/api.ts
-const BASE = (process.env.NEXT_PUBLIC_LMS_API_URL || "https://vl-lms-backend.onrender.com").replace(/\/$/, "") + "/api/v1";
+const API_ORIGIN = (process.env.NEXT_PUBLIC_LMS_API_URL || "https://vl-lms-backend.onrender.com").replace(/\/$/, "");
+const BASE = API_ORIGIN + "/api/v1";
+let warmupRequest: Promise<void> | null = null;
+
+export function warmupAPI(): Promise<void> {
+  if (!warmupRequest) {
+    warmupRequest = fetch(API_ORIGIN + "/health", { cache: "no-store" })
+      .then((response) => {
+        if (!response.ok) throw new Error(`LMS API warmup failed (${response.status})`);
+      })
+      .catch((error: unknown) => {
+        warmupRequest = null;
+        throw error;
+      });
+  }
+  return warmupRequest;
+}
 
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 

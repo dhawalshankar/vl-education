@@ -3,6 +3,7 @@ import "./globals.css";
 import Script from "next/script";
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import { AuthProvider } from "./context/AuthContext";
+import ApiWarmup from "./ApiWarmup";
 
 export const metadata: Metadata = {
   title: "VartaLang | Premium Language Education Platform",
@@ -23,6 +24,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
+        <ApiWarmup />
         <Script
           id="google-tag-manager-data-layer"
           strategy="afterInteractive"
