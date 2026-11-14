@@ -86,14 +86,14 @@ export default function Navbar() {
   };
 
   return (
-    <header className="fixed top-5 left-0 right-0 z-50 px-3 sm:px-8 max-w-7xl mx-auto">
-      <nav className="glass-panel rounded-full px-3 sm:px-5 py-3 flex items-center justify-between shadow-2xl border border-white/10 bg-[#16130F]/85 backdrop-blur-xl">
+    <header className="fixed inset-x-0 top-3 sm:top-5 z-50 w-full max-w-7xl mx-auto px-2 sm:px-8">
+      <nav className="glass-panel min-w-0 rounded-full px-2 sm:px-5 py-2.5 sm:py-3 flex items-center justify-between shadow-2xl border border-white/10 bg-[#16130F]/85 backdrop-blur-xl">
         {/* Brand Logo */}
-        <Link href={isAuthenticated ? "/home" : "/"} className="flex items-center gap-2 group">
+        <Link href={isAuthenticated ? "/home" : "/"} className="shrink-0 flex items-center gap-2 group">
           <img
             src="/logo.png"
             alt="VartaLang Logo"
-            className="h-10 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-lg"
+            className="h-8 sm:h-10 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-lg"
           />
         </Link>
 
@@ -105,10 +105,10 @@ export default function Navbar() {
         )}
 
         {/* Right side */}
-        <div className="flex items-center gap-3">
+        <div className="shrink-0 flex items-center gap-1 sm:gap-3">
           {/* Daily Streak Indicator */}
           {isAuthenticated && (
-            <div className="relative">
+            <div className="relative hidden sm:block">
               <button
                 onClick={() => {
                   setShowStreak(!showStreak);
@@ -116,7 +116,7 @@ export default function Navbar() {
                 }}
                 title={`Daily Streak: ${streak.currentStreak} day${streak.currentStreak === 1 ? "" : "s"}`}
                 aria-label="Daily Streak"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 text-orange-400 hover:text-orange-300 transition-all group"
+                className="flex items-center gap-1.5 px-2 sm:px-3 py-1.5 rounded-full bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 text-orange-400 hover:text-orange-300 transition-all group"
               >
                 <Flame className="w-4 h-4 fill-orange-500 text-orange-400 group-hover:scale-110 transition-transform animate-pulse" />
                 <span className="text-xs font-bold font-mono tracking-tight text-orange-200">
@@ -178,7 +178,7 @@ export default function Navbar() {
                   setShowMenu(!showMenu);
                   setShowStreak(false);
                 }}
-                className="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-white/90 transition-all"
+                className="flex items-center gap-1.5 sm:gap-2 pl-1.5 sm:pl-2 pr-2 sm:pr-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-medium text-white/90 transition-all"
               >
                 {user.avatar_url ? (
                   <img
@@ -258,13 +258,13 @@ export default function Navbar() {
             <>
               <Link
                 href="/auth/login"
-                className="px-4 py-2 rounded-full bg-[#FF5500] hover:bg-[#FF6600] text-white text-xs font-semibold transition-colors"
+                className="whitespace-nowrap px-1.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#FF5500] hover:bg-[#FF6600] text-white text-[10px] sm:text-xs font-semibold transition-colors"
               >
                 Login
               </Link>
               <Link
                 href="https://vartalang.in/auth/signup"
-                className="px-4 py-2 rounded-full border border-[#FF5500]/50 bg-[#FF5500]/10 hover:bg-[#FF5500]/20 text-[#FF9955] text-xs font-semibold transition-colors"
+                className="whitespace-nowrap px-1.5 sm:px-4 py-1.5 sm:py-2 rounded-full border border-[#FF5500]/50 bg-[#FF5500]/10 hover:bg-[#FF5500]/20 text-[#FF9955] text-[10px] sm:text-xs font-semibold transition-colors"
               >
                 Sign Up
               </Link>
@@ -280,7 +280,7 @@ export default function Navbar() {
                 setShowStreak(false);
                 setShowMenu(false);
               }}
-              className="lg:hidden w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/80"
+              className="lg:hidden shrink-0 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/80"
             >
               {showMobile ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
