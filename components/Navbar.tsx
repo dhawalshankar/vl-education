@@ -255,7 +255,7 @@ export default function Navbar({ compactMobile = false }: { compactMobile?: bool
             )}
             </div>
           ) : (
-            <>
+            <div className={`items-center gap-1 sm:gap-3 ${compactMobile ? "hidden lg:flex" : "flex"}`}>
               <Link
                 href="/auth/login"
                 className="whitespace-nowrap px-1.5 sm:px-4 py-1.5 sm:py-2 rounded-full bg-[#FF5500] hover:bg-[#FF6600] text-white text-[10px] sm:text-xs font-semibold transition-colors"
@@ -268,19 +268,25 @@ export default function Navbar({ compactMobile = false }: { compactMobile?: bool
               >
                 Sign Up
               </Link>
-            </>
+            </div>
           )}
 
           {/* Mobile menu toggle */}
-          {isAuthenticated && (
+          {(isAuthenticated || compactMobile) && (
             <button
-              aria-label="Menu"
+              aria-label={showMobile ? "Close menu" : "Menu"}
+              aria-expanded={showMobile}
+              aria-controls={compactMobile ? "navbar-mobile-menu" : undefined}
               onClick={() => {
                 setShowMobile(!showMobile);
                 setShowStreak(false);
                 setShowMenu(false);
               }}
-              className="lg:hidden shrink-0 w-9 h-9 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center text-white/80"
+              className={`lg:hidden shrink-0 w-9 h-9 rounded-full border flex items-center justify-center ${
+                compactMobile
+                  ? "bg-[#FF5500] border-[#FF5500]/60 text-white"
+                  : "bg-white/5 hover:bg-white/10 border-white/10 text-white/80"
+              }`}
             >
               {showMobile ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
             </button>
@@ -289,56 +295,89 @@ export default function Navbar({ compactMobile = false }: { compactMobile?: bool
       </nav>
 
       {/* Mobile menu panel */}
-      {showMobile && isAuthenticated && (
-        <div className="lg:hidden mt-2 rounded-3xl bg-[#16130F]/95 border border-white/10 backdrop-blur-xl p-3 flex flex-col shadow-2xl gap-1">
-          {NAV_ITEMS.map((item) => renderItem(item, true))}
-          {compactMobile && user && (
+      {showMobile && (isAuthenticated || compactMobile) && (
+        <div
+          id={compactMobile ? "navbar-mobile-menu" : undefined}
+          className="lg:hidden mt-2 rounded-3xl bg-[#16130F]/95 border border-white/10 backdrop-blur-xl p-3 flex flex-col shadow-2xl gap-1"
+        >
+          {compactMobile && !isAuthenticated ? (
             <>
-              {(user.role === "admin" ||
-                user.email?.toLowerCase() === "cosmoindiaprakashan@gmail.com") && (
-                <Link
-                  href="/dashboard/admin"
-                  onClick={() => setShowMobile(false)}
-                  className="px-3 py-2.5 rounded-xl text-sm text-amber-300 hover:bg-white/10 flex items-center gap-2"
-                >
-                  <Shield className="w-4 h-4 text-amber-400" />
-                  <span>Admin Portal</span>
-                </Link>
+              <Link
+                href="/learn"
+                onClick={() => setShowMobile(false)}
+                className="px-3 py-2.5 rounded-xl text-sm text-white/80 hover:bg-white/10"
+              >
+                Browse courses
+              </Link>
+              <Link
+                href="/auth/login"
+                onClick={() => setShowMobile(false)}
+                className="px-3 py-2.5 rounded-xl text-sm font-semibold text-white bg-[#FF5500] hover:bg-[#FF6600]"
+              >
+                Sign in
+              </Link>
+              <Link
+                href="https://vartalang.in/auth/signup"
+                onClick={() => setShowMobile(false)}
+                className="px-3 py-2.5 rounded-xl text-sm text-[#FF9955] border border-[#FF5500]/40 hover:bg-[#FF5500]/10"
+              >
+                Sign up
+              </Link>
+            </>
+          ) : (
+            <>
+              {NAV_ITEMS.map((item) => renderItem(item, true))}
+              {compactMobile && user && (
+                <>
+                  {(user.role === "admin" ||
+                    user.email?.toLowerCase() === "cosmoindiaprakashan@gmail.com") && (
+                    <Link
+                      href="/dashboard/admin"
+                      onClick={() => setShowMobile(false)}
+                      className="px-3 py-2.5 rounded-xl text-sm text-amber-300 hover:bg-white/10 flex items-center gap-2"
+                    >
+                      <Shield className="w-4 h-4 text-amber-400" />
+                      <span>Admin Portal</span>
+                    </Link>
+                  )}
+                  {(user.role === "instructor" ||
+                    user.role === "admin" ||
+                    user.email?.toLowerCase() === "cosmoindiaprakashan@gmail.com") && (
+                    <Link
+                      href="/dashboard/instructor"
+                      onClick={() => setShowMobile(false)}
+                      className="px-3 py-2.5 rounded-xl text-sm text-sky-300 hover:bg-white/10 flex items-center gap-2"
+                    >
+                      <BookOpen className="w-4 h-4 text-sky-400" />
+                      <span>Instructor Studio</span>
+                    </Link>
+                  )}
+                  <div className="px-3 pt-2 mt-1 border-t border-white/10">
+                    <p className="text-sm font-semibold text-white truncate">{user.full_name}</p>
+                    <p className="text-xs text-stone-500 truncate">{user.email}</p>
+                    <button
+                      onClick={handleLogout}
+                      className="mt-2 w-full text-left py-2 text-sm text-rose-400 flex items-center gap-2"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      <span>Log Out</span>
+                    </button>
+                  </div>
+                </>
               )}
-              {(user.role === "instructor" ||
-                user.role === "admin" ||
-                user.email?.toLowerCase() === "cosmoindiaprakash@gmail.com") && (
-                <Link
-                  href="/dashboard/instructor"
-                  onClick={() => setShowMobile(false)}
-                  className="px-3 py-2.5 rounded-xl text-sm text-sky-300 hover:bg-white/10 flex items-center gap-2"
-                >
-                  <BookOpen className="w-4 h-4 text-sky-400" />
-                  <span>Instructor Studio</span>
-                </Link>
-              )}
-              <div className="px-3 pt-2 mt-1 border-t border-white/10">
-                <p className="text-sm font-semibold text-white truncate">{user.full_name}</p>
-                <p className="text-xs text-stone-500 truncate">{user.email}</p>
-                <button
-                  onClick={handleLogout}
-                  className="mt-2 w-full text-left py-2 text-sm text-rose-400 flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span>Log Out</span>
-                </button>
-              </div>
             </>
           )}
-          <div className="pt-2 mt-1 border-t border-white/10 flex items-center justify-between px-3 py-1.5 text-xs text-stone-400">
-            <div className="flex items-center gap-1.5 text-orange-400 font-semibold">
-              <Flame className="w-4 h-4 fill-orange-500" />
-              <span>{streak.currentStreak} Day Streak</span>
+          {isAuthenticated && (
+            <div className="pt-2 mt-1 border-t border-white/10 flex items-center justify-between px-3 py-1.5 text-xs text-stone-400">
+              <div className="flex items-center gap-1.5 text-orange-400 font-semibold">
+                <Flame className="w-4 h-4 fill-orange-500" />
+                <span>{streak.currentStreak} Day Streak</span>
+              </div>
+              <span className="text-[10px] text-stone-500 font-mono">
+                Best: {streak.longestStreak}d
+              </span>
             </div>
-            <span className="text-[10px] text-stone-500 font-mono">
-              Best: {streak.longestStreak}d
-            </span>
-          </div>
+          )}
         </div>
       )}
     </header>
