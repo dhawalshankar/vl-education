@@ -5,8 +5,8 @@ import { ArrowRight, BookOpen, Sparkles, MessageCircle, Briefcase } from "lucide
 
 export default function Hero({ onExploreClick }: { onExploreClick: () => void }) {
   return (
-    <section className="relative pt-36 pb-20 sm:pt-40 sm:pb-24 px-6 sm:px-8 max-w-7xl mx-auto bg-ambient-glow">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <section className="relative pt-28 pb-16 sm:pt-40 sm:pb-24 px-4 sm:px-8 max-w-7xl mx-auto bg-ambient-glow">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-12 items-center">
         
         {/* Left Column: Heading & CTAs */}
         <div className="lg:col-span-7 space-y-6">
@@ -17,7 +17,7 @@ export default function Hero({ onExploreClick }: { onExploreClick: () => void })
           </div>
 
           {/* Main Display Headline */}
-          <h1 className="text-5xl sm:text-6xl md:text-7xl font-extrabold text-white leading-[1.08] tracking-tight font-display">
+          <h1 className="text-3xl sm:text-6xl md:text-7xl font-extrabold text-white leading-[1.08] tracking-tight font-display">
             Learn Languages.<br />
             Build Communication<br />
             Skills.<br />
@@ -33,10 +33,10 @@ export default function Hero({ onExploreClick }: { onExploreClick: () => void })
           </p>
 
           {/* Buttons */}
-          <div className="flex flex-wrap items-center gap-4 pt-2">
+          <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4 pt-2">
             <button
               onClick={onExploreClick}
-              className="btn-primary px-8 py-3.5 rounded-full flex items-center gap-3 text-sm font-semibold tracking-wide group"
+              className="btn-primary px-6 sm:px-8 py-3.5 rounded-full flex items-center justify-center gap-3 text-sm font-semibold tracking-wide group"
             >
               <span>Get Started Free</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -44,7 +44,7 @@ export default function Hero({ onExploreClick }: { onExploreClick: () => void })
 
             <button 
               onClick={onExploreClick}
-              className="btn-secondary px-7 py-3.5 rounded-full text-sm tracking-wide"
+              className="btn-secondary px-6 sm:px-7 py-3.5 rounded-full text-sm tracking-wide"
             >
               Browse Courses
             </button>
@@ -58,9 +58,9 @@ export default function Hero({ onExploreClick }: { onExploreClick: () => void })
 
         {/* Right Column: Hero Stats Card */}
         <div className="lg:col-span-5 flex justify-center lg:justify-end">
-          <div className="w-full max-w-md rounded-3xl p-7 glass-panel bg-gradient-to-b from-[#1E1A15]/90 to-[#13110E]/90 border border-white/10 shadow-2xl relative overflow-hidden">
+          <div className="w-full max-w-md rounded-3xl p-5 sm:p-7 glass-panel bg-gradient-to-b from-[#1E1A15]/90 to-[#13110E]/90 border border-white/10 shadow-2xl relative overflow-hidden">
             {/* Top Stat Counters */}
-            <div className="grid grid-cols-3 gap-4 pb-8 border-b border-white/10 text-center">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 pb-6 sm:pb-8 border-b border-white/10 text-center">
               <div>
                 <p className="text-3xl sm:text-4xl font-extrabold text-[#FF6600] font-display">22</p>
                 <p className="text-xs text-white/60 font-medium mt-1">Languages</p>

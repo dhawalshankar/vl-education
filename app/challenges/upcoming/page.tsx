@@ -194,7 +194,7 @@ export default function UpcomingChallengesPage() {
         <main className="relative flex-1 overflow-hidden">
           <div className="absolute inset-0 pointer-events-none opacity-30 bg-[radial-gradient(circle_at_20%_10%,rgba(255,85,0,0.2),transparent_35%),radial-gradient(circle_at_80%_70%,rgba(245,158,11,0.12),transparent_30%)]" />
 
-          <div className="relative max-w-6xl mx-auto px-6 pt-36 pb-20">
+          <div className="relative max-w-6xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20">
             <Link
               href="/challenges"
               className="inline-flex items-center gap-2 text-sm text-stone-400 hover:text-amber-300 transition-colors"
@@ -208,7 +208,7 @@ export default function UpcomingChallengesPage() {
                 <Sparkles className="w-3.5 h-3.5" />
                 Playable preview
               </span>
-              <h1 className="mt-5 font-kalam text-5xl sm:text-6xl font-bold leading-tight">
+              <h1 className="mt-5 font-kalam text-3xl sm:text-6xl font-bold leading-tight">
                 Small challenges.
                 <span className="block text-transparent bg-clip-text bg-gradient-to-r from-orange-300 via-amber-200 to-yellow-300">
                   Steady progress.

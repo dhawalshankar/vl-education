@@ -73,7 +73,7 @@ export default function ContactPage() {
         }}
       />
 
-      <main className="relative z-10 max-w-5xl mx-auto px-6 pt-36 pb-20 w-full">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20 w-full">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-stone-400 hover:text-amber-400 transition-colors mb-10 group text-sm"
@@ -82,7 +82,7 @@ export default function ContactPage() {
           <span>Back to Home</span>
         </Link>
 
-        <div className="text-center max-w-2xl mx-auto mb-14">
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold mb-4">
             <Mail className="w-3.5 h-3.5" />
             <span>Support Desk</span>
@@ -96,7 +96,7 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-5 gap-8 items-start">
+        <div className="grid lg:grid-cols-5 gap-5 sm:gap-8 items-start">
           {/* Contact Details Card */}
           <div className="lg:col-span-2 space-y-6 p-5 sm:p-7 rounded-3xl bg-stone-900/60 border border-stone-800">
             <div>

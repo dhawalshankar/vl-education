@@ -304,9 +304,9 @@ export default function RootTeaserPage() {
       </section>
 
       {/* ── SECTION 2: LIVE INITIATIVES ON VARTALANG.IN ─────────────── */}
-      <section className="relative py-20 px-6 border-t border-stone-800/80 bg-stone-950/60">
+      <section className="relative py-14 sm:py-20 px-4 sm:px-6 border-t border-stone-800/80 bg-stone-950/60">
         <div className="max-w-6xl mx-auto relative z-10">
-          <div className="text-center mb-14">
+          <div className="text-center mb-10 sm:mb-14">
             <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-400/25 mb-4">
               <Sparkles className="w-3.5 h-3.5 text-amber-400" />
               <span className="text-xs font-semibold text-amber-300 uppercase tracking-wide">
@@ -328,7 +328,7 @@ export default function RootTeaserPage() {
               return (
                 <div
                   key={idx}
-                  className={`p-7 rounded-2xl bg-stone-900/70 border ${item.border} backdrop-blur-md transition-all hover:-translate-y-1 shadow-lg flex flex-col justify-between`}
+                  className={`p-5 sm:p-7 rounded-2xl bg-stone-900/70 border ${item.border} backdrop-blur-md transition-all hover:-translate-y-1 shadow-lg flex flex-col justify-between`}
                 >
                   <div>
                     <div className="flex items-center justify-between mb-5">
@@ -365,7 +365,7 @@ export default function RootTeaserPage() {
       </section>
 
       {/* ── SECTION 3: WHAT'S COMING IN DECEMBER 2026 ───────────────── */}
-      <section className="relative py-20 px-6 border-t border-stone-800/80 overflow-hidden">
+      <section className="relative py-14 sm:py-20 px-4 sm:px-6 border-t border-stone-800/80 overflow-hidden">
         {/* Classical Library Backdrop */}
         <div
           className="absolute inset-0 pointer-events-none opacity-20 mix-blend-luminosity"
@@ -406,7 +406,7 @@ export default function RootTeaserPage() {
               return (
                 <div
                   key={index}
-                  className="p-8 bg-stone-900/70 backdrop-blur-xl border border-stone-800/90 hover:border-amber-500/50 rounded-2xl transition-all shadow-xl flex flex-col justify-between"
+                  className="p-5 sm:p-8 bg-stone-900/70 backdrop-blur-xl border border-stone-800/90 hover:border-amber-500/50 rounded-2xl transition-all shadow-xl flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-6">

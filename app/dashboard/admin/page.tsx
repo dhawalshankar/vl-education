@@ -479,7 +479,7 @@ export default function AdminDashboard() {
         }}
       />
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 pt-36 pb-20 w-full">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20 w-full">
         <div className="mb-8">
           <h1 className="font-kalam text-4xl sm:text-5xl font-bold tracking-tight">Admin Dashboard</h1>
           <p className="text-stone-400 text-sm mt-1">Review courses, manage users, and monitor logins.</p>
@@ -559,7 +559,7 @@ export default function AdminDashboard() {
 
             {/* Recent users */}
             <div className="rounded-2xl bg-stone-900/60 border border-stone-700/50 overflow-hidden">
-              <div className="px-6 py-4 border-b border-stone-800/60 flex items-center justify-between">
+              <div className="px-4 sm:px-6 py-4 border-b border-stone-800/60 flex items-center justify-between">
                 <h2 className="font-semibold">Recent users</h2>
                 <button onClick={() => setTab("users")} className="text-xs text-amber-400 hover:text-amber-300">
                   View all →
@@ -567,7 +567,7 @@ export default function AdminDashboard() {
               </div>
               <div className="divide-y divide-stone-800/40">
                 {recentUsers.map((u) => (
-                  <div key={u.id} className="px-6 py-4 flex items-center justify-between hover:bg-white/5 transition-colors">
+                  <div key={u.id} className="px-4 sm:px-6 py-4 flex items-center justify-between hover:bg-white/5 transition-colors gap-3">
                     <div className="flex items-center gap-3 min-w-0">
                       <div className="w-9 h-9 rounded-full bg-gradient-to-br from-amber-500/30 to-orange-600/30 border border-amber-500/20 flex items-center justify-center text-amber-300 font-bold text-sm shrink-0">
                         {u.full_name?.[0]?.toUpperCase() ?? "?"}
@@ -591,7 +591,7 @@ export default function AdminDashboard() {
 
             {/* Recent courses */}
             <div className="rounded-2xl bg-stone-900/60 border border-stone-700/50 overflow-hidden">
-              <div className="px-6 py-4 border-b border-stone-800/60 flex items-center justify-between">
+              <div className="px-4 sm:px-6 py-4 border-b border-stone-800/60 flex items-center justify-between">
                 <h2 className="font-semibold">Recent courses</h2>
                 <button onClick={() => setTab("courses")} className="text-xs text-amber-400 hover:text-amber-300">
                   View all →
@@ -599,7 +599,7 @@ export default function AdminDashboard() {
               </div>
               <div className="divide-y divide-stone-800/40">
                 {recentCourses.map((c) => (
-                  <div key={c.id} className="px-6 py-4 flex items-center justify-between hover:bg-white/5 transition-colors gap-3">
+                  <div key={c.id} className="px-4 sm:px-6 py-4 flex items-center justify-between hover:bg-white/5 transition-colors gap-3">
                     <div className="min-w-0">
                       <p className="text-sm font-medium truncate">{c.title}</p>
                       <p className="text-xs text-stone-500 mt-0.5 truncate">
@@ -655,7 +655,7 @@ export default function AdminDashboard() {
                       <span className="text-stone-500">Submitted {fmt(c.submitted_at ?? c.created_at)}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
                     <button
                       onClick={() =>
                         setCurriculum({ id: c.id, readOnly: true, note: "Approve or reject from the review queue." })

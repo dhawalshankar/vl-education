@@ -98,9 +98,9 @@ export default function PracticePage() {
         }}
       />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20">
         {/* Hero Section */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-10 sm:mb-16">
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-cyan-500/20 border-2 border-cyan-400/30 backdrop-blur-sm mb-8">
             <Brain className="w-4 h-4 text-cyan-300" />
             <span className="text-sm font-semibold text-cyan-100 tracking-wide">
@@ -109,7 +109,7 @@ export default function PracticePage() {
             <div className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
           </div>
 
-          <h1 className="font-kalam text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-6 leading-[1.1] drop-shadow-2xl">
+          <h1 className="font-kalam text-3xl sm:text-6xl md:text-7xl lg:text-8xl font-bold text-white mb-5 sm:mb-6 leading-[1.1] drop-shadow-2xl">
             Practice Labs
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-amber-200 to-orange-300">
@@ -117,7 +117,7 @@ export default function PracticePage() {
             </span>
           </h1>
 
-          <p className="text-xl text-stone-300 max-w-3xl mx-auto leading-relaxed mb-6">
+          <p className="text-base sm:text-xl text-stone-300 max-w-3xl mx-auto leading-relaxed mb-6">
             Hands-on, voice-first practice labs powered by AI speech analysis and expert mentor
             review. Built for true conversational fluency, not just passive memorization.
           </p>
@@ -135,7 +135,7 @@ export default function PracticePage() {
             return (
               <div
                 key={i}
-                className="group p-8 rounded-2xl bg-stone-900/60 border-2 border-stone-800/80 hover:border-cyan-500/50 transition-all hover:-translate-y-1 flex flex-col justify-between"
+                className="group p-5 sm:p-8 rounded-2xl bg-stone-900/60 border-2 border-stone-800/80 hover:border-cyan-500/50 transition-all hover:-translate-y-1 flex flex-col justify-between"
               >
                 <div>
                   <div className="flex items-start justify-between gap-4 mb-6">
@@ -174,9 +174,9 @@ export default function PracticePage() {
         </div>
 
         {/* Bottom Banner */}
-        <div className="text-center p-12 sm:p-14 rounded-3xl bg-gradient-to-br from-cyan-500/10 via-stone-900/70 to-amber-500/10 border-2 border-cyan-500/20 backdrop-blur-md">
+        <div className="text-center p-5 sm:p-14 rounded-3xl bg-gradient-to-br from-cyan-500/10 via-stone-900/70 to-amber-500/10 border-2 border-cyan-500/20 backdrop-blur-md">
           <Zap className="w-16 h-16 mx-auto mb-6 text-cyan-400 drop-shadow-lg" />
-          <h2 className="font-kalam text-4xl font-bold text-white mb-4">
+          <h2 className="font-kalam text-3xl sm:text-4xl font-bold text-white mb-4">
             Prepare Your Foundation Today
           </h2>
           <p className="text-stone-300 max-w-2xl mx-auto mb-8 leading-relaxed text-base">
@@ -197,7 +197,7 @@ export default function PracticePage() {
 
           <Link
             href="/learn"
-            className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white rounded-xl font-bold font-kalam text-lg transition-all hover:scale-105 shadow-2xl hover:shadow-amber-500/50"
+            className="inline-flex w-full sm:w-auto justify-center items-center gap-3 px-5 sm:px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white rounded-xl font-bold font-kalam text-lg transition-all hover:scale-105 shadow-2xl hover:shadow-amber-500/50"
           >
             <span>Explore Language Courses</span>
             <ArrowRight className="w-5 h-5" />

@@ -164,7 +164,7 @@ function PrimaryButton({ href, children }: { href: string; children: React.React
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center px-6 py-3 rounded-full bg-[#FF5500] hover:bg-[#FF6A1F] text-white font-semibold text-sm shadow-lg shadow-[#FF5500]/25 transition-colors ${focusCls}`}
+      className={`inline-flex w-full sm:w-auto items-center justify-center px-4 sm:px-6 py-3 rounded-full bg-[#FF5500] hover:bg-[#FF6A1F] text-white text-center font-semibold text-sm shadow-lg shadow-[#FF5500]/25 transition-colors ${focusCls}`}
     >
       {children}
     </Link>
@@ -175,7 +175,7 @@ function GhostButton({ href, children }: { href: string; children: React.ReactNo
   return (
     <Link
       href={href}
-      className={`inline-flex items-center justify-center px-6 py-3 rounded-full border border-white/25 bg-black/20 backdrop-blur-sm hover:border-white/60 text-white font-semibold text-sm transition-colors ${focusCls}`}
+      className={`inline-flex w-full sm:w-auto items-center justify-center px-4 sm:px-6 py-3 rounded-full border border-white/25 bg-black/20 backdrop-blur-sm hover:border-white/60 text-white text-center font-semibold text-sm transition-colors ${focusCls}`}
     >
       {children}
     </Link>
@@ -276,7 +276,7 @@ export default function HomePage() {
 
       <main>
         {/* ── HERO ── */}
-        <section className="relative overflow-hidden pt-36 pb-24">
+        <section className="relative overflow-hidden pt-32 sm:pt-36 pb-16 sm:pb-20 lg:pb-24">
           <div className="absolute inset-0" aria-hidden>
             <Photo src={IMAGES.hero} className="w-full h-full opacity-60" />
             <div className="absolute inset-0 bg-gradient-to-b from-[#0a0908]/30 via-[#0a0908]/50 to-[#0a0908]" />
@@ -300,7 +300,7 @@ export default function HomePage() {
             ))}
           </div>
 
-          <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-12 gap-14 items-center">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-12 gap-8 sm:gap-10 lg:gap-14 items-center">
             <div className="lg:col-span-6">
               <div className="flex flex-wrap items-center gap-2">
                 <span className="inline-flex items-center gap-2 rounded-full border border-[#FF5500]/40 bg-[#FF5500]/10 px-3 py-1 text-xs font-semibold text-[#FF9955]">
@@ -310,7 +310,7 @@ export default function HomePage() {
                   <Award className="w-3.5 h-3.5" /> Accepted into Sarvam Startup Program
                 </span>
               </div>
-              <h1 className="mt-5 font-kalam text-4xl sm:text-5xl md:text-6xl font-bold leading-[1.08] tracking-tight drop-shadow-lg">
+              <h1 className="mt-5 font-kalam text-3xl sm:text-5xl md:text-6xl font-bold leading-[1.08] tracking-tight drop-shadow-lg">
                 Learn an Indian language.
                 <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FFA066] via-[#FF7700] to-[#E64A00]">
@@ -320,11 +320,11 @@ export default function HomePage() {
               <p className="mt-6 text-base sm:text-lg text-stone-200 max-w-xl leading-relaxed">
                 Take courses in India&apos;s 22 scheduled languages, practice speech intonations with an AI partner, compete in challenges, and earn verified certificates.
               </p>
-              <div className="mt-9 flex flex-wrap gap-3">
+              <div className="mt-8 sm:mt-9 flex flex-col sm:flex-row gap-3">
                 <PrimaryButton href={primary.href}>{primary.label}</PrimaryButton>
                 <GhostButton href="/learn">Browse courses</GhostButton>
               </div>
-              <div className="mt-8 flex flex-wrap gap-3">
+              <div className="mt-6 sm:mt-8 flex flex-wrap gap-3">
                 <Pill icon={Globe}>22 Indian languages + English + in-demand foreign languages</Pill>
                 <Pill icon={Video}>Video + notes</Pill>
                 <Pill icon={Check}>Free preview lessons</Pill>
@@ -332,15 +332,15 @@ export default function HomePage() {
             </div>
 
             <div className="lg:col-span-6">
-              <div className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-md p-4 sm:p-5 shadow-2xl">
-                <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-3xl border border-white/10 bg-black/30 backdrop-blur-md p-3 sm:p-5 shadow-2xl">
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
                   {GREETINGS.map((g, i) => (
                     <Link
                       key={g.lang}
                       href={`/learn/${slugify(g.lang)}`}
                       onMouseEnter={() => setActive(i)}
                       onFocus={() => setActive(i)}
-                      className={`min-w-0 rounded-xl border px-2 py-5 sm:px-3 sm:py-8 text-center transition-all duration-500 ${focusCls} ${
+                      className={`min-w-0 rounded-xl border px-2 py-4 sm:px-3 sm:py-8 text-center transition-all duration-500 ${focusCls} ${
                         active === i
                           ? "bg-[#FF5500] border-[#FF5500] text-white shadow-lg shadow-[#FF5500]/30 scale-[1.03]"
                           : "bg-white/[0.04] border-white/10 text-stone-200 hover:border-white/40"
@@ -364,16 +364,16 @@ export default function HomePage() {
         <GreetingMarquee />
 
         {/* ── THE PATH ── */}
-        <section className="relative overflow-hidden py-24">
+        <section className="relative overflow-hidden py-14 sm:py-20 lg:py-24">
           <div className="absolute inset-0" style={dotGrid} aria-hidden />
           <Glow className="w-96 h-96 bg-[#FF5500]/10 top-10 -right-24" />
-          <div className="relative max-w-7xl mx-auto px-6">
-            <h2 className="font-kalam text-4xl font-bold max-w-2xl">From first lesson to verifiable mastery</h2>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+            <h2 className="font-kalam text-3xl sm:text-4xl font-bold max-w-2xl">From first lesson to verifiable mastery</h2>
             <p className="mt-3 text-stone-400 max-w-2xl">
               VartaLang guides you every step of the way: learn foundational scripts, practice native speech intonations, compete on leaderboards, and earn verifiable credentials.
             </p>
 
-            <ol className="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <ol className="mt-8 sm:mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {pathSteps.map((s, i) => (
                 <li
                   key={s.title}
@@ -392,7 +392,7 @@ export default function HomePage() {
                       <s.icon className="w-5 h-5 text-white" />
                     </span>
                   </div>
-                  <div className="p-6">
+                  <div className="p-5 sm:p-6">
                     <h3 className="font-kalam text-2xl font-bold">{s.title}</h3>
                     <p className="mt-2 text-sm text-stone-400 leading-relaxed">{s.text}</p>
                   </div>
@@ -403,13 +403,13 @@ export default function HomePage() {
         </section>
 
         {/* ── COURSES ── */}
-        <section className="relative overflow-hidden py-24 border-t border-white/10 bg-gradient-to-b from-[#0d0a08] to-[#0a0908]">
+        <section className="relative overflow-hidden py-14 sm:py-20 lg:py-24 border-t border-white/10 bg-gradient-to-b from-[#0d0a08] to-[#0a0908]">
           <Glow className="w-[26rem] h-[26rem] bg-amber-500/10 -top-20 -left-20" />
           <Glow className="w-[22rem] h-[22rem] bg-[#FF5500]/10 bottom-0 right-0" />
-          <div className="relative max-w-7xl mx-auto px-6">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
             <div className="flex flex-wrap items-end justify-between gap-4">
               <div>
-                <h2 className="font-kalam text-4xl font-bold">Courses in your language</h2>
+                <h2 className="font-kalam text-3xl sm:text-4xl font-bold">Courses in your language</h2>
                 <p className="mt-3 text-stone-400 max-w-xl">
                   Modules and lessons with video and study notes. Start with a free preview lesson before you commit.
                 </p>
@@ -417,12 +417,12 @@ export default function HomePage() {
               <GhostButton href="/learn">See all courses</GhostButton>
             </div>
 
-            <div className="mt-8 flex flex-wrap gap-2">
+            <div className="mt-6 sm:mt-8 -mx-4 px-4 flex flex-nowrap gap-2 overflow-x-auto pb-2 sm:mx-0 sm:px-0 sm:flex-wrap sm:overflow-visible sm:pb-0">
               {languageList.map((l) => (
                 <Link
                   key={l.language}
                   href={`/learn/${slugify(l.language)}`}
-                  className={`max-w-full break-words px-4 py-2 rounded-full border border-white/15 bg-white/[0.03] hover:border-[#FF5500] hover:bg-[#FF5500]/10 text-sm text-stone-200 transition-colors ${focusCls}`}
+                  className={`shrink-0 max-w-[85vw] whitespace-nowrap px-4 py-2 rounded-full border border-white/15 bg-white/[0.03] hover:border-[#FF5500] hover:bg-[#FF5500]/10 text-sm text-stone-200 transition-colors ${focusCls}`}
                 >
                   {l.language}
                   {l.course_count > 0 && (
@@ -468,7 +468,7 @@ export default function HomePage() {
         </section>
 
         {/* ── AI PRACTICE LABS ── */}
-        <section className="relative overflow-hidden py-24 border-t border-white/10">
+        <section className="relative overflow-hidden py-14 sm:py-20 lg:py-24 border-t border-white/10">
           <div className="absolute inset-0" aria-hidden>
             <Photo src={IMAGES.labs} className="w-full h-full opacity-30" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#0a0908] via-[#0a0908]/85 to-[#0a0908]/60" />
@@ -476,7 +476,7 @@ export default function HomePage() {
           </div>
           <Glow className="w-96 h-96 bg-[#FF5500]/20 top-1/3 right-10" />
 
-          <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-14 items-center">
             <div>
               <div className="flex items-center gap-3">
                 <span className="w-10 h-10 rounded-xl bg-[#FF5500]/15 border border-[#FF5500]/30 flex items-center justify-center">
@@ -484,7 +484,7 @@ export default function HomePage() {
                 </span>
                 <StatusChip status={STATUS.labs} />
               </div>
-              <h2 className="mt-4 font-kalam text-4xl font-bold">Practice with an AI partner that corrects you</h2>
+              <h2 className="mt-4 font-kalam text-3xl sm:text-4xl font-bold">Practice with an AI partner that corrects you</h2>
               <p className="mt-4 text-stone-300 leading-relaxed max-w-xl">
                 Lessons teach you the language. Labs make you use it. Pick a real-life scenario, speak or type, and get
                 each mistake explained so it sticks.
@@ -498,7 +498,7 @@ export default function HomePage() {
 
             <div className="relative">
               <div className="absolute -inset-2 rounded-[2rem] bg-gradient-to-br from-[#FF5500]/40 via-transparent to-amber-400/30 blur-xl" aria-hidden />
-              <div className="relative rounded-3xl bg-[#14110e]/90 backdrop-blur-xl border border-white/15 p-6 shadow-2xl">
+              <div className="relative rounded-3xl bg-[#14110e]/90 backdrop-blur-xl border border-white/15 p-4 sm:p-6 shadow-2xl">
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-xs text-stone-400">Sample session: ordering chai, Hindi</p>
                   <span className="flex gap-1.5" aria-hidden>
@@ -532,15 +532,15 @@ export default function HomePage() {
         </section>
 
         {/* ── LIVE, WITH PEOPLE ── */}
-        <section className="relative overflow-hidden py-24 border-t border-white/10 bg-[#0c0a08]">
+        <section className="relative overflow-hidden py-14 sm:py-20 lg:py-24 border-t border-white/10 bg-[#0c0a08]">
           <div className="absolute inset-0" style={dotGrid} aria-hidden />
-          <div className="relative max-w-7xl mx-auto px-6">
-            <h2 className="font-kalam text-4xl font-bold max-w-2xl">Learn live with your instructor</h2>
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+            <h2 className="font-kalam text-3xl sm:text-4xl font-bold max-w-2xl">Learn live with your instructor</h2>
             <p className="mt-3 text-stone-400 max-w-2xl">
               Some things need a person: pronunciation, confidence, a conversation that goes off script.
             </p>
 
-            <div className="mt-10 grid md:grid-cols-2 gap-6">
+            <div className="mt-8 sm:mt-10 grid md:grid-cols-2 gap-4 sm:gap-6">
               {[
                 {
                   icon: Video,
@@ -569,14 +569,14 @@ export default function HomePage() {
               ].map((card) => (
                 <div
                   key={card.title}
-                  className="group relative rounded-3xl overflow-hidden border border-white/10 min-h-[480px] flex flex-col justify-end"
+                  className="group relative rounded-3xl overflow-hidden border border-white/10 min-h-[400px] sm:min-h-[480px] flex flex-col justify-end"
                 >
                   <Photo
                     src={card.img}
                     className="absolute inset-0 w-full h-full transition-transform duration-700 group-hover:scale-105"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0a0908] via-[#0a0908]/80 to-[#0a0908]/10" />
-                  <div className="relative p-8">
+                  <div className="relative p-5 sm:p-8">
                     <div className="flex items-center justify-between">
                       <span className="w-11 h-11 rounded-xl bg-[#FF5500] shadow-lg shadow-[#FF5500]/30 flex items-center justify-center">
                         <card.icon className="w-5 h-5 text-white" />
@@ -598,11 +598,11 @@ export default function HomePage() {
         </section>
 
         {/* ── CHALLENGES ── */}
-        <section className="relative overflow-hidden py-24 border-t border-white/10">
+        <section className="relative overflow-hidden py-14 sm:py-20 lg:py-24 border-t border-white/10">
           <Glow className="w-[28rem] h-[28rem] bg-[#FF5500]/15 top-0 -left-24" />
           <Glow className="w-80 h-80 bg-amber-500/10 bottom-0 right-0" />
-          <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center">
-            <div className="order-2 lg:order-1 relative rounded-3xl overflow-hidden border border-white/10 min-h-[460px] flex items-end">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-14 items-center">
+            <div className="order-2 lg:order-1 relative rounded-3xl overflow-hidden border border-white/10 min-h-[360px] sm:min-h-[460px] flex items-end">
               <Photo src={IMAGES.challenges} className="absolute inset-0 w-full h-full" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#0a0908] via-[#0a0908]/50 to-[#0a0908]/10" />
 
@@ -643,7 +643,7 @@ export default function HomePage() {
                 </span>
                 <StatusChip status={STATUS.challenges} />
               </div>
-              <h2 className="mt-4 font-kalam text-4xl font-bold">Challenges that make practice a habit</h2>
+              <h2 className="mt-4 font-kalam text-3xl sm:text-4xl font-bold">Challenges that make practice a habit</h2>
               <p className="mt-4 text-stone-300 leading-relaxed max-w-xl">
                 Contest-style rounds for vocabulary, grammar and speaking. Beat the clock, earn XP, climb the leaderboard
                 and keep your daily streak alive.
@@ -658,7 +658,7 @@ export default function HomePage() {
         </section>
 
         {/* ── CERTIFICATIONS (light band) ── */}
-        <section className="relative overflow-hidden py-24 bg-[#F1E7D6] text-stone-900">
+        <section className="relative overflow-hidden py-14 sm:py-20 lg:py-24 bg-[#F1E7D6] text-stone-900">
           <div className="absolute inset-0" style={paperTexture} aria-hidden />
           <div className="absolute -top-10 -left-10 w-80 h-80 rounded-full bg-[#FF7700]/15 blur-3xl" aria-hidden />
           <div className="absolute -bottom-16 right-0 w-96 h-96 rounded-full bg-[#C2410C]/15 blur-3xl" aria-hidden />
@@ -669,7 +669,7 @@ export default function HomePage() {
             <span lang="bn" className="absolute top-1/2 left-[46%] text-[7rem] leading-none">ক</span>
           </div>
 
-          <div className="relative max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-14 items-center">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6 grid lg:grid-cols-2 gap-8 sm:gap-10 lg:gap-14 items-center">
             <div>
               <div className="flex items-center gap-3">
                 <Award className="w-6 h-6 text-[#C2410C]" />
@@ -677,21 +677,21 @@ export default function HomePage() {
                   {STATUS.certificates === "live" ? "Live" : "Coming soon"}
                 </span>
               </div>
-              <h2 className="mt-4 font-kalam text-4xl font-bold">Certificates you can prove</h2>
+              <h2 className="mt-4 font-kalam text-3xl sm:text-4xl font-bold">Certificates you can prove</h2>
               <p className="mt-4 text-stone-700 leading-relaxed max-w-xl">
                 Pass a level and get a certificate with its own ID. Share the ID and anyone can check that it is real.
               </p>
 
-              <ul className="mt-8 divide-y divide-stone-900/15 max-w-xl border-y border-stone-900/15">
+              <ul className="mt-6 sm:mt-8 divide-y divide-stone-900/15 max-w-xl border-y border-stone-900/15">
                 {LEVELS.map((l, i) => (
-                  <li key={l.name} className="py-3 flex items-center justify-between gap-6">
+                  <li key={l.name} className="py-3 flex items-start sm:items-center justify-between gap-3 sm:gap-6">
                     <span className="flex items-center gap-3">
                       <span className="w-7 h-7 rounded-full bg-stone-900 text-[#F1E7D6] text-xs font-bold flex items-center justify-center">
                         {i + 1}
                       </span>
-                      <span className="font-kalam text-xl font-bold">{l.name}</span>
+                      <span className="font-kalam text-lg sm:text-xl font-bold">{l.name}</span>
                     </span>
-                    <span className="text-sm text-stone-700 text-right">{l.note}</span>
+                    <span className="flex-1 text-xs sm:text-sm text-stone-700 text-right">{l.note}</span>
                   </li>
                 ))}
               </ul>
@@ -699,7 +699,7 @@ export default function HomePage() {
 
             <div className="mx-auto w-full max-w-md">
               <div className="relative rotate-[-1.5deg]">
-                <div className="relative bg-[#FBF6EC] border-4 border-double border-stone-800 p-8 text-center shadow-2xl">
+                <div className="relative bg-[#FBF6EC] border-4 border-double border-stone-800 p-5 sm:p-8 text-center shadow-2xl">
                   <span className="absolute top-2 left-2 w-5 h-5 border-t-2 border-l-2 border-[#C2410C]" aria-hidden />
                   <span className="absolute top-2 right-2 w-5 h-5 border-t-2 border-r-2 border-[#C2410C]" aria-hidden />
                   <span className="absolute bottom-2 left-2 w-5 h-5 border-b-2 border-l-2 border-[#C2410C]" aria-hidden />
@@ -715,8 +715,8 @@ export default function HomePage() {
                   </p>
                   <p className="mt-6 text-xs text-stone-500">Sample. Real certificates carry a unique ID you can verify.</p>
                 </div>
-                <div className="absolute -bottom-7 -right-5 w-20 h-20 rounded-full bg-[#C2410C] ring-4 ring-[#F1E7D6] outline outline-2 outline-[#C2410C]/50 flex items-center justify-center shadow-xl rotate-12">
-                  <ShieldCheck className="w-9 h-9 text-[#FBF6EC]" />
+                <div className="absolute -bottom-6 -right-2 sm:-bottom-7 sm:-right-5 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#C2410C] ring-4 ring-[#F1E7D6] outline outline-2 outline-[#C2410C]/50 flex items-center justify-center shadow-xl rotate-12">
+                  <ShieldCheck className="w-7 h-7 sm:w-9 sm:h-9 text-[#FBF6EC]" />
                 </div>
               </div>
             </div>
@@ -724,16 +724,16 @@ export default function HomePage() {
         </section>
 
         {/* ── TEACH ── */}
-        <section className="py-24">
-          <div className="max-w-7xl mx-auto px-6">
+        <section className="py-14 sm:py-20 lg:py-24">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6">
             <div className="relative overflow-hidden rounded-3xl border border-white/10">
               <Photo src={IMAGES.teach} className="absolute inset-0 w-full h-full" />
               <div className="absolute inset-0 bg-gradient-to-r from-[#0a0908] via-[#0a0908]/85 to-[#0a0908]/50" />
               <Glow className="w-80 h-80 bg-[#FF5500]/20 -top-20 -left-10" />
 
-              <div className="relative p-8 sm:p-14 grid lg:grid-cols-2 gap-10 items-center">
+              <div className="relative p-5 sm:p-8 lg:p-14 grid lg:grid-cols-2 gap-8 sm:gap-10 items-center">
                 <div>
-                  <h2 className="font-kalam text-4xl font-bold">Teach your language on VartaLang</h2>
+                  <h2 className="font-kalam text-3xl sm:text-4xl font-bold">Teach your language on VartaLang</h2>
                   <p className="mt-4 text-stone-200 leading-relaxed max-w-xl">
                     Build a course from modules and lessons, set your own price and reach learners across India and the
                     diaspora.
@@ -744,7 +744,7 @@ export default function HomePage() {
                     </PrimaryButton>
                   </div>
                 </div>
-                <ul className="space-y-4 rounded-2xl border border-white/15 bg-black/40 backdrop-blur-md p-6">
+                <ul className="space-y-4 rounded-2xl border border-white/15 bg-black/40 backdrop-blur-md p-4 sm:p-6">
                   <Check4>Add lessons with YouTube videos and study notes.</Check4>
                   <Check4>Every course is reviewed before it goes live, so learners can trust what they find.</Check4>
                   <Check4>You get a public instructor profile once your first course is approved.</Check4>
@@ -756,18 +756,18 @@ export default function HomePage() {
         </section>
 
         {/* ── FINAL CTA ── */}
-        <section className="relative overflow-hidden py-32 border-t border-white/10">
+        <section className="relative overflow-hidden py-20 sm:py-24 lg:py-32 border-t border-white/10">
           <div className="absolute inset-0" aria-hidden>
             <Photo src={IMAGES.cta} className="w-full h-full opacity-50" />
             <div className="absolute inset-0 bg-gradient-to-r from-[#0a0908] via-[#0a0908]/75 to-[#0a0908]/30" />
             <div className="absolute inset-0 bg-gradient-to-b from-[#0a0908] via-transparent to-[#0a0908]/60" />
           </div>
           <Glow className="w-[30rem] h-[30rem] bg-[#FF5500]/25 -bottom-40 left-1/4" />
-          <div className="relative max-w-7xl mx-auto px-6">
-            <h2 className="font-kalam text-5xl font-bold max-w-3xl leading-tight drop-shadow-lg">
+          <div className="relative max-w-7xl mx-auto px-4 sm:px-6">
+            <h2 className="font-kalam text-3xl sm:text-5xl font-bold max-w-3xl leading-tight drop-shadow-lg">
               Pick a language and take your first lesson today.
             </h2>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-col sm:flex-row gap-3">
               <PrimaryButton href={primary.href}>{primary.label}</PrimaryButton>
               <GhostButton href="/learn">Browse courses</GhostButton>
             </div>

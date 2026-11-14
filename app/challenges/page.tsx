@@ -43,20 +43,20 @@ export default function ChallengesPage() {
         }}
       />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20">
-        <div className="text-center mb-16">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20">
+        <div className="text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/15 border border-amber-400/30 mb-5">
             <Clock className="w-4 h-4 text-amber-300" />
             <span className="text-sm font-semibold text-amber-200">Coming soon</span>
           </div>
-          <h1 className="font-kalam text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
+          <h1 className="font-kalam text-3xl sm:text-5xl md:text-7xl font-bold text-white mb-5 sm:mb-6 leading-[1.1]">
             Challenges
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-300 via-orange-200 to-amber-300">
               Compete &amp; Conquer
             </span>
           </h1>
-          <p className="text-lg text-stone-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-stone-300 max-w-2xl mx-auto leading-relaxed">
             Language mastery meets competitive spirit. Challenges will be available soon.
           </p>
         </div>
@@ -74,7 +74,7 @@ export default function ChallengesPage() {
             ))}
           </div>
         ) : !error && (challenges?.length ?? 0) === 0 ? (
-          <div className="p-12 text-center rounded-3xl bg-stone-900/60 border border-stone-700/50 text-stone-400 mb-16">
+          <div className="p-6 sm:p-12 text-center rounded-3xl bg-stone-900/60 border border-stone-700/50 text-stone-400 mb-12 sm:mb-16">
             No challenges are available yet.
           </div>
         ) : (
@@ -84,7 +84,7 @@ export default function ChallengesPage() {
               return (
                 <div
                   key={c.id}
-                  className="p-8 rounded-2xl bg-stone-900/60 border-2 border-stone-700/50 hover:border-red-500/40 transition-all"
+                  className="p-5 sm:p-8 rounded-2xl bg-stone-900/60 border-2 border-stone-700/50 hover:border-red-500/40 transition-all"
                 >
                   <div
                     className={`w-14 h-14 rounded-xl bg-gradient-to-br ${c.color} flex items-center justify-center mb-6 shadow-lg`}
@@ -108,7 +108,7 @@ export default function ChallengesPage() {
         )}
 
         {/* Leaderboard */}
-        <div className="p-8 rounded-3xl bg-gradient-to-br from-red-500/10 via-stone-900/60 to-orange-500/10 border-2 border-red-500/20 max-w-3xl mx-auto">
+        <div className="p-5 sm:p-8 rounded-3xl bg-gradient-to-br from-red-500/10 via-stone-900/60 to-orange-500/10 border-2 border-red-500/20 max-w-3xl mx-auto">
           <div className="flex items-center gap-3 mb-6">
             <Trophy className="w-7 h-7 text-amber-400" />
             <h2 className="font-kalam text-3xl font-bold text-white">Weekly Leaderboard</h2>
@@ -125,12 +125,12 @@ export default function ChallengesPage() {
               {board?.map((row) => (
                 <li
                   key={row.rank + row.user_name}
-                  className="flex items-center justify-between px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm"
+                      className="flex items-center justify-between gap-3 px-3 sm:px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-sm"
                 >
-                  <span className="flex items-center gap-4">
-                    <span className="w-6 text-stone-500 font-bold">#{row.rank}</span>
-                    <span className="text-white font-medium">{row.user_name}</span>
-                    <span className="text-xs text-stone-500">{row.language}</span>
+                      <span className="min-w-0 flex items-center gap-2 sm:gap-4">
+                        <span className="w-6 shrink-0 text-stone-500 font-bold">#{row.rank}</span>
+                        <span className="min-w-0 truncate text-white font-medium">{row.user_name}</span>
+                        <span className="shrink-0 text-xs text-stone-500">{row.language}</span>
                   </span>
                   <span className="text-amber-300 font-semibold">{row.xp} XP</span>
                 </li>

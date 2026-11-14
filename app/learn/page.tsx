@@ -116,13 +116,13 @@ export default function LearnPage() {
         }}
       />
 
-      <section className="relative pt-36 pb-10 px-6">
+      <section className="relative pt-32 sm:pt-36 pb-8 sm:pb-10 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto relative z-10 text-center">
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-amber-500/20 border-2 border-amber-400/30 mb-10">
             <BookOpen className="w-4 h-4 text-amber-300" />
             <span className="text-sm font-semibold text-amber-100 tracking-wide">Courses</span>
           </div>
-          <h1 className="font-kalam text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
+          <h1 className="font-kalam text-3xl sm:text-5xl md:text-7xl font-bold text-white mb-5 sm:mb-6 leading-[1.1]">
             Choose Your
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-200 via-yellow-200 to-amber-300">
@@ -140,7 +140,7 @@ export default function LearnPage() {
         </div>
       </section>
 
-      <section className="relative px-6 pb-8">
+      <section className="relative px-4 sm:px-6 pb-8">
         <div className="max-w-3xl mx-auto relative z-10">
           <div className="relative">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-amber-400/60" />
@@ -155,8 +155,8 @@ export default function LearnPage() {
         </div>
       </section>
 
-      <section className="relative py-8 px-6 pb-24">
-        <div className="max-w-7xl mx-auto relative z-10 space-y-14">
+      <section className="relative py-6 sm:py-8 px-4 sm:px-6 pb-16 sm:pb-24">
+        <div className="max-w-7xl mx-auto relative z-10 space-y-10 sm:space-y-14">
           {error && (
             <div className="px-4 py-3 rounded-xl text-sm bg-red-500/10 border border-red-500/20 text-red-300">
               Could not load courses: {error}
@@ -195,7 +195,7 @@ export default function LearnPage() {
                     className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left"
                   >
                     <div>
-                      <h2 className="font-kalam text-3xl font-bold text-white">{section.title}</h2>
+                      <h2 className="font-kalam text-2xl sm:text-3xl font-bold text-white">{section.title}</h2>
                       {section.sub && <p className="text-sm text-stone-500 mt-1">{section.sub}</p>}
                     </div>
                     <div className="flex items-center gap-3">
@@ -244,12 +244,12 @@ export default function LearnPage() {
                           <Link
                             key={r.name}
                             href={`/learn/${slugify(r.name)}`}
-                            className="group p-5 rounded-2xl bg-stone-900/60 border border-stone-700/50 hover:border-amber-500/50 transition-all hover:-translate-y-1"
+                            className="group p-4 sm:p-5 rounded-2xl bg-stone-900/60 border border-stone-700/50 hover:border-amber-500/50 transition-all hover:-translate-y-1"
                           >
                             {tile}
                           </Link>
                         ) : (
-                          <div key={r.name} className="p-5 rounded-2xl bg-stone-900/30 border border-stone-800/60">
+                          <div key={r.name} className="p-4 sm:p-5 rounded-2xl bg-stone-900/30 border border-stone-800/60">
                             {tile}
                           </div>
                         );

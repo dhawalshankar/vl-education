@@ -56,20 +56,20 @@ export default function CertificationsPage() {
         }}
       />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20">
-        <div className="text-center mb-16">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20">
+        <div className="text-center mb-12 sm:mb-16">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/15 border border-amber-400/30 mb-5">
             <Clock className="w-4 h-4 text-amber-300" />
             <span className="text-sm font-semibold text-amber-200">Coming soon</span>
           </div>
-          <h1 className="font-kalam text-4xl sm:text-5xl md:text-7xl font-bold text-white mb-6 leading-[1.1]">
+          <h1 className="font-kalam text-3xl sm:text-5xl md:text-7xl font-bold text-white mb-5 sm:mb-6 leading-[1.1]">
             Certifications
             <br />
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-300 via-blue-200 to-cyan-300">
               Prove Your Mastery
             </span>
           </h1>
-          <p className="text-lg text-stone-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-lg text-stone-300 max-w-2xl mx-auto leading-relaxed">
             Credentials earned by completing structured learning tracks and assessments. Certification
             tracks will be available soon.
           </p>
@@ -88,7 +88,7 @@ export default function CertificationsPage() {
             ))}
           </div>
         ) : !error && (certs?.length ?? 0) === 0 ? (
-          <div className="p-12 text-center rounded-3xl bg-stone-900/60 border border-stone-700/50 text-stone-400 mb-16">
+          <div className="p-6 sm:p-12 text-center rounded-3xl bg-stone-900/60 border border-stone-700/50 text-stone-400 mb-12 sm:mb-16">
             No certification tracks are published yet.
           </div>
         ) : (
@@ -96,7 +96,7 @@ export default function CertificationsPage() {
             {certs?.map((cert) => (
               <div
                 key={cert.id}
-                className="p-8 rounded-2xl bg-stone-900/60 border-2 border-stone-700/50 hover:border-purple-500/40 transition-all"
+                className="p-5 sm:p-8 rounded-2xl bg-stone-900/60 border-2 border-stone-700/50 hover:border-purple-500/40 transition-all"
               >
                 <div
                   className={`w-14 h-14 rounded-xl bg-gradient-to-br ${cert.color} flex items-center justify-center mb-6 shadow-lg`}

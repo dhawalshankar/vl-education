@@ -53,7 +53,7 @@ export default function AdminEnrollmentsPage() {
   const rows = query.data?.items ?? [];
   if (loading || !allowed) return <div className="cultural-page min-h-screen flex items-center justify-center text-amber-400">Loading...</div>;
 
-  return <div className="cultural-page min-h-screen text-white flex flex-col"><Navbar /><main className="max-w-7xl mx-auto px-6 pt-36 pb-20 w-full">
+  return <div className="cultural-page min-h-screen text-white flex flex-col"><Navbar /><main className="max-w-7xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20 w-full">
     <h1 className="font-kalam text-4xl font-bold mb-2">Enrollment and payments</h1>
     <p className="text-stone-400 text-sm mb-8">Review student enrollments and payment records. Refunds are prepared here but processed by the backend.</p>
     <div className="flex flex-wrap gap-3 mb-5">

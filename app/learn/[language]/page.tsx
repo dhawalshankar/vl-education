@@ -132,7 +132,7 @@ export default function LanguagePage() {
       />
 
       {/* Header section */}
-      <section className="relative pt-36 pb-6 px-6">
+      <section className="relative pt-32 sm:pt-36 pb-6 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto relative z-10">
           <Link
             href="/learn"
@@ -143,17 +143,17 @@ export default function LanguagePage() {
           </Link>
 
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 pb-6 border-b border-stone-800/80">
-            <div className="flex items-center gap-5">
+            <div className="flex min-w-0 items-center gap-3 sm:gap-5">
               <div
-                className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center text-4xl text-white shadow-2xl shrink-0`}
+                className={`w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br ${p.color} flex items-center justify-center text-3xl sm:text-4xl text-white shadow-2xl shrink-0`}
               >
                 {p.icon}
               </div>
               <div>
-                <h1 className="font-kalam text-4xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
+                <h1 className="font-kalam text-3xl sm:text-5xl md:text-6xl font-bold text-white leading-tight">
                   {languageName}
                 </h1>
-                <p className="text-2xl text-amber-300 font-medium">{p.native}</p>
+                <p className="text-xl sm:text-2xl text-amber-300 font-medium">{p.native}</p>
               </div>
             </div>
 
@@ -213,7 +213,7 @@ export default function LanguagePage() {
       </section>
 
       {/* Main Content Body */}
-      <section className="relative px-6 pb-24">
+      <section className="relative px-4 sm:px-6 pb-16 sm:pb-24">
         <div className="max-w-7xl mx-auto relative z-10">
           {/* TAB 1: SELF-PACED COURSES */}
           {activeTab === "courses" && (
@@ -289,7 +289,7 @@ export default function LanguagePage() {
                       return (
                         <div
                           key={c.id}
-                          className="bg-stone-900/60 border border-stone-800 hover:border-amber-500/40 rounded-2xl p-6 transition-all hover:-translate-y-1 flex flex-col justify-between"
+                          className="bg-stone-900/60 border border-stone-800 hover:border-amber-500/40 rounded-2xl p-5 sm:p-6 transition-all hover:-translate-y-1 flex flex-col justify-between"
                         >
                           <div>
                             <div className="flex items-start justify-between mb-4">

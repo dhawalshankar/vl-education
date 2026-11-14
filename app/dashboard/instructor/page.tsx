@@ -142,7 +142,7 @@ export default function InstructorStudioPage() {
         }}
       />
 
-      <main className="relative z-10 max-w-7xl mx-auto px-6 pt-36 pb-20 w-full">
+      <main className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20 w-full">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
           <div>
             <h1 className="font-kalam text-4xl sm:text-5xl font-bold tracking-tight">
@@ -200,7 +200,7 @@ export default function InstructorStudioPage() {
           })}
         </div>
 
-        <div className="flex items-center gap-3 border-b border-stone-800 pb-4 mb-8">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3 border-b border-stone-800 pb-4 mb-8">
           {(
             [
               ["courses", "My courses", BookOpen],
@@ -211,7 +211,7 @@ export default function InstructorStudioPage() {
             <button
               key={key}
               onClick={() => setTab(key)}
-              className={`px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all ${
+              className={`px-3 sm:px-5 py-2.5 rounded-xl text-sm font-semibold flex items-center gap-2 transition-all ${
                 tab === key
                   ? "bg-amber-500/20 text-amber-300 border border-amber-500/40"
                   : "text-stone-400 hover:text-white hover:bg-stone-900"

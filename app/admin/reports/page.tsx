@@ -80,7 +80,7 @@ const selectClass = "bg-stone-900 border border-stone-700 rounded-xl px-4 py-2.5
 function Loading() { return <div className="cultural-page min-h-screen flex items-center justify-center text-amber-400">Loading...</div>; }
 function ErrorBox({ message }: { message: string }) { return <div className="mb-5 p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm">{message}</div>; }
 function Shell({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
-  return <div className="cultural-page min-h-screen text-white flex flex-col"><Navbar /><main className="max-w-7xl mx-auto px-6 pt-36 pb-20 w-full">
+  return <div className="cultural-page min-h-screen text-white flex flex-col"><Navbar /><main className="max-w-7xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20 w-full">
     <div className="flex items-center gap-3 mb-2"><BarChart3 className="text-amber-400" /><h1 className="font-kalam text-4xl font-bold">{title}</h1></div>
     <p className="text-stone-400 text-sm mb-8">{subtitle}</p>{children}</main><Footer /></div>;
 }

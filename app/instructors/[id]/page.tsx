@@ -119,7 +119,7 @@ export default function PublicInstructorPage() {
                 }}
             />
 
-            <main className="relative z-10 max-w-5xl mx-auto px-6 pt-36 pb-20 w-full">
+            <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20 w-full">
                 {loading ? (
                     <div className="space-y-6">
                         <div className="h-44 rounded-3xl bg-white/5 border border-white/10 animate-pulse" />
@@ -130,7 +130,7 @@ export default function PublicInstructorPage() {
                         </div>
                     </div>
                 ) : !profile ? (
-                    <div className="p-16 rounded-3xl bg-stone-900/40 border border-stone-800 text-center max-w-xl mx-auto">
+                    <div className="p-6 sm:p-16 rounded-3xl bg-stone-900/40 border border-stone-800 text-center max-w-xl mx-auto">
                         <GraduationCap className="w-10 h-10 mx-auto mb-4 text-amber-400/50" />
                         <h1 className="font-kalam text-3xl font-bold mb-2">Instructor not found</h1>
                         <p className="text-sm text-stone-400 mb-6">
@@ -147,10 +147,10 @@ export default function PublicInstructorPage() {
                 ) : (
                     <>
                         {/* Header */}
-                        <section className="p-6 sm:p-10 rounded-3xl bg-stone-900/60 border border-stone-800 flex flex-col sm:flex-row gap-6 sm:gap-8 items-center sm:items-start">
+                        <section className="p-5 sm:p-10 rounded-3xl bg-stone-900/60 border border-stone-800 flex flex-col sm:flex-row gap-5 sm:gap-8 items-center sm:items-start">
                             <Avatar name={profile.name} url={profile.avatarUrl} />
                             <div className="min-w-0 text-center sm:text-left">
-                                <h1 className="font-kalam text-4xl sm:text-5xl font-bold tracking-tight">{profile.name}</h1>
+                                <h1 className="font-kalam text-3xl sm:text-5xl font-bold tracking-tight">{profile.name}</h1>
                                 {profile.title && <p className="text-amber-300/90 text-sm mt-1">{profile.title}</p>}
 
                                 {(profile.languages?.length ?? 0) > 0 && (

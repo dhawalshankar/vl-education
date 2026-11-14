@@ -84,7 +84,7 @@ export default function AboutPage() {
         }}
       />
 
-      <main className="relative z-10 max-w-5xl mx-auto px-6 pt-36 pb-20 w-full">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20 w-full">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-stone-400 hover:text-amber-400 transition-colors mb-10 group text-sm"
@@ -113,7 +113,7 @@ export default function AboutPage() {
         </div>
 
         {/* Mission Statement */}
-        <section className="p-8 sm:p-10 rounded-3xl bg-stone-900/60 border border-stone-800 mb-16">
+        <section className="p-5 sm:p-8 lg:p-10 rounded-3xl bg-stone-900/60 border border-stone-800 mb-12 sm:mb-16">
           <h2 className="font-kalam text-2xl sm:text-3xl font-bold text-white mb-4">Our Mission</h2>
           <div className="space-y-4 text-stone-300 leading-relaxed text-sm sm:text-base">
             <p>
@@ -154,7 +154,7 @@ export default function AboutPage() {
         </section>
 
         {/* How the Platform Works */}
-        <section className="p-8 sm:p-10 rounded-3xl bg-stone-900/60 border border-stone-800 mb-16">
+        <section className="p-5 sm:p-8 lg:p-10 rounded-3xl bg-stone-900/60 border border-stone-800 mb-12 sm:mb-16">
           <h2 className="font-kalam text-2xl sm:text-3xl font-bold text-white mb-6">
             How the Platform Works
           </h2>
@@ -206,7 +206,7 @@ export default function AboutPage() {
         </section>
 
         {/* Operating Identity & Contact */}
-        <section className="p-8 rounded-3xl bg-stone-900/60 border border-stone-800">
+        <section className="p-5 sm:p-8 rounded-3xl bg-stone-900/60 border border-stone-800">
           <h2 className="font-kalam text-2xl font-bold text-white mb-4">Operating Details</h2>
           <p className="text-stone-300 text-sm mb-4">
             VartaLang is owned and operated by <strong>{CONTACT_DETAILS.OPERATING_NAME}</strong> with registered operating headquarters in Uttar Pradesh, India.

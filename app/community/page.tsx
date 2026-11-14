@@ -109,9 +109,9 @@ export default function CommunityPage() {
         }}
       />
 
-      <div className="relative z-10 max-w-6xl mx-auto px-6 pt-36 pb-20 w-full">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20 w-full">
         {/* Page Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-10 sm:mb-12">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-amber-500/20 border border-amber-400/30 mb-6">
             <Heart className="w-4 h-4 text-amber-400 fill-amber-400" />
             <span className="text-sm font-bold text-amber-200">Our Community</span>
@@ -119,7 +119,7 @@ export default function CommunityPage() {
           <h1 className="font-kalam text-4xl sm:text-5xl md:text-6xl font-bold text-white mb-4 leading-tight">
             VartaLang Community
           </h1>
-          <p className="text-xl text-stone-300 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl text-stone-300 max-w-2xl mx-auto leading-relaxed">
             Meet the people behind VartaLang, read our stories, and join our growing team.
           </p>
         </div>
@@ -146,9 +146,9 @@ export default function CommunityPage() {
 
         {/* ── ABOUT ────────────────────────────────────────────────── */}
         {activeTab === "About" && (
-          <div className="space-y-16">
+          <div className="space-y-12 sm:space-y-16">
             {/* Story */}
-            <div id="story" className="p-5 sm:p-10 rounded-3xl bg-stone-900/60 border border-stone-700/50">
+            <div id="story" className="p-5 sm:p-8 lg:p-10 rounded-3xl bg-stone-900/60 border border-stone-700/50">
               <h2 className="font-kalam text-3xl sm:text-4xl font-bold text-white mb-6">Our Story</h2>
               <div className="space-y-4 text-stone-300 leading-relaxed">
                 <p>

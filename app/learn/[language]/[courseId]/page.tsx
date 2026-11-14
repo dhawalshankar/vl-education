@@ -238,11 +238,89 @@ export default function CourseViewer() {
     { id: "instructor", label: "Instructor" },
   ];
 
+  const renderCurriculum = (scrollClassName: string) => (
+    <div className="rounded-xl bg-stone-900/60 border border-stone-800 overflow-hidden">
+      <div className="px-4 py-3 border-b border-stone-800">
+        <h3 className="text-sm font-semibold">Course content</h3>
+        <p className="text-xs text-stone-500 mt-0.5">
+          {modules.length} {modules.length === 1 ? "module" : "modules"} • {allLessons.length}{" "}
+          {allLessons.length === 1 ? "lesson" : "lessons"}
+        </p>
+      </div>
+
+      {modules.length === 0 ? (
+        <p className="text-stone-500 text-sm px-4 py-5">No modules yet.</p>
+      ) : (
+        <div className={scrollClassName}>
+          {modules.map((m) => {
+            const isCollapsed = collapsed.has(m.id);
+            const doneInModule = m.lessons.filter((l) => completed.has(l.id)).length;
+            return (
+              <div key={m.id} className="border-b border-stone-800/70 last:border-b-0">
+                <button
+                  onClick={() => toggleModule(m.id)}
+                  aria-expanded={!isCollapsed}
+                  className="w-full min-h-12 flex items-center justify-between gap-3 px-4 py-3 bg-stone-900/50 hover:bg-stone-800/50 text-left transition-colors"
+                >
+                  <span className="min-w-0">
+                    <span className="block text-sm font-semibold truncate">{m.title}</span>
+                    <span className="block text-[11px] text-stone-500 mt-0.5">
+                      {enrolled ? `${doneInModule}/${m.lessons.length} completed` : `${m.lessons.length} lessons`}
+                    </span>
+                  </span>
+                  <ChevronDown
+                    className={`w-4 h-4 text-stone-500 shrink-0 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
+                  />
+                </button>
+
+                {!isCollapsed && (
+                  <ul>
+                    {m.lessons.map((l) => {
+                      const isSel = selected?.id === l.id;
+                      return (
+                        <li key={l.id}>
+                          <button
+                            onClick={() => setSelectedId(l.id)}
+                            className={`w-full min-h-11 flex items-start gap-3 px-4 py-3 text-left border-l-2 transition-colors ${
+                              isSel
+                                ? "bg-amber-500/10 border-amber-400"
+                                : "border-transparent hover:bg-stone-800/50"
+                            }`}
+                          >
+                            <span className="mt-0.5 shrink-0">
+                              {completed.has(l.id) ? (
+                                <CheckCircle2 className="w-4 h-4 text-amber-400" />
+                              ) : !l.is_unlocked ? (
+                                <Lock className="w-4 h-4 text-stone-600" />
+                              ) : (
+                                <Circle className="w-4 h-4 text-stone-600" />
+                              )}
+                            </span>
+                            <span className="flex-1 min-w-0 text-[13px] leading-snug text-stone-200">{l.title}</span>
+                            {l.is_preview && !enrolled && (
+                              <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300">
+                                Preview
+                              </span>
+                            )}
+                          </button>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+
   return (
     <div className="cultural-page min-h-screen text-white flex flex-col">
       {/* Top bar */}
       <header className="sticky top-0 z-40 border-b border-stone-800 bg-[#14110E]/95 backdrop-blur">
-        <div className="w-full max-w-[1600px] mx-auto px-4 lg:px-6 h-14 flex items-center gap-4">
+        <div className="w-full max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 h-14 flex items-center gap-2 sm:gap-4">
           <Link
             href={`/learn/${language}`}
             className="flex items-center gap-1.5 text-stone-400 hover:text-white transition-colors text-xs font-medium shrink-0"
@@ -250,20 +328,23 @@ export default function CourseViewer() {
             <ArrowLeft className="w-4 h-4" /> <span className="hidden sm:inline">Back to courses</span>
           </Link>
           <div className="h-5 w-px bg-stone-800 hidden sm:block" />
-          <p className="text-sm font-semibold truncate flex-1">{c.title}</p>
+          <p className="text-xs sm:text-sm font-semibold truncate flex-1">{c.title}</p>
           {enrolled && stats && (
             <div className="flex items-center gap-2 shrink-0">
               <div className="w-24 h-1.5 rounded-full bg-stone-800 overflow-hidden hidden sm:block">
                 <div className="h-full bg-amber-400" style={{ width: `${pct}%` }} />
               </div>
-              <span className="text-xs text-stone-400">{pct}% complete</span>
+              <span className="text-[11px] sm:text-xs text-stone-400">
+                <span className="sm:hidden">{pct}%</span>
+                <span className="hidden sm:inline">{pct}% complete</span>
+              </span>
             </div>
           )}
         </div>
       </header>
 
       {/* w-full matters: in a flex column, mx-auto alone would shrink this to its content width */}
-      <main className="flex-1 w-full max-w-[1600px] mx-auto px-4 lg:px-6 py-5">
+      <main className="flex-1 w-full max-w-[1600px] mx-auto px-3 sm:px-4 lg:px-6 py-4 sm:py-5">
         {actionError && (
           <div className="mb-4 px-4 py-2.5 rounded-lg text-sm bg-red-500/10 border border-red-500/20 text-red-300">
             {actionError}
@@ -314,18 +395,18 @@ export default function CourseViewer() {
                 {/* Lesson bar */}
                 <div className="mt-4 flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <h2 className="text-xl font-semibold leading-snug">{selected.title}</h2>
+                    <h2 className="text-lg sm:text-xl font-semibold leading-snug">{selected.title}</h2>
                     <p className="text-xs text-stone-500 mt-0.5">
                       Lesson {selectedIdx + 1} of {allLessons.length}
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 shrink-0">
+                  <div className="flex flex-wrap items-center gap-2 shrink-0">
                     <button
                       onClick={() => prevLesson && setSelectedId(prevLesson.id)}
                       disabled={!prevLesson}
                       title="Previous lesson"
                       aria-label="Previous lesson"
-                      className="p-1.5 rounded-lg border border-stone-700 text-stone-300 hover:bg-stone-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                      className="min-w-10 min-h-10 flex items-center justify-center rounded-lg border border-stone-700 text-stone-300 hover:bg-stone-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
@@ -334,7 +415,7 @@ export default function CourseViewer() {
                       disabled={!nextLesson}
                       title="Next lesson"
                       aria-label="Next lesson"
-                      className="p-1.5 rounded-lg border border-stone-700 text-stone-300 hover:bg-stone-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
+                      className="min-w-10 min-h-10 flex items-center justify-center rounded-lg border border-stone-700 text-stone-300 hover:bg-stone-800 disabled:opacity-30 disabled:hover:bg-transparent transition-colors"
                     >
                       <ChevronRight className="w-4 h-4" />
                     </button>
@@ -343,7 +424,7 @@ export default function CourseViewer() {
                         href={notes}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-stone-700 text-stone-300 hover:bg-stone-800 text-xs font-medium transition-colors"
+                        className="inline-flex min-h-10 items-center gap-1.5 px-3 py-2 rounded-lg border border-stone-700 text-stone-300 hover:bg-stone-800 text-xs font-medium transition-colors"
                       >
                         <ExternalLink className="w-3.5 h-3.5" /> Notes
                       </a>
@@ -352,7 +433,7 @@ export default function CourseViewer() {
                       <button
                         onClick={() => handleToggle(selected)}
                         disabled={busy}
-                        className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border disabled:opacity-50 transition-colors ${
+                        className={`inline-flex min-h-10 items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium border disabled:opacity-50 transition-colors ${
                           completed.has(selected.id)
                             ? "bg-emerald-500/15 border-emerald-500/30 text-emerald-300"
                             : "border-amber-500/40 text-amber-300 hover:bg-amber-500/10"
@@ -373,6 +454,10 @@ export default function CourseViewer() {
                 </div>
               </>
             )}
+
+            <div className="lg:hidden mt-5">
+              {renderCurriculum("max-h-[55vh] overflow-y-auto")}
+            </div>
 
             {/* Tabs */}
             <div className="mt-6 border-b border-stone-800 flex gap-6 overflow-x-auto">
@@ -510,79 +595,8 @@ export default function CourseViewer() {
               )}
             </div>
 
-            <div className="rounded-xl bg-stone-900/60 border border-stone-800 overflow-hidden">
-              <div className="px-4 py-3 border-b border-stone-800">
-                <h3 className="text-sm font-semibold">Course content</h3>
-                <p className="text-xs text-stone-500 mt-0.5">
-                  {modules.length} {modules.length === 1 ? "module" : "modules"} • {allLessons.length}{" "}
-                  {allLessons.length === 1 ? "lesson" : "lessons"}
-                </p>
-              </div>
-
-              {modules.length === 0 ? (
-                <p className="text-stone-500 text-sm px-4 py-5">No modules yet.</p>
-              ) : (
-                <div className="lg:max-h-[calc(100vh-260px)] overflow-y-auto">
-                  {modules.map((m) => {
-                    const isCollapsed = collapsed.has(m.id);
-                    const doneInModule = m.lessons.filter((l) => completed.has(l.id)).length;
-                    return (
-                      <div key={m.id} className="border-b border-stone-800/70 last:border-b-0">
-                        <button
-                          onClick={() => toggleModule(m.id)}
-                          className="w-full flex items-center justify-between gap-3 px-4 py-3 bg-stone-900/50 hover:bg-stone-800/50 text-left transition-colors"
-                        >
-                          <span className="min-w-0">
-                            <span className="block text-sm font-semibold truncate">{m.title}</span>
-                            <span className="block text-[11px] text-stone-500 mt-0.5">
-                              {enrolled ? `${doneInModule}/${m.lessons.length} completed` : `${m.lessons.length} lessons`}
-                            </span>
-                          </span>
-                          <ChevronDown
-                            className={`w-4 h-4 text-stone-500 shrink-0 transition-transform ${isCollapsed ? "-rotate-90" : ""}`}
-                          />
-                        </button>
-
-                        {!isCollapsed && (
-                          <ul>
-                            {m.lessons.map((l) => {
-                              const isSel = selected?.id === l.id;
-                              return (
-                                <li key={l.id}>
-                                  <button
-                                    onClick={() => setSelectedId(l.id)}
-                                    className={`w-full flex items-start gap-3 px-4 py-2.5 text-left border-l-2 transition-colors ${
-                                      isSel
-                                        ? "bg-amber-500/10 border-amber-400"
-                                        : "border-transparent hover:bg-stone-800/50"
-                                    }`}
-                                  >
-                                    <span className="mt-0.5 shrink-0">
-                                      {completed.has(l.id) ? (
-                                        <CheckCircle2 className="w-4 h-4 text-amber-400" />
-                                      ) : !l.is_unlocked ? (
-                                        <Lock className="w-4 h-4 text-stone-600" />
-                                      ) : (
-                                        <Circle className="w-4 h-4 text-stone-600" />
-                                      )}
-                                    </span>
-                                    <span className="flex-1 min-w-0 text-[13px] leading-snug text-stone-200">{l.title}</span>
-                                    {l.is_preview && !enrolled && (
-                                      <span className="shrink-0 text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-300">
-                                        Preview
-                                      </span>
-                                    )}
-                                  </button>
-                                </li>
-                              );
-                            })}
-                          </ul>
-                        )}
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
+            <div className="hidden lg:block">
+              {renderCurriculum("max-h-[calc(100vh-260px)] overflow-y-auto")}
             </div>
           </aside>
         </div>

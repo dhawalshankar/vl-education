@@ -74,7 +74,7 @@ export default function PricingPage() {
         }}
       />
 
-      <main className="relative z-10 max-w-5xl mx-auto px-6 pt-36 pb-20 w-full">
+      <main className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 pt-32 sm:pt-36 pb-12 sm:pb-20 w-full">
         <Link
           href="/"
           className="inline-flex items-center gap-2 text-stone-400 hover:text-amber-400 transition-colors mb-10 group text-sm"
@@ -84,12 +84,12 @@ export default function PricingPage() {
         </Link>
 
         {/* Hero */}
-        <div className="text-center max-w-3xl mx-auto mb-14">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold mb-4">
             <Tag className="w-3.5 h-3.5" />
             <span>Transparent Pricing</span>
           </div>
-          <h1 className="font-kalam text-4xl sm:text-5xl font-bold text-white mb-4">
+          <h1 className="font-kalam text-3xl sm:text-5xl font-bold text-white mb-4">
             How Pricing Works on VartaLang
           </h1>
           <p className="text-stone-300 text-base sm:text-lg leading-relaxed">
@@ -98,7 +98,7 @@ export default function PricingPage() {
         </div>
 
         {/* 3 Core Principles Banner */}
-        <div className="p-8 rounded-3xl bg-stone-900/60 border border-stone-800 mb-14">
+        <div className="p-5 sm:p-8 rounded-3xl bg-stone-900/60 border border-stone-800 mb-10 sm:mb-14">
           <h2 className="font-kalam text-2xl font-bold text-white mb-6">Our Pricing Commitments</h2>
           <div className="grid md:grid-cols-3 gap-6 text-sm">
             <div className="space-y-2">
@@ -144,7 +144,7 @@ export default function PricingPage() {
               return (
                 <div
                   key={idx}
-                  className="p-6 rounded-2xl bg-stone-900/60 border border-stone-800 flex flex-col justify-between"
+                  className="p-5 sm:p-6 rounded-2xl bg-stone-900/60 border border-stone-800 flex flex-col justify-between"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-4">
@@ -177,7 +177,7 @@ export default function PricingPage() {
         </section>
 
         {/* Pricing FAQs */}
-        <section className="p-8 rounded-3xl bg-stone-900/60 border border-stone-800 mb-12">
+        <section className="p-5 sm:p-8 rounded-3xl bg-stone-900/60 border border-stone-800 mb-12">
           <div className="flex items-center gap-3 mb-6">
             <HelpCircle className="w-5 h-5 text-amber-400" />
             <h2 className="font-kalam text-2xl font-bold text-white">Pricing FAQs</h2>
@@ -212,14 +212,14 @@ export default function PricingPage() {
         </section>
 
         {/* Security & Razorpay Notice */}
-        <div className="p-6 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-between gap-4 text-xs sm:text-sm text-stone-300">
-          <div className="flex items-center gap-3">
+        <div className="p-5 sm:p-6 rounded-2xl bg-amber-500/10 border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs sm:text-sm text-stone-300">
+          <div className="min-w-0 flex items-center gap-3">
             <ShieldCheck className="w-5 h-5 text-emerald-400 shrink-0" />
             <span>Payments securely processed by Razorpay in Indian Rupees (INR, ₹).</span>
           </div>
           <Link
             href="/learn"
-            className="px-4 py-2 rounded-xl bg-amber-500 text-stone-950 font-bold hover:bg-amber-400 transition-colors shrink-0 text-xs"
+            className="w-full sm:w-auto text-center px-4 py-2 rounded-xl bg-amber-500 text-stone-950 font-bold hover:bg-amber-400 transition-colors shrink-0 text-xs"
           >
             Start Exploring
           </Link>
