@@ -185,6 +185,40 @@ Auth is handled client-side via `AuthContext`, which stores the LMS `accessToken
 
 Daily streaks are synchronized across devices using the backend heartbeat API (`POST /api/v1/users/streak/heartbeat` and `GET /api/v1/users/streak`), with responsive client-side caching in `localStorage` by `app/lib/streak.ts`.
 
+## Multilingual Challenges & Mobile-First Arena
+
+The **Challenges** section (`/challenges`) provides a full-scale, mobile-first, and data-driven multilingual evaluation arena covering **740+ challenges** across **31 distinct languages**:
+
+- **22 Scheduled Indian Languages**: Assamese (`অসমীয়া`), Bengali (`বাংলা`), Bodo (`बड़ो`), Dogri (`डोगरी`), Gujarati (`ગુજરાતી`), Hindi (`हिंदी`), Kannada (`ಕನ್ನಡ`), Kashmiri (`कॉशुर / كٲشُر`), Konkani (`कोंकणी`), Maithili (`मैथिली`), Malayalam (`മലയാളം`), Manipuri (`মৈতৈলোন্`), Marathi (`मराठी`), Nepali (`नेपाली`), Odia (`ଓଡ଼ିଆ`), Punjabi (`ਪੰਜਾਬੀ`), Sanskrit (`संस्कृतम्`), Santali (`ᱥᱟᱱᱛᱟᱲᱤ`), Sindhi (`سنڌي`), Tamil (`தமிழ்`), Telugu (`తెలుగు`), Urdu (`اردو`).
+- **English**: English (`English`).
+- **8 Foreign Languages**: Spanish (`Español`), French (`Français`), German (`Deutsch`), Japanese (`日本語`), Korean (`한국어`), Mandarin Chinese (`普通话`), Arabic (`العربية`), Russian (`Русский`).
+
+### 4 Engaging Challenge Types
+1. **Translation & Meaning Match**: MCQ and free-text comprehension across native terms.
+2. **Transliteration & Script Mastery**: Romanized ↔ Native script conversions with typo tolerance.
+3. **Language & Script Identification**: Orthographic recognition from authentic cultural sentences.
+4. **Contextual Cloze / Blanks**: Syntax and grammar-sensitive sentence completions.
+
+### Mobile-First UX & Typography
+- **Touch-Friendly Controls**: 44px+ minimum tap targets, compact 3-column stats strip on mobile, side-by-side dropdowns, and clear buttons.
+- **Horizontal Swipeable Language Carousel**: Rapidly switch between 31 languages with smooth touch scrolling without pushing challenge cards off-screen.
+- **Responsive Arena Modal**: Transforms into a thumb-friendly bottom sheet on mobile devices and a centered modal on tablet/desktop.
+- **RTL & Complex Scripts**: Automatic `dir="rtl"` text alignment and font stacks for Urdu, Arabic, Sindhi, and Kashmiri.
+- **Total XP & Daily Streak**: Persisted total user XP and live streak celebrations.
+
+### Student Dashboard: LeetCode-Style Heatmap & Badges
+- **52-Week Contribution Matrix**: 364-day activity heatmap tracking daily submissions and active days with 4-level green intensity tiles.
+- **Awards & History Badges**: "Daily Challenge", "7 Days Streak", "50 Days Badge", "Indic 22 Explorer", and "Polyglot 75".
+- **Difficulty Breakdown**: Categorized counters for Easy, Medium, and Hard solved questions.
+
+### Open-Data Provenance & Citations
+Challenge items are synthesized and standardized from leading open-access linguistic datasets:
+- **`ai4bharat/IN22-Gen`**: Indic generation and natural language translation pairs for 22 scheduled Indian languages.
+- **`ai4bharat/Aksharantar`**: Indic transliteration repository covering 21 Indic languages.
+- **`ai4bharat/Bhasha-Abhijnaanam`**: Native script and language identification benchmarks.
+- **`facebook/flores` (FLORES-200 / NLLB)**: Professional multi-way parallel evaluation corpus for Indic and foreign languages.
+- **`CohereLabs/Global-MMLU`**: Cultural and linguistic comprehension benchmarks.
+
 ## Deployment
 
 The LMS frontend is deployed on Vercel at `https://learn.vartalang.in`. Its separate

@@ -22,6 +22,7 @@ import {
   Sword,
   Target,
   Trophy,
+  X,
   XCircle,
   Zap,
 } from "lucide-react";
@@ -70,11 +71,11 @@ export default function ChallengesPage() {
   const [evaluating, setEvaluating] = useState(false);
   const [evalResult, setEvalResult] = useState<ChallengeEvaluateResponse | null>(null);
 
-  // User streak & session XP
+  // User streak & Total XP (persisted)
   const [userStreak, setUserStreak] = useState(1);
-  const [sessionXP, setSessionXP] = useState(0);
+  const [totalXP, setTotalXP] = useState(0);
 
-  // Load user streak on mount
+  // Load user streak & Total XP
   useEffect(() => {
     try {
       const s = getUserStreak(user?.email);
@@ -82,6 +83,20 @@ export default function ChallengesPage() {
     } catch {
       setUserStreak(1);
     }
+
+    challengeAPI
+      .progress()
+      .then((p) => {
+        if (p?.total_xp) setTotalXP(p.total_xp);
+        if (p?.active_streak) setUserStreak(p.active_streak);
+      })
+      .catch(() => {
+        // Fallback to local stored XP if available
+        try {
+          const stored = localStorage.getItem("vl_user_total_xp");
+          if (stored) setTotalXP(parseInt(stored, 10));
+        } catch {}
+      });
   }, [user]);
 
   // Fetch challenges
@@ -119,7 +134,7 @@ export default function ChallengesPage() {
       .finally(() => setBoardLoading(false));
   }, [boardLang]);
 
-  // Distinct language list from catalog and challenges
+  // Available languages metadata
   const availableLanguages = useMemo(() => {
     const map = new Map<string, { name: string; native: string; category: string }>();
 
@@ -178,7 +193,13 @@ export default function ChallengesPage() {
       });
       setEvalResult(res);
       if (res.is_correct && res.xp_earned > 0) {
-        setSessionXP((prev) => prev + res.xp_earned);
+        setTotalXP((prev) => {
+          const next = prev + res.xp_earned;
+          try {
+            localStorage.setItem("vl_user_total_xp", String(next));
+          } catch {}
+          return next;
+        });
         if (res.streak_count) {
           setUserStreak(res.streak_count);
         }
@@ -208,7 +229,7 @@ export default function ChallengesPage() {
 
   return (
     <RequireAuth>
-      <div className="cultural-page min-h-screen relative overflow-hidden flex flex-col justify-between">
+      <div className="cultural-page min-h-screen relative overflow-x-hidden flex flex-col justify-between">
         <Navbar />
 
         {/* Background Indian Monument Backdrop */}
@@ -229,50 +250,57 @@ export default function ChallengesPage() {
           }}
         />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16">
-          {/* Header & Stats Banner */}
-          <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-3 px-4 py-1.5 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 mb-4 shadow-sm">
-              <Sparkles className="w-4 h-4 text-amber-300 animate-pulse" />
-              <span className="text-xs sm:text-sm font-semibold text-amber-200">
-                Multilingual Arena • 31 Languages • 740+ Live Challenges
+        <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 pt-20 sm:pt-28 pb-14 w-full">
+          {/* Header & Stats Strip */}
+          <div className="text-center mb-6 sm:mb-8">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500/20 to-orange-500/20 border border-amber-500/30 mb-3 shadow-sm">
+              <Sparkles className="w-3.5 h-3.5 text-amber-300 animate-pulse" />
+              <span className="text-[11px] sm:text-xs font-semibold text-amber-200">
+                31 Languages • 740+ Live Challenges
               </span>
             </div>
-            <h1 className="font-kalam text-3xl sm:text-5xl md:text-6xl font-bold text-white mb-3 tracking-tight">
+            <h1 className="font-kalam text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-2 leading-tight">
               Multilingual Challenges
               <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-red-400 via-orange-300 to-amber-300">
-                Learn, Transliterate &amp; Conquer
+                Compete &amp; Master Scripts
               </span>
             </h1>
-            <p className="text-sm sm:text-base text-stone-300 max-w-2xl mx-auto leading-relaxed">
-              Test your vocabulary, script recognition, and transliteration skills across
-              all 22 Scheduled Indian languages, English, and in-demand world languages.
+            <p className="text-xs sm:text-sm text-stone-300 max-w-xl mx-auto leading-relaxed px-2">
+              Practice vocabulary, transliteration, and script recognition across 22 Scheduled Indian languages, English, and world languages.
             </p>
 
-            {/* Learner Dashboard Bar */}
-            <div className="flex flex-wrap items-center justify-center gap-3 sm:gap-6 mt-6">
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-stone-900/80 border border-amber-500/30 text-xs sm:text-sm text-stone-200 shadow-md">
-                <Flame className="w-4 h-4 text-orange-400 fill-orange-400" />
-                <span>Daily Streak:</span>
-                <span className="font-bold text-amber-400">{userStreak} Day{userStreak > 1 ? "s" : ""}</span>
+            {/* Mobile-First Learner Stats Strip (3 Columns on Mobile) */}
+            <div className="grid grid-cols-3 gap-2 sm:flex sm:flex-wrap sm:justify-center sm:gap-4 mt-4 max-w-md sm:max-w-none mx-auto">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 py-2 rounded-xl bg-stone-900/80 border border-amber-500/30 text-stone-200 shadow-md">
+                <Flame className="w-4 h-4 text-orange-400 fill-orange-400 shrink-0" />
+                <div className="text-center sm:text-left">
+                  <span className="text-[10px] sm:text-xs text-stone-400 block sm:inline sm:mr-1">Streak:</span>
+                  <span className="font-bold text-amber-400 text-xs sm:text-sm">{userStreak}d</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-stone-900/80 border border-red-500/30 text-xs sm:text-sm text-stone-200 shadow-md">
-                <Zap className="w-4 h-4 text-amber-300 fill-amber-300" />
-                <span>Session XP:</span>
-                <span className="font-bold text-amber-300">+{sessionXP} XP</span>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 py-2 rounded-xl bg-stone-900/80 border border-red-500/30 text-stone-200 shadow-md">
+                <Trophy className="w-4 h-4 text-amber-300 shrink-0" />
+                <div className="text-center sm:text-left">
+                  <span className="text-[10px] sm:text-xs text-stone-400 block sm:inline sm:mr-1">Total XP:</span>
+                  <span className="font-bold text-amber-300 text-xs sm:text-sm">{totalXP}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-2 px-4 py-2 rounded-xl bg-stone-900/80 border border-stone-700/60 text-xs sm:text-sm text-stone-300 shadow-md">
-                <Globe2 className="w-4 h-4 text-cyan-400" />
-                <span>Coverage:</span>
-                <span className="font-bold text-white">31 Languages</span>
+
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2 px-3 py-2 rounded-xl bg-stone-900/80 border border-stone-700/60 text-stone-300 shadow-md">
+                <Globe2 className="w-4 h-4 text-cyan-400 shrink-0" />
+                <div className="text-center sm:text-left">
+                  <span className="text-[10px] sm:text-xs text-stone-400 block sm:inline sm:mr-1">Covered:</span>
+                  <span className="font-bold text-white text-xs sm:text-sm">31 Langs</span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Category Tabs */}
-          <div className="flex justify-center mb-6">
-            <div className="inline-flex p-1.5 rounded-2xl bg-stone-900/80 border border-stone-700/60 backdrop-blur-md max-w-full overflow-x-auto">
+          {/* Category Tabs: Mobile-First 2x2 Grid or Flex */}
+          <div className="mb-5 max-w-lg sm:max-w-none mx-auto">
+            <div className="grid grid-cols-2 sm:flex sm:justify-center gap-1.5 p-1.5 rounded-2xl bg-stone-900/80 border border-stone-800 backdrop-blur-md">
               {[
                 { id: "all", label: "All Languages", count: "31" },
                 { id: "indian", label: "22 Scheduled Indian", count: "22" },
@@ -285,15 +313,15 @@ export default function ChallengesPage() {
                     setSelectedCategory(tab.id as CategoryFilter);
                     setSelectedLanguage("all");
                   }}
-                  className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs sm:text-sm font-semibold transition-all whitespace-nowrap flex items-center gap-2 ${
+                  className={`px-3 py-2 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-1.5 min-h-[40px] ${
                     selectedCategory === tab.id
-                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-lg shadow-orange-500/20"
+                      ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20"
                       : "text-stone-400 hover:text-stone-200 hover:bg-white/5"
                   }`}
                 >
-                  {tab.label}
+                  <span className="truncate">{tab.label}</span>
                   <span
-                    className={`text-[10px] px-1.5 py-0.5 rounded-full ${
+                    className={`text-[9px] px-1.5 py-0.2 rounded-full shrink-0 ${
                       selectedCategory === tab.id ? "bg-black/30 text-white" : "bg-stone-800 text-stone-400"
                     }`}
                   >
@@ -304,43 +332,49 @@ export default function ChallengesPage() {
             </div>
           </div>
 
-          {/* Interactive Filters: Language Chips, Type, Difficulty & Search */}
-          <div className="p-4 sm:p-6 rounded-2xl bg-stone-900/70 border border-stone-700/60 backdrop-blur-md mb-8">
-            <div className="flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-4 mb-4">
-              {/* Search Bar */}
-              <div className="relative flex-1">
-                <Search className="w-4 h-4 text-stone-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+          {/* Mobile-First Controls: Search, Type, Difficulty & Language Swipe Strip */}
+          <div className="p-3.5 sm:p-5 rounded-2xl bg-stone-900/80 border border-stone-800 backdrop-blur-md mb-6">
+            <div className="space-y-3">
+              {/* Search Bar with Clear Button */}
+              <div className="relative w-full">
+                <Search className="w-4 h-4 text-stone-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
-                  placeholder="Search by language, script (e.g. বাংলা, தமிழ்), or challenge..."
+                  placeholder="Search language, script (e.g. বাংলা, தமிழ்)..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyDown={(e) => e.key === "Enter" && fetchChallenges()}
-                  className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-stone-950/70 border border-stone-700/70 text-sm text-stone-200 placeholder-stone-500 focus:outline-none focus:border-orange-500 transition-colors"
+                  className="w-full pl-9 pr-8 py-2.5 rounded-xl bg-stone-950/80 border border-stone-800 text-xs sm:text-sm text-stone-200 placeholder-stone-500 focus:outline-none focus:border-orange-500 transition-colors"
                 />
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-500 hover:text-white"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                )}
               </div>
 
-              {/* Challenge Type Dropdown */}
-              <div className="flex flex-wrap sm:flex-nowrap gap-3">
+              {/* Side-by-Side Type & Difficulty Dropdowns */}
+              <div className="grid grid-cols-2 gap-2 sm:flex sm:items-center sm:gap-3">
                 <select
                   value={selectedType}
                   onChange={(e) => setSelectedType(e.target.value)}
-                  className="px-3 py-2.5 rounded-xl bg-stone-950/70 border border-stone-700/70 text-xs sm:text-sm text-stone-300 focus:outline-none focus:border-orange-500"
+                  className="w-full sm:w-auto px-2.5 py-2 rounded-xl bg-stone-950/80 border border-stone-800 text-[11px] sm:text-xs text-stone-300 focus:outline-none focus:border-orange-500 truncate"
                 >
-                  <option value="all">All Challenge Types</option>
-                  <option value="translation_match">Translation &amp; Meaning Match</option>
+                  <option value="all">All Types</option>
+                  <option value="translation_match">Translation &amp; Meaning</option>
                   <option value="transliteration">Transliteration &amp; Script</option>
                   <option value="script_identification">Script Identification</option>
-                  <option value="contextual_cloze">Contextual Cloze / Blanks</option>
+                  <option value="contextual_cloze">Contextual Cloze</option>
                 </select>
 
-                {/* Difficulty Dropdown */}
                 <select
                   value={selectedDifficulty}
                   onChange={(e) => setSelectedDifficulty(e.target.value)}
-                  className="px-3 py-2.5 rounded-xl bg-stone-950/70 border border-stone-700/70 text-xs sm:text-sm text-stone-300 focus:outline-none focus:border-orange-500"
+                  className="w-full sm:w-auto px-2.5 py-2 rounded-xl bg-stone-950/80 border border-stone-800 text-[11px] sm:text-xs text-stone-300 focus:outline-none focus:border-orange-500"
                 >
-                  <option value="all">All Difficulties</option>
+                  <option value="all">All Levels</option>
                   <option value="beginner">Beginner</option>
                   <option value="intermediate">Intermediate</option>
                   <option value="advanced">Advanced</option>
@@ -348,51 +382,50 @@ export default function ChallengesPage() {
 
                 <button
                   onClick={fetchChallenges}
-                  className="px-4 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs sm:text-sm font-semibold flex items-center gap-1.5 transition-all"
-                  title="Refresh challenges"
+                  className="col-span-2 sm:col-span-1 py-2 px-3 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all min-h-[36px]"
                 >
-                  <RefreshCw className={`w-4 h-4 ${loading ? "animate-spin" : ""}`} />
-                  <span>Filter</span>
+                  <RefreshCw className={`w-3.5 h-3.5 ${loading ? "animate-spin" : ""}`} />
+                  <span>Apply Filters</span>
                 </button>
               </div>
             </div>
 
-            {/* Language Selection Chips with Native Scripts */}
-            <div className="pt-2 border-t border-stone-800/80">
-              <div className="flex items-center justify-between text-xs text-stone-400 mb-2 font-medium">
-                <span>Select Language ({filteredLanguages.length} available):</span>
+            {/* Mobile-First Language Swipeable Chips (Horizontal on mobile, wraps on desktop) */}
+            <div className="mt-3.5 pt-3 border-t border-stone-800/80">
+              <div className="flex items-center justify-between text-[11px] text-stone-400 mb-2 font-medium">
+                <span>Select Language ({filteredLanguages.length}):</span>
                 {selectedLanguage !== "all" && (
                   <button
                     onClick={() => setSelectedLanguage("all")}
-                    className="text-amber-400 hover:underline text-[11px]"
+                    className="text-amber-400 hover:underline text-[10px]"
                   >
-                    Reset to All Languages
+                    Reset
                   </button>
                 )}
               </div>
-              <div className="flex flex-wrap gap-2 max-h-36 overflow-y-auto pr-1 scrollbar-thin">
+              <div className="flex gap-1.5 overflow-x-auto pb-1.5 scrollbar-none -mx-2 px-2 sm:mx-0 sm:px-0 sm:flex-wrap sm:max-h-36 sm:overflow-y-auto">
                 <button
                   onClick={() => setSelectedLanguage("all")}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                  className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-all ${
                     selectedLanguage === "all"
                       ? "bg-amber-500 text-black font-bold shadow-sm"
-                      : "bg-stone-800/70 text-stone-300 hover:bg-stone-800"
+                      : "bg-stone-800/80 text-stone-300 hover:bg-stone-700"
                   }`}
                 >
-                  All Languages
+                  All
                 </button>
                 {filteredLanguages.map((l) => (
                   <button
                     key={l.name}
                     onClick={() => setSelectedLanguage(l.name)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 font-script ${
+                    className={`px-2.5 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap shrink-0 transition-all flex items-center gap-1 font-script ${
                       selectedLanguage === l.name
-                        ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold shadow-md"
-                        : "bg-stone-800/70 text-stone-300 hover:bg-stone-800 hover:text-white"
+                        ? "bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold shadow-sm"
+                        : "bg-stone-800/70 text-stone-300 hover:bg-stone-700"
                     }`}
                   >
                     <span>{l.name}</span>
-                    <span className="opacity-70 text-[11px] font-normal">({l.native})</span>
+                    <span className="opacity-70 text-[10px]">({l.native})</span>
                   </button>
                 ))}
               </div>
@@ -401,23 +434,22 @@ export default function ChallengesPage() {
 
           {/* Error Message */}
           {error && (
-            <div className="mb-8 px-4 py-3 rounded-xl text-sm bg-red-500/10 border border-red-500/20 text-red-300">
+            <div className="mb-6 px-4 py-3 rounded-xl text-xs sm:text-sm bg-red-500/10 border border-red-500/20 text-red-300">
               {error}
             </div>
           )}
 
           {/* Challenge Cards Grid */}
           {loading ? (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-12">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="h-48 rounded-2xl bg-stone-900/60 border border-stone-800 animate-pulse" />
+                <div key={i} className="h-44 rounded-2xl bg-stone-900/60 border border-stone-800 animate-pulse" />
               ))}
             </div>
           ) : challenges.length === 0 ? (
-            <div className="p-8 sm:p-14 text-center rounded-3xl bg-stone-900/60 border border-stone-700/50 text-stone-400 mb-16">
-              <HelpCircle className="w-12 h-12 text-stone-500 mx-auto mb-3" />
-              <p className="text-base text-stone-300 font-medium mb-1">No challenges match your filter.</p>
-              <p className="text-xs text-stone-500 mb-4">Try clearing filters or selecting another language category.</p>
+            <div className="p-8 sm:p-12 text-center rounded-2xl bg-stone-900/60 border border-stone-800 text-stone-400 mb-12">
+              <HelpCircle className="w-10 h-10 text-stone-500 mx-auto mb-2" />
+              <p className="text-sm text-stone-300 font-medium mb-1">No challenges match your filter.</p>
               <button
                 onClick={() => {
                   setSelectedCategory("all");
@@ -426,41 +458,41 @@ export default function ChallengesPage() {
                   setSelectedDifficulty("all");
                   setSearchQuery("");
                 }}
-                className="px-4 py-2 rounded-xl bg-orange-500 text-white text-xs font-semibold hover:bg-orange-600 transition-all"
+                className="mt-3 px-4 py-2 rounded-xl bg-orange-500 text-white text-xs font-semibold hover:bg-orange-600 transition-all"
               >
-                Reset All Filters
+                Reset Filters
               </button>
             </div>
           ) : (
-            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6 mb-16">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5 mb-14">
               {challenges.map((c) => {
                 const Icon = ICONS[c.type] || Target;
                 const isRtl = RTL_LANGUAGES.has(c.language || "");
                 return (
                   <div
                     key={c.id}
-                    className="group relative p-5 rounded-2xl bg-stone-900/80 border border-stone-700/50 hover:border-orange-500/50 transition-all duration-200 flex flex-col justify-between shadow-lg hover:shadow-orange-500/10"
+                    className="group relative p-4 sm:p-5 rounded-2xl bg-stone-900/85 border border-stone-800 hover:border-orange-500/50 transition-all flex flex-col justify-between shadow-lg"
                   >
                     <div>
                       {/* Top Badges */}
-                      <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-semibold bg-stone-800 border border-stone-700/80 text-amber-300">
-                          <Icon className="w-3.5 h-3.5 text-amber-400" />
+                      <div className="flex items-center justify-between gap-1.5 mb-2.5">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-stone-800 text-amber-300">
+                          <Icon className="w-3 h-3 text-amber-400" />
                           <span className="capitalize">{c.type.replace(/_/g, " ")}</span>
                         </span>
                         <div className="flex items-center gap-1.5">
                           <span
-                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider ${
+                            className={`text-[9px] font-bold px-1.5 py-0.2 rounded uppercase ${
                               c.difficulty === "advanced"
-                                ? "bg-red-500/20 text-red-300 border border-red-500/30"
+                                ? "bg-red-500/20 text-red-300"
                                 : c.difficulty === "intermediate"
-                                ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                                : "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                                ? "bg-amber-500/20 text-amber-300"
+                                : "bg-emerald-500/20 text-emerald-300"
                             }`}
                           >
                             {c.difficulty || "Beginner"}
                           </span>
-                          <span className="text-[11px] font-bold text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+                          <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">
                             +{c.xp_reward} XP
                           </span>
                         </div>
@@ -468,15 +500,15 @@ export default function ChallengesPage() {
 
                       {/* Language Title & Native label */}
                       <div className="mb-2">
-                        <div className="flex items-baseline gap-2">
+                        <div className="flex items-baseline gap-1.5">
                           <span className="text-xs font-bold text-orange-400">{c.language}</span>
                           {c.language_native && (
-                            <span className="text-xs text-stone-400 font-script font-normal">
+                            <span className="text-[11px] text-stone-400 font-script">
                               ({c.language_native})
                             </span>
                           )}
                         </div>
-                        <h3 className="font-kalam text-lg sm:text-xl font-bold text-white group-hover:text-orange-300 transition-colors line-clamp-1">
+                        <h3 className="font-kalam text-base sm:text-lg font-bold text-white group-hover:text-orange-300 transition-colors line-clamp-1">
                           {c.title}
                         </h3>
                       </div>
@@ -485,7 +517,7 @@ export default function ChallengesPage() {
                       {c.prompt && (
                         <div
                           dir={isRtl ? "rtl" : "ltr"}
-                          className={`p-3 rounded-xl bg-stone-950/70 border border-stone-800 text-xs text-stone-200 mb-3 font-script leading-relaxed ${
+                          className={`p-2.5 rounded-xl bg-stone-950/80 border border-stone-800/80 text-xs text-stone-200 mb-2.5 font-script leading-relaxed ${
                             isRtl ? "text-right font-serif" : ""
                           }`}
                         >
@@ -493,18 +525,18 @@ export default function ChallengesPage() {
                         </div>
                       )}
 
-                      <p className="text-stone-400 text-xs line-clamp-2 leading-relaxed mb-4">
+                      <p className="text-stone-400 text-[11px] line-clamp-2 leading-relaxed mb-3">
                         {c.desc}
                       </p>
                     </div>
 
-                    {/* Solve Action Button */}
+                    {/* Solve Action Button - Touch friendly */}
                     <button
                       onClick={() => handleOpenChallenge(c)}
-                      className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-md active:scale-98"
+                      className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-98 min-h-[42px]"
                     >
                       <span>Play Challenge</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
                 );
@@ -513,27 +545,26 @@ export default function ChallengesPage() {
           )}
 
           {/* Weekly Leaderboard Section */}
-          <div className="p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-red-500/10 via-stone-900/80 to-orange-500/10 border border-red-500/20 max-w-3xl mx-auto mb-16 shadow-2xl">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-stone-800">
-              <div className="flex items-center gap-3">
-                <Trophy className="w-7 h-7 text-amber-400" />
+          <div className="p-4 sm:p-7 rounded-3xl bg-gradient-to-br from-red-500/10 via-stone-900/85 to-orange-500/10 border border-red-500/20 max-w-3xl mx-auto mb-14 shadow-xl">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-stone-800">
+              <div className="flex items-center gap-2.5">
+                <Trophy className="w-6 h-6 text-amber-400 shrink-0" />
                 <div>
-                  <h2 className="font-kalam text-2xl sm:text-3xl font-bold text-white leading-none">
-                    Weekly Multilingual Leaderboard
+                  <h2 className="font-kalam text-xl sm:text-2xl font-bold text-white leading-none">
+                    Weekly Leaderboard
                   </h2>
-                  <p className="text-xs text-stone-400 mt-1">
+                  <p className="text-[11px] text-stone-400 mt-0.5">
                     Top XP achievers competing across Indic and global languages
                   </p>
                 </div>
               </div>
 
-              {/* Leaderboard language filter */}
               <select
                 value={boardLang}
                 onChange={(e) => setBoardLang(e.target.value)}
-                className="px-3 py-1.5 rounded-lg bg-stone-950 border border-stone-700 text-xs text-stone-300 focus:outline-none"
+                className="w-full sm:w-auto px-2.5 py-1.5 rounded-lg bg-stone-950 border border-stone-700 text-xs text-stone-300 focus:outline-none"
               >
-                <option value="all">Global (All)</option>
+                <option value="all">Global (All Languages)</option>
                 <option value="Hindi">Hindi (हिंदी)</option>
                 <option value="Tamil">Tamil (தமிழ்)</option>
                 <option value="Telugu">Telugu (తెలుగు)</option>
@@ -547,21 +578,21 @@ export default function ChallengesPage() {
             </div>
 
             {boardLoading ? (
-              <div className="h-32 rounded-xl bg-white/5 animate-pulse" />
+              <div className="h-28 rounded-xl bg-white/5 animate-pulse" />
             ) : board.length === 0 ? (
-              <p className="text-stone-400 text-sm text-center py-6">
-                No scores recorded for this filter yet. Be the first on the leaderboard!
+              <p className="text-stone-400 text-xs text-center py-4">
+                No scores recorded for this filter yet.
               </p>
             ) : (
-              <ol className="space-y-2.5">
+              <ol className="space-y-2">
                 {board.map((row) => (
                   <li
                     key={row.rank + row.user_name}
-                    className="flex items-center justify-between gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10 hover:border-amber-500/30 transition-all text-sm"
+                    className="flex items-center justify-between gap-2 px-3 py-2.5 rounded-xl bg-white/5 border border-white/10 text-xs sm:text-sm"
                   >
-                    <div className="min-w-0 flex items-center gap-3">
+                    <div className="min-w-0 flex items-center gap-2.5">
                       <span
-                        className={`w-7 h-7 shrink-0 rounded-full flex items-center justify-center font-bold text-xs ${
+                        className={`w-6 h-6 shrink-0 rounded-full flex items-center justify-center font-bold text-xs ${
                           row.rank === 1
                             ? "bg-amber-400 text-black"
                             : row.rank === 2
@@ -571,14 +602,14 @@ export default function ChallengesPage() {
                             : "text-stone-500 bg-stone-800"
                         }`}
                       >
-                        {row.rank <= 3 ? <Medal className="w-3.5 h-3.5" /> : `#${row.rank}`}
+                        {row.rank <= 3 ? <Medal className="w-3 h-3" /> : `#${row.rank}`}
                       </span>
                       <div className="min-w-0">
                         <p className="truncate text-white font-medium">{row.user_name}</p>
-                        <span className="text-[11px] text-stone-400">{row.language}</span>
+                        <span className="text-[10px] text-stone-400">{row.language}</span>
                       </div>
                     </div>
-                    <span className="text-amber-300 font-bold text-sm tracking-wide">
+                    <span className="text-amber-300 font-bold text-xs sm:text-sm">
                       {row.xp} XP
                     </span>
                   </li>
@@ -587,54 +618,54 @@ export default function ChallengesPage() {
             )}
           </div>
 
-          {/* Start Learning / Explore CTA */}
+          {/* CTA */}
           <div className="text-center">
             <Link
               href="/learn"
-              className="inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white rounded-xl font-bold font-kalam text-lg transition-all shadow-xl hover:shadow-orange-500/20"
+              className="inline-flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white rounded-xl font-bold font-kalam text-base transition-all shadow-lg"
             >
-              Explore Full Courses <ArrowRight className="w-5 h-5" />
+              Explore Full Courses <ArrowRight className="w-4 h-4" />
             </Link>
           </div>
         </div>
 
-        {/* ── INTERACTIVE CHALLENGE ARENA MODAL ── */}
+        {/* ── MOBILE-FIRST INTERACTIVE ARENA MODAL (Bottom Sheet on Mobile, Centered on Tablet/Desktop) ── */}
         {activeChallenge && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200">
-            <div className="relative w-full max-w-2xl rounded-3xl bg-stone-900 border-2 border-stone-700/80 shadow-2xl p-6 sm:p-8 flex flex-col max-h-[90vh] overflow-y-auto">
+          <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/80 backdrop-blur-md animate-in fade-in duration-200">
+            <div className="relative w-full sm:max-w-xl md:max-w-2xl rounded-t-3xl sm:rounded-3xl bg-stone-900 border-t-2 sm:border-2 border-stone-700 p-4 sm:p-7 shadow-2xl flex flex-col max-h-[92vh] sm:max-h-[90vh] overflow-y-auto">
               {/* Modal Top Bar */}
-              <div className="flex items-center justify-between gap-4 mb-4 pb-3 border-b border-stone-800">
-                <div className="flex items-center gap-2">
-                  <span className="px-3 py-1 rounded-lg bg-orange-500/20 border border-orange-500/40 text-orange-300 text-xs font-bold font-script">
+              <div className="flex items-center justify-between gap-2 mb-3 pb-2.5 border-b border-stone-800">
+                <div className="flex items-center gap-1.5 flex-wrap min-w-0">
+                  <span className="px-2.5 py-0.5 rounded-md bg-orange-500/20 border border-orange-500/40 text-orange-300 text-[11px] font-bold font-script">
                     {activeChallenge.language} {activeChallenge.language_native ? `(${activeChallenge.language_native})` : ""}
                   </span>
-                  <span className="px-2.5 py-1 rounded-md bg-stone-800 text-stone-400 text-xs font-medium uppercase">
+                  <span className="px-2 py-0.5 rounded bg-stone-800 text-stone-400 text-[10px] font-medium uppercase truncate">
                     {activeChallenge.type.replace(/_/g, " ")}
                   </span>
                 </div>
-                <div className="flex items-center gap-3">
-                  <span className="text-xs font-bold text-amber-300 bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/30">
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[11px] font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
                     +{activeChallenge.xp_reward} XP
                   </span>
                   <button
                     onClick={() => setActiveChallenge(null)}
                     className="p-1 rounded-full text-stone-400 hover:text-white hover:bg-stone-800 transition-colors"
                   >
-                    <XCircle className="w-6 h-6" />
+                    <XCircle className="w-5 h-5 sm:w-6 sm:h-6" />
                   </button>
                 </div>
               </div>
 
               {/* Challenge Title & Prompt */}
-              <div className="mb-6">
-                <h3 className="font-kalam text-xl sm:text-2xl font-bold text-white mb-2">
+              <div className="mb-4">
+                <h3 className="font-kalam text-lg sm:text-xl font-bold text-white mb-1.5 leading-snug">
                   {activeChallenge.title}
                 </h3>
 
                 {activeChallenge.prompt && (
                   <div
                     dir={RTL_LANGUAGES.has(activeChallenge.language || "") ? "rtl" : "ltr"}
-                    className={`p-4 rounded-2xl bg-stone-950/80 border border-stone-800 text-white font-script text-base sm:text-lg font-medium leading-relaxed my-3 shadow-inner ${
+                    className={`p-3 sm:p-4 rounded-xl bg-stone-950/80 border border-stone-800 text-white font-script text-sm sm:text-base font-medium leading-relaxed my-2 shadow-inner ${
                       RTL_LANGUAGES.has(activeChallenge.language || "") ? "text-right font-serif" : ""
                     }`}
                   >
@@ -642,17 +673,17 @@ export default function ChallengesPage() {
                   </div>
                 )}
 
-                {/* Optional Hint Toggle */}
+                {/* Hint Toggle */}
                 {activeChallenge.hint && (
-                  <div className="mt-2">
+                  <div className="mt-1.5">
                     {showHint ? (
-                      <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200">
+                      <div className="p-2.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-xs text-amber-200">
                         💡 <span className="font-bold">Hint:</span> {activeChallenge.hint}
                       </div>
                     ) : (
                       <button
                         onClick={() => setShowHint(true)}
-                        className="text-xs text-stone-400 hover:text-amber-300 transition-colors inline-flex items-center gap-1"
+                        className="text-[11px] text-stone-400 hover:text-amber-300 transition-colors inline-flex items-center gap-1"
                       >
                         💡 Need a hint?
                       </button>
@@ -661,10 +692,10 @@ export default function ChallengesPage() {
                 )}
               </div>
 
-              {/* Input Area: Multiple Choice OR Free-text Input */}
-              <div className="mb-6">
+              {/* Input Area: Touch-Friendly Options */}
+              <div className="mb-4">
                 {activeChallenge.options && activeChallenge.options.length > 0 ? (
-                  <div className="grid sm:grid-cols-2 gap-3">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
                     {activeChallenge.options.map((opt, idx) => {
                       const isSelected = selectedAnswer === opt;
                       return (
@@ -673,39 +704,37 @@ export default function ChallengesPage() {
                           disabled={evaluating || evalResult !== null}
                           onClick={() => setSelectedAnswer(opt)}
                           dir={RTL_LANGUAGES.has(activeChallenge.language || "") && /[\u0600-\u06FF]/.test(opt) ? "rtl" : "ltr"}
-                          className={`p-3.5 rounded-xl border text-left text-sm font-medium transition-all font-script ${
+                          className={`p-3 rounded-xl border text-left text-xs sm:text-sm font-medium transition-all font-script min-h-[46px] flex items-center justify-between gap-2 ${
                             isSelected
                               ? "bg-orange-500/20 border-orange-500 text-white ring-2 ring-orange-500/40"
-                              : "bg-stone-950/60 border-stone-800 text-stone-300 hover:bg-stone-800/80 hover:border-stone-700"
+                              : "bg-stone-950/60 border-stone-800 text-stone-300 hover:bg-stone-800"
                           } ${evalResult !== null ? "cursor-default" : ""}`}
                         >
-                          <div className="flex items-center justify-between gap-2">
-                            <span>{opt}</span>
-                            <span
-                              className={`w-5 h-5 rounded-full border flex items-center justify-center text-xs ${
-                                isSelected ? "border-orange-400 bg-orange-500 text-white font-bold" : "border-stone-700 text-stone-500"
-                              }`}
-                            >
-                              {String.fromCharCode(65 + idx)}
-                            </span>
-                          </div>
+                          <span className="truncate">{opt}</span>
+                          <span
+                            className={`w-5 h-5 shrink-0 rounded-full border flex items-center justify-center text-[10px] ${
+                              isSelected ? "border-orange-400 bg-orange-500 text-white font-bold" : "border-stone-700 text-stone-500"
+                            }`}
+                          >
+                            {String.fromCharCode(65 + idx)}
+                          </span>
                         </button>
                       );
                     })}
                   </div>
                 ) : (
                   <div>
-                    <label className="block text-xs font-medium text-stone-300 mb-2">
-                      Type your answer (Unicode &amp; fuzzy evaluation supported):
+                    <label className="block text-xs font-medium text-stone-300 mb-1.5">
+                      Type your answer:
                     </label>
                     <input
                       type="text"
                       disabled={evaluating || evalResult !== null}
-                      placeholder="Type your answer in native script or transliteration..."
+                      placeholder="Type in native script or transliteration..."
                       value={selectedAnswer}
                       onChange={(e) => setSelectedAnswer(e.target.value)}
                       onKeyDown={(e) => e.key === "Enter" && !evaluating && !evalResult && handleEvaluate()}
-                      className="w-full px-4 py-3 rounded-xl bg-stone-950 border border-stone-700 text-white text-base font-script focus:outline-none focus:border-orange-500"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-stone-950 border border-stone-700 text-white text-sm font-script focus:outline-none focus:border-orange-500"
                     />
                   </div>
                 )}
@@ -714,32 +743,32 @@ export default function ChallengesPage() {
               {/* Evaluation Result Feedback Banner */}
               {evalResult && (
                 <div
-                  className={`p-4 rounded-2xl border mb-6 animate-in zoom-in-95 duration-150 ${
+                  className={`p-3 sm:p-4 rounded-xl border mb-4 animate-in zoom-in-95 duration-150 ${
                     evalResult.is_correct
                       ? "bg-emerald-500/15 border-emerald-500/40 text-emerald-200"
                       : "bg-rose-500/15 border-rose-500/40 text-rose-200"
                   }`}
                 >
-                  <div className="flex items-start gap-3">
+                  <div className="flex items-start gap-2.5">
                     {evalResult.is_correct ? (
-                      <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0 mt-0.5" />
+                      <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
                     ) : (
-                      <XCircle className="w-6 h-6 text-rose-400 shrink-0 mt-0.5" />
+                      <XCircle className="w-5 h-5 text-rose-400 shrink-0 mt-0.5" />
                     )}
-                    <div className="space-y-1">
+                    <div className="space-y-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <h4 className="font-bold text-base">
+                        <h4 className="font-bold text-sm sm:text-base">
                           {evalResult.is_correct ? "Correct! Well Done!" : "Not Quite Right"}
                         </h4>
                         {evalResult.xp_earned > 0 && (
-                          <span className="text-xs px-2 py-0.5 rounded-full bg-amber-400 text-black font-extrabold">
+                          <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-400 text-black font-extrabold">
                             +{evalResult.xp_earned} XP
                           </span>
                         )}
                       </div>
-                      <p className="text-xs text-stone-300">{evalResult.feedback}</p>
+                      <p className="text-xs text-stone-300 leading-relaxed">{evalResult.feedback}</p>
                       {evalResult.explanation && (
-                        <p className="text-xs text-stone-400 mt-2 pt-2 border-t border-white/10 font-script">
+                        <p className="text-xs text-stone-400 mt-1.5 pt-1.5 border-t border-white/10 font-script leading-relaxed">
                           📖 <span className="font-semibold text-stone-200">Explanation:</span> {evalResult.explanation}
                         </p>
                       )}
@@ -749,29 +778,29 @@ export default function ChallengesPage() {
               )}
 
               {/* Modal Action Buttons */}
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-stone-800">
+              <div className="flex items-center justify-end gap-2.5 pt-2.5 border-t border-stone-800">
                 {!evalResult ? (
                   <>
                     <button
                       onClick={() => setActiveChallenge(null)}
-                      className="px-4 py-2.5 rounded-xl text-stone-400 hover:text-white text-xs sm:text-sm font-semibold transition-colors"
+                      className="px-3.5 py-2 rounded-xl text-stone-400 hover:text-white text-xs font-semibold"
                     >
                       Cancel
                     </button>
                     <button
                       disabled={!selectedAnswer.trim() || evaluating}
                       onClick={handleEvaluate}
-                      className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 text-white text-xs sm:text-sm font-bold shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2"
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 disabled:opacity-50 text-white text-xs sm:text-sm font-bold shadow-md shadow-orange-500/20 transition-all flex items-center gap-1.5 min-h-[42px]"
                     >
                       {evaluating ? (
                         <>
-                          <RefreshCw className="w-4 h-4 animate-spin" />
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
                           <span>Checking...</span>
                         </>
                       ) : (
                         <>
                           <span>Submit Answer</span>
-                          <CheckCircle2 className="w-4 h-4" />
+                          <CheckCircle2 className="w-3.5 h-3.5" />
                         </>
                       )}
                     </button>
@@ -783,16 +812,16 @@ export default function ChallengesPage() {
                         setSelectedAnswer("");
                         setEvalResult(null);
                       }}
-                      className="px-4 py-2.5 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs sm:text-sm font-semibold transition-all"
+                      className="px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-semibold transition-all min-h-[40px]"
                     >
                       Retry
                     </button>
                     <button
                       onClick={handleNextChallenge}
-                      className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs sm:text-sm font-bold shadow-lg shadow-orange-500/20 transition-all flex items-center gap-2"
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white text-xs sm:text-sm font-bold shadow-md shadow-orange-500/20 transition-all flex items-center gap-1.5 min-h-[42px]"
                     >
                       <span>Next Challenge</span>
-                      <ArrowRight className="w-4 h-4" />
+                      <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </>
                 )}
