@@ -1,6 +1,6 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import { afterEach, describe, expect, it } from "vitest";
-import { SalesSection } from "@/app/dashboard/instructor/page";
+import { SalesSection } from "@/app/dashboard/instructor/SalesSection";
 import { formatSalesCurrency, sortSalesByRevenue } from "@/app/lib/sales";
 
 afterEach(cleanup);

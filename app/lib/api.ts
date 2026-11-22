@@ -150,6 +150,41 @@ export interface ChallengeOut {
   color: string;
   eta: string;
   xp_reward: number;
+  language?: string;
+  language_native?: string | null;
+  category?: string;
+  difficulty?: string;
+  prompt?: string | null;
+  options?: string[] | null;
+  explanation?: string | null;
+  hint?: string | null;
+  metadata_json?: Record<string, any> | null;
+}
+
+export interface ChallengeEvaluateRequest {
+  challenge_id: string;
+  user_answer: string;
+  time_taken_seconds?: number;
+}
+
+export interface ChallengeEvaluateResponse {
+  is_correct: boolean;
+  accuracy_percentage: number;
+  score: number;
+  xp_earned: number;
+  correct_answer: string;
+  explanation?: string | null;
+  feedback: string;
+  streak_count: number;
+  levenshtein_distance?: number | null;
+  similarity_ratio?: number | null;
+}
+
+export interface LanguageStatsOut {
+  name: string;
+  native: string;
+  category: string;
+  total_challenges: number;
 }
 
 export interface LeaderboardEntryOut {
@@ -304,9 +339,34 @@ export const careerAPI = {
   jobs: () => getJSON<JobPostingOut[]>("/careers/jobs"),
 };
 
+export interface ChallengeFilters {
+  category?: string;
+  language?: string;
+  challenge_type?: string;
+  difficulty?: string;
+  search?: string;
+  limit?: number;
+  offset?: number;
+}
+
 export const challengeAPI = {
-  list: () => getJSON<ChallengeOut[]>("/challenges"),
-  leaderboard: () => getJSON<LeaderboardEntryOut[]>("/challenges/leaderboard"),
+  list: (params?: ChallengeFilters) => {
+    const q = new URLSearchParams();
+    if (params?.category) q.set("category", params.category);
+    if (params?.language) q.set("language", params.language);
+    if (params?.challenge_type) q.set("challenge_type", params.challenge_type);
+    if (params?.difficulty) q.set("difficulty", params.difficulty);
+    if (params?.search) q.set("search", params.search);
+    if (params?.limit) q.set("limit", String(params.limit));
+    if (params?.offset) q.set("offset", String(params.offset));
+    const qs = q.toString();
+    return getJSON<ChallengeOut[]>("/challenges" + (qs ? "?" + qs : ""));
+  },
+  languages: () => getJSON<LanguageStatsOut[]>("/challenges/languages"),
+  evaluate: (payload: ChallengeEvaluateRequest) =>
+    getJSON<ChallengeEvaluateResponse>("/challenges/evaluate", send("POST", payload)),
+  leaderboard: (language?: string) =>
+    getJSON<LeaderboardEntryOut[]>("/challenges/leaderboard" + (language ? `?language=${encodeURIComponent(language)}` : "")),
 };
 
 export const certificationAPI = {

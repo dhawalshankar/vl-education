@@ -94,7 +94,7 @@ const STATUS: Record<
 > = {
   courses: "live",
   labs: "soon",
-  challenges: "soon",
+  challenges: "live",
   certificates: "soon",
   sessions: "soon",
   workshops: "soon",

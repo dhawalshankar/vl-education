@@ -1,4 +1,4 @@
-﻿// components/Navbar.tsx
+// components/Navbar.tsx
 "use client";
 import React, { useState } from "react";
 import Link from "next/link";
@@ -22,7 +22,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "My Learning", href: "/dashboard", ready: true, authOnly: true },
   { label: "Explore", href: "/learn", ready: true },
   { label: "Practice Labs", href: "/practice", ready: false },
-  { label: "Challenges", href: "/challenges", ready: false },
+  { label: "Challenges", href: "/challenges", ready: true },
   { label: "Certifications", href: "/certifications", ready: false },
   { label: "Community", href: "/community", ready: true },
 ];
