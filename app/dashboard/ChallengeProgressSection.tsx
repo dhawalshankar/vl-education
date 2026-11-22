@@ -84,25 +84,19 @@ export function ChallengeProgressSection() {
     totalChallenges > 0 ? (totalCompleted / totalChallenges) * 100 : 0
   );
 
-  // Build 52-week activity grid (364 days) based on real database records & streak history
+  // Build 52-week activity grid (364 days) anchored to user's local date
   const activityTiles: ActivityTile[] = useMemo(() => {
     const historySet = new Set(localStats.history || []);
 
+    // Index server-provided tiles by date
+    const dateMap = new Map<string, ActivityTile>();
     if (progress?.activity_grid && progress.activity_grid.length > 0) {
-      // Ensure every streak history day is guaranteed to display as an active green tile (level >= 1)
-      return progress.activity_grid.map((tile) => {
-        if (historySet.has(tile.date) && tile.count === 0) {
-          return {
-            ...tile,
-            count: 1,
-            level: 1,
-          };
-        }
-        return tile;
-      });
+      for (const t of progress.activity_grid) {
+        dateMap.set(t.date, t);
+      }
     }
 
-    // Fallback: build clean grid based on verified streak history & completed count
+    // Build 364-day grid ending on local today (handles UTC-vs-local timezone differences)
     const tiles: ActivityTile[] = [];
     const today = new Date();
     for (let i = 363; i >= 0; i--) {
@@ -113,9 +107,13 @@ export function ChallengeProgressSection() {
       const day = String(d.getDate()).padStart(2, "0");
       const dStr = `${y}-${m}-${day}`;
 
+      const serverTile = dateMap.get(dStr);
       const isStreakDay = historySet.has(dStr);
-      let count = isStreakDay ? 1 : 0;
-      if (i === 0 && totalCompleted > 0) {
+      let count = serverTile?.count ?? 0;
+      if (isStreakDay && count === 0) {
+        count = 1;
+      }
+      if (i === 0 && totalCompleted > 0 && count === 0) {
         count = Math.max(count, totalCompleted);
       }
       const level = count >= 3 ? 3 : count >= 2 ? 2 : count >= 1 ? 1 : 0;
