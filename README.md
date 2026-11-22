@@ -202,14 +202,19 @@ The **Challenges** section (`/challenges`) provides a full-scale, mobile-first, 
 ### Mobile-First UX & Typography
 - **Touch-Friendly Controls**: 44px+ minimum tap targets, compact 3-column stats strip on mobile, side-by-side dropdowns, and clear buttons.
 - **Horizontal Swipeable Language Carousel**: Rapidly switch between 31 languages with smooth touch scrolling without pushing challenge cards off-screen.
+- **Challenge Status Filtering**: Instant client-side filtering between `All Challenges`, `Unsolved`, and `Solved` (`✓ Solved` badges with `XP Claimed` / `Practice Again`).
 - **Responsive Arena Modal**: Transforms into a thumb-friendly bottom sheet on mobile devices and a centered modal on tablet/desktop.
 - **RTL & Complex Scripts**: Automatic `dir="rtl"` text alignment and font stacks for Urdu, Arabic, Sindhi, and Kashmiri.
 - **Total XP & Daily Streak**: Persisted total user XP and live streak celebrations.
 
-### Student Dashboard: LeetCode-Style Heatmap & Badges
-- **52-Week Contribution Matrix**: 364-day activity heatmap tracking daily submissions and active days with 4-level green intensity tiles.
-- **Awards & History Badges**: "Daily Challenge", "7 Days Streak", "50 Days Badge", "Indic 22 Explorer", and "Polyglot 75".
-- **Difficulty Breakdown**: Categorized counters for Easy, Medium, and Hard solved questions.
+### Student Dashboard: Activity Heatmap & Real Progress Tracking
+- **364-Day Activity Heatmap**: Powered by `react-activity-calendar` SVG rendering, accurately calibrated with real calendar dates and months.
+- **Streak & Activity Synchronization**: Every registered streak day in the learner's history is displayed as an active green tile (Level 1), with days featuring completed challenges rendered at higher intensity (Level 2/3) based on verified completions.
+- **Interactive Tooltips**: Native SVG hover inspection displaying exact activity metrics per date (e.g. `2 completed challenges on 2026-11-22` or `1 active learning day on 2026-11-23`).
+- **Real-Time Authentic Progress**: Displays verified total completed challenges, genuine XP scores, category breakdowns (22 Scheduled Indian, 8 Foreign Languages, English Mastery), and difficulty counters (Easy, Medium, Hard).
+- **Recently Solved Challenges**: Live list of recent submissions with native challenge titles, language tags, difficulty pills, and exact completion timestamps.
+- **Anti-Exploit Single-Award XP**: Challenges award XP strictly on first completion; repeat attempts switch to Practice Mode (`+0 XP`, `✓ Solved`, `Practice Again`) to maintain 100% leaderboard integrity.
+- **Real Leaderboard**: Real-time weekly leaderboard displaying genuine learners and verified challenge XP; zero mock bots or fake scores.
 
 ### Open-Data Provenance & Citations
 Challenge items are synthesized and standardized from leading open-access linguistic datasets:
