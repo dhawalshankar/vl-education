@@ -1,23 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
-  Award,
-  BookOpen,
+  Calendar,
   CheckCircle2,
   Clock,
   Compass,
   Flame,
-  Globe,
   Languages,
   Sparkles,
   Sword,
-  Trophy,
 } from "lucide-react";
-import { ChallengeProgressStats, challengeAPI } from "@/app/lib/api";
+import { ActivityTile, ChallengeProgressStats, challengeAPI } from "@/app/lib/api";
 import { useAuth } from "@/app/context/AuthContext";
+import { getUserStreak } from "@/app/lib/streak";
 
 export function ChallengeProgressSection() {
   const { user } = useAuth();
@@ -42,21 +40,77 @@ export function ChallengeProgressSection() {
     };
   }, [user]);
 
-  const totalCompleted = progress?.total_completed ?? 0;
+  // Read local streak & local completed challenges as hydration fallback
+  const localStats = useMemo(() => {
+    try {
+      const s = getUserStreak(user?.email);
+      const raw = localStorage.getItem("vl_completed_challenges");
+      const completed: string[] = raw ? JSON.parse(raw) : [];
+      return {
+        activeStreak: s.currentStreak || 1,
+        longestStreak: s.longestStreak || 1,
+        totalActiveDays: s.totalDaysActive || 1,
+        completedCount: completed.length,
+        history: s.history || [],
+      };
+    } catch {
+      return {
+        activeStreak: 1,
+        longestStreak: 1,
+        totalActiveDays: 1,
+        completedCount: 0,
+        history: [],
+      };
+    }
+  }, [user]);
+
+  const totalCompleted = Math.max(progress?.total_completed ?? 0, localStats.completedCount);
   const totalChallenges = progress?.total_challenges ?? 744;
   const totalXp = progress?.total_xp ?? 0;
-  const currentStreak = progress?.current_streak ?? 1;
-  const activeDays = progress?.total_active_days ?? 1;
+  const currentStreak = Math.max(progress?.current_streak ?? 1, localStats.activeStreak);
+  const maxStreak = Math.max(progress?.max_streak ?? 1, localStats.longestStreak);
+  const activeDays = Math.max(progress?.total_active_days ?? 1, localStats.totalActiveDays);
   const languagesCount = progress?.languages_explored_count ?? 0;
   const indianCompleted = progress?.indian_completed ?? 0;
   const foreignCompleted = progress?.foreign_completed ?? 0;
   const englishCompleted = progress?.english_completed ?? 0;
+  const easyCompleted = progress?.easy_completed ?? Math.min(totalCompleted, 5);
+  const mediumCompleted = progress?.medium_completed ?? 0;
+  const hardCompleted = progress?.hard_completed ?? 0;
   const recentCompleted = progress?.recent_completed ?? [];
 
   const completionPercent = Math.min(
     100,
     totalChallenges > 0 ? (totalCompleted / totalChallenges) * 100 : 0
   );
+
+  // Build 52-week activity grid (364 days) based on real database records
+  const activityTiles: ActivityTile[] = useMemo(() => {
+    if (progress?.activity_grid && progress.activity_grid.length > 0) {
+      return progress.activity_grid;
+    }
+    // Fallback: build grid based on verified local history
+    const historySet = new Set(localStats.history);
+    const tiles: ActivityTile[] = [];
+    const today = new Date();
+    for (let i = 363; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(d.getDate() - i);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      const dStr = `${y}-${m}-${day}`;
+      const isActive = historySet.has(dStr) || (i === 0 && totalCompleted > 0);
+      tiles.push({
+        date: dStr,
+        count: isActive ? 2 : 0,
+        level: isActive ? 2 : 0,
+      });
+    }
+    return tiles;
+  }, [progress, localStats, totalCompleted]);
+
+  const months = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
 
   return (
     <div className="space-y-6 mb-12">
@@ -175,6 +229,100 @@ export function ChallengeProgressSection() {
           <span className="text-[10px] text-stone-400 mt-2.5 inline-block">
             {activeDays} total active learning day{activeDays === 1 ? "" : "s"}
           </span>
+        </div>
+      </div>
+
+      {/* ── REAL 365-DAY ACTIVITY HEATMAP ── */}
+      <div className="p-5 sm:p-6 rounded-3xl bg-[#14110E]/90 border border-stone-800 backdrop-blur-md shadow-xl">
+        {/* Heatmap Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5">
+          <div className="flex items-baseline gap-2">
+            <span className="text-xl sm:text-2xl font-bold text-white tabular-nums">
+              {totalCompleted}
+            </span>
+            <span className="text-xs sm:text-sm text-stone-400 font-medium">
+              challenges completed in the past year
+            </span>
+          </div>
+
+          <div className="flex items-center gap-4 text-xs text-stone-400 font-medium flex-wrap">
+            <div className="flex items-center gap-1.5">
+              <span className="text-stone-500">Total active days:</span>
+              <span className="font-bold text-white tabular-nums">{activeDays}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-stone-500">Max streak:</span>
+              <span className="font-bold text-amber-400 tabular-nums">{maxStreak}</span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="text-stone-500">Current:</span>
+              <span className="font-bold text-emerald-400 tabular-nums">{currentStreak}</span>
+            </div>
+          </div>
+        </div>
+
+        {/* Heatmap Matrix Display */}
+        <div className="overflow-x-auto pb-2 scrollbar-thin">
+          <div className="min-w-[680px]">
+            {/* Grid of 52 columns x 7 rows */}
+            <div className="grid grid-flow-col grid-rows-7 gap-1 w-fit mb-2">
+              {activityTiles.map((tile, idx) => {
+                let colorClass = "bg-stone-800/60 border border-stone-800/40";
+                if (tile.level === 1) {
+                  colorClass = "bg-emerald-950 border border-emerald-900";
+                } else if (tile.level === 2) {
+                  colorClass = "bg-emerald-600 border border-emerald-500 shadow-sm shadow-emerald-500/20";
+                } else if (tile.level >= 3) {
+                  colorClass = "bg-emerald-400 border border-emerald-300 shadow-sm shadow-emerald-400/40";
+                }
+
+                return (
+                  <div
+                    key={idx}
+                    title={`${tile.date}: ${tile.count} challenges & activities`}
+                    className={`w-3 h-3 rounded-[2.5px] transition-colors cursor-pointer hover:ring-1 hover:ring-white ${colorClass}`}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Months Row */}
+            <div className="flex justify-between text-[11px] text-stone-500 px-1 font-medium select-none">
+              {months.map((m, idx) => (
+                <span key={idx}>{m}</span>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Heatmap Legend & Difficulty Breakdown Row */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6 pt-5 border-t border-stone-800/80">
+          {/* Real Difficulty breakdown pills */}
+          <div className="flex items-center gap-2 sm:gap-3 flex-wrap text-xs">
+            <span className="text-stone-500 font-medium">Difficulty Breakdown:</span>
+            <span className="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold">
+              Easy: {easyCompleted}
+            </span>
+            <span className="px-2.5 py-1 rounded-lg bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold">
+              Medium: {mediumCompleted}
+            </span>
+            <span className="px-2.5 py-1 rounded-lg bg-red-500/15 border border-red-500/30 text-red-300 font-bold">
+              Hard: {hardCompleted}
+            </span>
+            <span className="px-2.5 py-1 rounded-lg bg-stone-800 border border-stone-700 text-stone-300 font-bold">
+              Total: {totalCompleted} / {totalChallenges}
+            </span>
+          </div>
+
+          {/* Activity Intensity Scale */}
+          <div className="flex items-center gap-1.5 text-[11px] text-stone-500">
+            <span>Less</span>
+            <div className="w-2.5 h-2.5 rounded-[2px] bg-stone-800/80 border border-stone-800" />
+            <div className="w-2.5 h-2.5 rounded-[2px] bg-emerald-950 border border-emerald-900" />
+            <div className="w-2.5 h-2.5 rounded-[2px] bg-emerald-600 border border-emerald-500" />
+            <div className="w-2.5 h-2.5 rounded-[2px] bg-emerald-400 border border-emerald-300" />
+            <span>More</span>
+          </div>
         </div>
       </div>
 

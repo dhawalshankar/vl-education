@@ -178,6 +178,7 @@ export interface ChallengeEvaluateResponse {
   streak_count: number;
   levenshtein_distance?: number | null;
   similarity_ratio?: number | null;
+  already_completed?: boolean;
 }
 
 export interface LanguageStatsOut {
@@ -358,16 +359,28 @@ export interface RecentCompletedChallenge {
   completed_at: string;
 }
 
+export interface ActivityTile {
+  date: string;
+  count: number;
+  level: number;
+}
+
 export interface ChallengeProgressStats {
   total_completed: number;
   total_challenges: number;
   indian_completed: number;
   foreign_completed: number;
   english_completed: number;
+  easy_completed: number;
+  medium_completed: number;
+  hard_completed: number;
   total_xp: number;
   current_streak: number;
+  max_streak: number;
   total_active_days: number;
   languages_explored_count: number;
+  activity_grid: ActivityTile[];
+  completed_challenge_ids?: string[];
   recent_completed: RecentCompletedChallenge[];
 }
 

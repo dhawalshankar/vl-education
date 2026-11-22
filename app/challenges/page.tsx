@@ -74,8 +74,10 @@ export default function ChallengesPage() {
   // User streak & Total XP (persisted)
   const [userStreak, setUserStreak] = useState(1);
   const [totalXP, setTotalXP] = useState(0);
+  const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
+  const [statusFilter, setStatusFilter] = useState<"all" | "unsolved" | "solved">("all");
 
-  // Load user streak & Total XP
+  // Load user streak, Total XP & completed challenge IDs
   useEffect(() => {
     try {
       const s = getUserStreak(user?.email);
@@ -87,14 +89,27 @@ export default function ChallengesPage() {
     challengeAPI
       .progress()
       .then((p) => {
-        if (p?.total_xp) setTotalXP(p.total_xp);
+        if (typeof p?.total_xp === "number") {
+          setTotalXP(p.total_xp);
+          try {
+            localStorage.setItem("vl_user_total_xp", String(p.total_xp));
+          } catch {}
+        }
         if (p?.current_streak) setUserStreak(p.current_streak);
+        if (p?.completed_challenge_ids && Array.isArray(p.completed_challenge_ids)) {
+          setCompletedIds(new Set(p.completed_challenge_ids));
+          try {
+            localStorage.setItem("vl_completed_challenges", JSON.stringify(p.completed_challenge_ids));
+          } catch {}
+        }
       })
       .catch(() => {
         // Fallback to local stored XP if available
         try {
           const stored = localStorage.getItem("vl_user_total_xp");
           if (stored) setTotalXP(parseInt(stored, 10));
+          const raw = localStorage.getItem("vl_completed_challenges");
+          if (raw) setCompletedIds(new Set(JSON.parse(raw)));
         } catch {}
       });
   }, [user]);
@@ -192,25 +207,28 @@ export default function ChallengesPage() {
         user_answer: selectedAnswer.trim(),
       });
       setEvalResult(res);
-      if (res.is_correct && res.xp_earned > 0) {
-        setTotalXP((prev) => {
-          const next = prev + res.xp_earned;
+      if (res.is_correct) {
+        setCompletedIds((prev) => {
+          const next = new Set(prev);
+          next.add(activeChallenge.id);
           try {
-            localStorage.setItem("vl_user_total_xp", String(next));
+            localStorage.setItem("vl_completed_challenges", JSON.stringify(Array.from(next)));
           } catch {}
           return next;
         });
+
+        if (res.xp_earned > 0) {
+          setTotalXP((prev) => {
+            const next = prev + res.xp_earned;
+            try {
+              localStorage.setItem("vl_user_total_xp", String(next));
+            } catch {}
+            return next;
+          });
+        }
         if (res.streak_count) {
           setUserStreak(res.streak_count);
         }
-        try {
-          const raw = localStorage.getItem("vl_completed_challenges");
-          const arr: string[] = raw ? JSON.parse(raw) : [];
-          if (!arr.includes(activeChallenge.id)) {
-            arr.push(activeChallenge.id);
-            localStorage.setItem("vl_completed_challenges", JSON.stringify(arr));
-          }
-        } catch {}
       }
     } catch (err: any) {
       alert("Evaluation failed: " + (err.message || "Unknown error"));
@@ -380,6 +398,16 @@ export default function ChallengesPage() {
                   <option value="advanced">Advanced</option>
                 </select>
 
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value as any)}
+                  className="w-full sm:w-auto px-2.5 py-2 rounded-xl bg-stone-950/80 border border-stone-800 text-[11px] sm:text-xs text-stone-300 focus:outline-none focus:border-orange-500"
+                >
+                  <option value="all">All Status</option>
+                  <option value="unsolved">Unsolved</option>
+                  <option value="solved">Solved</option>
+                </select>
+
                 <button
                   onClick={fetchChallenges}
                   className="col-span-2 sm:col-span-1 py-2 px-3 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all min-h-[36px]"
@@ -446,16 +474,25 @@ export default function ChallengesPage() {
                 <div key={i} className="h-44 rounded-2xl bg-stone-900/60 border border-stone-800 animate-pulse" />
               ))}
             </div>
-          ) : challenges.length === 0 ? (
+          ) : challenges.filter((c) => {
+              if (statusFilter === "solved") return completedIds.has(c.id);
+              if (statusFilter === "unsolved") return !completedIds.has(c.id);
+              return true;
+            }).length === 0 ? (
             <div className="p-8 sm:p-12 text-center rounded-2xl bg-stone-900/60 border border-stone-800 text-stone-400 mb-12">
               <HelpCircle className="w-10 h-10 text-stone-500 mx-auto mb-2" />
-              <p className="text-sm text-stone-300 font-medium mb-1">No challenges match your filter.</p>
+              <p className="text-sm text-stone-300 font-medium mb-1">
+                {statusFilter === "solved"
+                  ? "You haven't solved any challenges matching this filter yet."
+                  : "No challenges match your filter."}
+              </p>
               <button
                 onClick={() => {
                   setSelectedCategory("all");
                   setSelectedLanguage("all");
                   setSelectedType("all");
                   setSelectedDifficulty("all");
+                  setStatusFilter("all");
                   setSearchQuery("");
                 }}
                 className="mt-3 px-4 py-2 rounded-xl bg-orange-500 text-white text-xs font-semibold hover:bg-orange-600 transition-all"
@@ -465,82 +502,120 @@ export default function ChallengesPage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 sm:gap-5 mb-14">
-              {challenges.map((c) => {
-                const Icon = ICONS[c.type] || Target;
-                const isRtl = RTL_LANGUAGES.has(c.language || "");
-                return (
-                  <div
-                    key={c.id}
-                    className="group relative p-4 sm:p-5 rounded-2xl bg-stone-900/85 border border-stone-800 hover:border-orange-500/50 transition-all flex flex-col justify-between shadow-lg"
-                  >
-                    <div>
-                      {/* Top Badges */}
-                      <div className="flex items-center justify-between gap-1.5 mb-2.5">
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-stone-800 text-amber-300">
-                          <Icon className="w-3 h-3 text-amber-400" />
-                          <span className="capitalize">{c.type.replace(/_/g, " ")}</span>
-                        </span>
-                        <div className="flex items-center gap-1.5">
-                          <span
-                            className={`text-[9px] font-bold px-1.5 py-0.2 rounded uppercase ${
-                              c.difficulty === "advanced"
-                                ? "bg-red-500/20 text-red-300"
-                                : c.difficulty === "intermediate"
-                                ? "bg-amber-500/20 text-amber-300"
-                                : "bg-emerald-500/20 text-emerald-300"
+              {challenges
+                .filter((c) => {
+                  if (statusFilter === "solved") return completedIds.has(c.id);
+                  if (statusFilter === "unsolved") return !completedIds.has(c.id);
+                  return true;
+                })
+                .map((c) => {
+                  const Icon = ICONS[c.type] || Target;
+                  const isRtl = RTL_LANGUAGES.has(c.language || "");
+                  const isCompleted = completedIds.has(c.id);
+                  return (
+                    <div
+                      key={c.id}
+                      className={`group relative p-4 sm:p-5 rounded-2xl transition-all flex flex-col justify-between shadow-lg ${
+                        isCompleted
+                          ? "bg-stone-900/90 border-2 border-emerald-500/40 hover:border-emerald-500/70"
+                          : "bg-stone-900/85 border border-stone-800 hover:border-orange-500/50"
+                      }`}
+                    >
+                      <div>
+                        {/* Top Badges */}
+                        <div className="flex items-center justify-between gap-1.5 mb-2.5">
+                          <div className="flex items-center gap-1.5">
+                            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-semibold bg-stone-800 text-amber-300">
+                              <Icon className="w-3 h-3 text-amber-400" />
+                              <span className="capitalize">{c.type.replace(/_/g, " ")}</span>
+                            </span>
+                            {isCompleted && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                                <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                                <span>Solved</span>
+                              </span>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            <span
+                              className={`text-[9px] font-bold px-1.5 py-0.2 rounded uppercase ${
+                                c.difficulty === "advanced"
+                                  ? "bg-red-500/20 text-red-300"
+                                  : c.difficulty === "intermediate"
+                                  ? "bg-amber-500/20 text-amber-300"
+                                  : "bg-emerald-500/20 text-emerald-300"
+                              }`}
+                            >
+                              {c.difficulty || "Beginner"}
+                            </span>
+                            <span
+                              className={`text-[10px] font-bold px-1.5 py-0.5 rounded ${
+                                isCompleted
+                                  ? "bg-stone-800 text-stone-400"
+                                  : "text-amber-400 bg-amber-500/10"
+                              }`}
+                            >
+                              {isCompleted ? "XP Claimed" : `+${c.xp_reward} XP`}
+                            </span>
+                          </div>
+                        </div>
+
+                        {/* Language Title & Native label */}
+                        <div className="mb-2">
+                          <div className="flex items-baseline gap-1.5">
+                            <span className="text-xs font-bold text-orange-400">{c.language}</span>
+                            {c.language_native && (
+                              <span className="text-[11px] text-stone-400 font-script">
+                                ({c.language_native})
+                              </span>
+                            )}
+                          </div>
+                          <h3 className="font-kalam text-base sm:text-lg font-bold text-white group-hover:text-orange-300 transition-colors line-clamp-1">
+                            {c.title}
+                          </h3>
+                        </div>
+
+                        {/* Question / Prompt preview */}
+                        {c.prompt && (
+                          <div
+                            dir={isRtl ? "rtl" : "ltr"}
+                            className={`p-2.5 rounded-xl bg-stone-950/80 border border-stone-800/80 text-xs text-stone-200 mb-2.5 font-script leading-relaxed ${
+                              isRtl ? "text-right font-serif" : ""
                             }`}
                           >
-                            {c.difficulty || "Beginner"}
-                          </span>
-                          <span className="text-[10px] font-bold text-amber-400 bg-amber-500/10 px-1.5 py-0.5 rounded">
-                            +{c.xp_reward} XP
-                          </span>
-                        </div>
+                            {c.prompt}
+                          </div>
+                        )}
+
+                        <p className="text-stone-400 text-[11px] line-clamp-2 leading-relaxed mb-3">
+                          {c.desc}
+                        </p>
                       </div>
 
-                      {/* Language Title & Native label */}
-                      <div className="mb-2">
-                        <div className="flex items-baseline gap-1.5">
-                          <span className="text-xs font-bold text-orange-400">{c.language}</span>
-                          {c.language_native && (
-                            <span className="text-[11px] text-stone-400 font-script">
-                              ({c.language_native})
-                            </span>
-                          )}
-                        </div>
-                        <h3 className="font-kalam text-base sm:text-lg font-bold text-white group-hover:text-orange-300 transition-colors line-clamp-1">
-                          {c.title}
-                        </h3>
-                      </div>
-
-                      {/* Question / Prompt preview */}
-                      {c.prompt && (
-                        <div
-                          dir={isRtl ? "rtl" : "ltr"}
-                          className={`p-2.5 rounded-xl bg-stone-950/80 border border-stone-800/80 text-xs text-stone-200 mb-2.5 font-script leading-relaxed ${
-                            isRtl ? "text-right font-serif" : ""
-                          }`}
-                        >
-                          {c.prompt}
-                        </div>
-                      )}
-
-                      <p className="text-stone-400 text-[11px] line-clamp-2 leading-relaxed mb-3">
-                        {c.desc}
-                      </p>
+                      {/* Solve Action Button - Touch friendly */}
+                      <button
+                        onClick={() => handleOpenChallenge(c)}
+                        className={`w-full py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-98 min-h-[42px] ${
+                          isCompleted
+                            ? "bg-stone-800 hover:bg-stone-700 text-emerald-300 border border-emerald-500/30"
+                            : "bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-500 text-white"
+                        }`}
+                      >
+                        {isCompleted ? (
+                          <>
+                            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            <span>Practice Again</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Play Challenge</span>
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </>
+                        )}
+                      </button>
                     </div>
-
-                    {/* Solve Action Button - Touch friendly */}
-                    <button
-                      onClick={() => handleOpenChallenge(c)}
-                      className="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-500 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-md active:scale-98 min-h-[42px]"
-                    >
-                      <span>Play Challenge</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
-                    </button>
-                  </div>
-                );
-              })}
+                  );
+                })}
             </div>
           )}
 
@@ -650,8 +725,14 @@ export default function ChallengesPage() {
                   </span>
                 </div>
                 <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-[11px] font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/30">
-                    +{activeChallenge.xp_reward} XP
+                  <span
+                    className={`text-[11px] font-bold px-2 py-0.5 rounded border ${
+                      completedIds.has(activeChallenge.id)
+                        ? "text-emerald-300 bg-emerald-500/10 border-emerald-500/30"
+                        : "text-amber-300 bg-amber-500/10 border-amber-500/30"
+                    }`}
+                  >
+                    {completedIds.has(activeChallenge.id) ? "XP Claimed (Practice)" : `+${activeChallenge.xp_reward} XP`}
                   </span>
                   <button
                     onClick={() => setActiveChallenge(null)}
@@ -766,11 +847,15 @@ export default function ChallengesPage() {
                         <h4 className="font-bold text-sm sm:text-base">
                           {evalResult.is_correct ? "Correct! Well Done!" : "Not Quite Right"}
                         </h4>
-                        {evalResult.xp_earned > 0 && (
+                        {evalResult.xp_earned > 0 ? (
                           <span className="text-[10px] px-1.5 py-0.2 rounded-full bg-amber-400 text-black font-extrabold">
                             +{evalResult.xp_earned} XP
                           </span>
-                        )}
+                        ) : evalResult.is_correct && evalResult.already_completed ? (
+                          <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">
+                            Practice Mode (0 Duplicate XP)
+                          </span>
+                        ) : null}
                       </div>
                       <p className="text-xs text-stone-300 leading-relaxed">{evalResult.feedback}</p>
                       {evalResult.explanation && (
