@@ -349,26 +349,26 @@ export interface ChallengeFilters {
   offset?: number;
 }
 
+export interface RecentCompletedChallenge {
+  challenge_id: string;
+  language: string;
+  category: string;
+  difficulty: string;
+  xp_earned: number;
+  completed_at: string;
+}
+
 export interface ChallengeProgressStats {
   total_completed: number;
   total_challenges: number;
-  beginner_completed: number;
-  intermediate_completed: number;
-  advanced_completed: number;
+  indian_completed: number;
+  foreign_completed: number;
+  english_completed: number;
   total_xp: number;
-  active_streak: number;
-  max_streak: number;
+  current_streak: number;
   total_active_days: number;
-  recent_submissions_count: number;
-  activity_grid: { date: string; count: number; level: number }[];
-  badges: {
-    id: string;
-    name: string;
-    status: string;
-    progress: number;
-    icon: string;
-    description: string;
-  }[];
+  languages_explored_count: number;
+  recent_completed: RecentCompletedChallenge[];
 }
 
 export const challengeAPI = {

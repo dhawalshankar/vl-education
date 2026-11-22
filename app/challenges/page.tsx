@@ -88,7 +88,7 @@ export default function ChallengesPage() {
       .progress()
       .then((p) => {
         if (p?.total_xp) setTotalXP(p.total_xp);
-        if (p?.active_streak) setUserStreak(p.active_streak);
+        if (p?.current_streak) setUserStreak(p.current_streak);
       })
       .catch(() => {
         // Fallback to local stored XP if available
