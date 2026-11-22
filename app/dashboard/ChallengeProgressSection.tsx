@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
@@ -84,13 +84,25 @@ export function ChallengeProgressSection() {
     totalChallenges > 0 ? (totalCompleted / totalChallenges) * 100 : 0
   );
 
-  // Build 52-week activity grid (364 days) based on real database records
+  // Build 52-week activity grid (364 days) based on real database records & streak history
   const activityTiles: ActivityTile[] = useMemo(() => {
+    const historySet = new Set(localStats.history || []);
+
     if (progress?.activity_grid && progress.activity_grid.length > 0) {
-      return progress.activity_grid;
+      // Ensure every streak history day is guaranteed to display as an active green tile (level >= 1)
+      return progress.activity_grid.map((tile) => {
+        if (historySet.has(tile.date) && tile.count === 0) {
+          return {
+            ...tile,
+            count: 1,
+            level: 1,
+          };
+        }
+        return tile;
+      });
     }
-    // Fallback: build grid based on verified local history
-    const historySet = new Set(localStats.history);
+
+    // Fallback: build clean grid based on verified streak history & completed count
     const tiles: ActivityTile[] = [];
     const today = new Date();
     for (let i = 363; i >= 0; i--) {
@@ -100,11 +112,17 @@ export function ChallengeProgressSection() {
       const m = String(d.getMonth() + 1).padStart(2, "0");
       const day = String(d.getDate()).padStart(2, "0");
       const dStr = `${y}-${m}-${day}`;
-      const isActive = historySet.has(dStr) || (i === 0 && totalCompleted > 0);
+
+      const isStreakDay = historySet.has(dStr);
+      let count = isStreakDay ? 1 : 0;
+      if (i === 0 && totalCompleted > 0) {
+        count = Math.max(count, totalCompleted);
+      }
+      const level = count >= 3 ? 3 : count >= 2 ? 2 : count >= 1 ? 1 : 0;
       tiles.push({
         date: dStr,
-        count: isActive ? 2 : 0,
-        level: isActive ? 2 : 0,
+        count: count,
+        level: level,
       });
     }
     return tiles;
@@ -273,8 +291,23 @@ export function ChallengeProgressSection() {
               blockMargin={4}
               blockRadius={2.5}
               fontSize={11}
+              showTotalCount={false}
+              renderBlock={(block, activity) =>
+                React.cloneElement(
+                  block,
+                  {
+                    style: { ...block.props.style, cursor: "pointer" },
+                  },
+                  <title>
+                    {activity.count === 0
+                      ? `No activity on ${activity.date}`
+                      : activity.count === 1
+                      ? `1 active learning day on ${activity.date}`
+                      : `${activity.count} completed challenges on ${activity.date}`}
+                  </title>
+                )
+              }
               labels={{
-                totalCount: "{{count}} challenges completed in the past year",
                 legend: {
                   less: "Less",
                   more: "More",
