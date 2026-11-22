@@ -1,4 +1,4 @@
-﻿// app/lib/api.ts
+// app/lib/api.ts
 const API_ORIGIN = (process.env.NEXT_PUBLIC_LMS_API_URL || "https://vl-lms-backend.onrender.com").replace(/\/$/, "");
 const BASE = API_ORIGIN + "/api/v1";
 let warmupRequest: Promise<void> | null = null;
@@ -313,6 +313,35 @@ export const certificationAPI = {
   list: () => getJSON<CertificationOut[]>("/certifications"),
   verify: (certificateId: string) =>
     getJSON<CertificationVerifyResponse>("/certifications/verify/" + encodeURIComponent(certificateId)),
+};
+
+export interface UserStreakOut {
+  currentStreak: number;
+  longestStreak: number;
+  lastVisitDate: string;
+  totalDaysActive: number;
+  history: string[];
+}
+
+export const userAPI = {
+  getStreak: async (): Promise<UserStreakOut | null> => {
+    try {
+      const res = await authFetch("/users/streak");
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
+  recordStreakHeartbeat: async (localDate?: string): Promise<UserStreakOut | null> => {
+    try {
+      const res = await authFetch("/users/streak/heartbeat", send("POST", { localDate }));
+      if (!res.ok) return null;
+      return await res.json();
+    } catch {
+      return null;
+    }
+  },
 };
 
 /* ── Learning catalog / player (matches live openapi.json) ── */

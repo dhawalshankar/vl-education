@@ -1,19 +1,20 @@
 "use client";
 
 import { useEffect, useState, useCallback } from "react";
+import { userAPI } from "@/app/lib/api";
 
 /**
- * ── Client-side Streak Tracker ──────────────────────────────────────────
- * TODO: Connect to backend API: POST /api/v1/users/streak/heartbeat
- * Currently, streak history is maintained in browser localStorage as a fallback.
- * When the backend streak service is ready, replace/hydrate localStorage with
- * the database-backed user activity record so streaks persist across devices.
+ * ── Client & Backend Synchronized Streak Tracker ────────────────────────
+ * Tracks learner presence, consecutive daily visits, and streaks.
+ * Synchronizes across devices via the backend /api/v1/users/streak/heartbeat API,
+ * while maintaining responsive offline/localStorage caching as a fallback.
  */
 export interface UserStreak {
   currentStreak: number;
   longestStreak: number;
   lastVisitDate: string; // "YYYY-MM-DD"
   totalDaysActive: number;
+  totalActiveDays?: number; // alias for totalDaysActive to support UI consumers
   history: string[]; // ["YYYY-MM-DD", ...]
 }
 
@@ -45,15 +46,38 @@ export function getStreakStorageKey(userEmailOrId?: string | null): string {
   return `vl-streak-${safeId}`;
 }
 
+/** Normalizes raw or server streak data into a safe UserStreak record */
+export function normalizeStreak(data: {
+  currentStreak?: number;
+  longestStreak?: number;
+  lastVisitDate?: string;
+  totalDaysActive?: number;
+  totalActiveDays?: number;
+  history?: string[];
+}): UserStreak {
+  const activeDays = data.totalDaysActive ?? data.totalActiveDays ?? 1;
+  const today = formatLocalDate();
+  return {
+    currentStreak: Math.max(1, data.currentStreak || 1),
+    longestStreak: Math.max(1, data.longestStreak || 1),
+    lastVisitDate: data.lastVisitDate || today,
+    totalDaysActive: activeDays,
+    totalActiveDays: activeDays,
+    history: Array.isArray(data.history) && data.history.length > 0 ? data.history : [today],
+  };
+}
+
 /** Reads streak for the given user, or initializes it if not found */
 export function getUserStreak(userEmailOrId?: string | null): UserStreak {
   if (typeof window === "undefined") {
+    const today = formatLocalDate();
     return {
       currentStreak: 1,
       longestStreak: 1,
-      lastVisitDate: formatLocalDate(),
+      lastVisitDate: today,
       totalDaysActive: 1,
-      history: [formatLocalDate()],
+      totalActiveDays: 1,
+      history: [today],
     };
   }
 
@@ -67,6 +91,7 @@ export function getUserStreak(userEmailOrId?: string | null): UserStreak {
       longestStreak: 1,
       lastVisitDate: today,
       totalDaysActive: 1,
+      totalActiveDays: 1,
       history: [today],
     };
     try {
@@ -79,13 +104,7 @@ export function getUserStreak(userEmailOrId?: string | null): UserStreak {
 
   try {
     const parsed = JSON.parse(raw);
-    return {
-      currentStreak: Math.max(1, parsed.currentStreak || 1),
-      longestStreak: Math.max(1, parsed.longestStreak || 1),
-      lastVisitDate: parsed.lastVisitDate || formatLocalDate(),
-      totalDaysActive: Math.max(1, parsed.totalDaysActive || 1),
-      history: Array.isArray(parsed.history) ? parsed.history : [formatLocalDate()],
-    };
+    return normalizeStreak(parsed);
   } catch {
     const today = formatLocalDate();
     return {
@@ -93,6 +112,7 @@ export function getUserStreak(userEmailOrId?: string | null): UserStreak {
       longestStreak: 1,
       lastVisitDate: today,
       totalDaysActive: 1,
+      totalActiveDays: 1,
       history: [today],
     };
   }
@@ -113,30 +133,30 @@ export function recordDailyActivity(userEmailOrId?: string | null): UserStreak {
 
   if (diff === 0) {
     // Already logged in today: preserve current streak
-    updated = {
+    updated = normalizeStreak({
       ...current,
       lastVisitDate: today,
       history: current.history.includes(today) ? current.history : [...current.history, today],
-    };
+    });
   } else if (diff === 1) {
     // Visited yesterday: streak continues!
     const newStreak = current.currentStreak + 1;
-    updated = {
+    updated = normalizeStreak({
       currentStreak: newStreak,
       longestStreak: Math.max(current.longestStreak, newStreak),
       lastVisitDate: today,
       totalDaysActive: current.totalDaysActive + 1,
       history: [...current.history, today].slice(-30), // keep last 30 days
-    };
+    });
   } else if (diff > 1) {
     // Missed a day or more: reset streak to 1, start new streak today
-    updated = {
+    updated = normalizeStreak({
       currentStreak: 1,
       longestStreak: current.longestStreak,
       lastVisitDate: today,
       totalDaysActive: current.totalDaysActive + 1,
       history: [...current.history, today].slice(-30),
-    };
+    });
   }
 
   try {
@@ -144,6 +164,25 @@ export function recordDailyActivity(userEmailOrId?: string | null): UserStreak {
     window.dispatchEvent(new CustomEvent(STREAK_EVENT, { detail: { key, streak: updated } }));
   } catch {
     // ignore
+  }
+
+  // Asynchronously record heartbeat with backend when online to sync across devices
+  if (typeof window !== "undefined" && userEmailOrId) {
+    userAPI
+      .recordStreakHeartbeat(today)
+      .then((serverStreak) => {
+        if (!serverStreak) return;
+        const synced = normalizeStreak(serverStreak);
+        try {
+          localStorage.setItem(key, JSON.stringify(synced));
+          window.dispatchEvent(new CustomEvent(STREAK_EVENT, { detail: { key, streak: synced } }));
+        } catch {
+          // ignore
+        }
+      })
+      .catch(() => {
+        // network failure, local state remains
+      });
   }
 
   return updated;
@@ -159,9 +198,31 @@ export function useUserStreak(userEmailOrId?: string | null, enabled = true) {
           longestStreak: 0,
           lastVisitDate: "",
           totalDaysActive: 0,
+          totalActiveDays: 0,
           history: [],
         }
   );
+
+  const syncBackend = useCallback(async () => {
+    if (!enabled || !userEmailOrId) return;
+    try {
+      const today = formatLocalDate();
+      const serverStreak = await userAPI.recordStreakHeartbeat(today);
+      if (serverStreak) {
+        const synced = normalizeStreak(serverStreak);
+        const key = getStreakStorageKey(userEmailOrId);
+        try {
+          localStorage.setItem(key, JSON.stringify(synced));
+        } catch {
+          // ignore
+        }
+        setStreak(synced);
+        window.dispatchEvent(new CustomEvent(STREAK_EVENT, { detail: { key, streak: synced } }));
+      }
+    } catch {
+      // ignore
+    }
+  }, [enabled, userEmailOrId]);
 
   const refreshStreak = useCallback(() => {
     if (!enabled || !userEmailOrId) return;
@@ -174,7 +235,11 @@ export function useUserStreak(userEmailOrId?: string | null, enabled = true) {
       return;
     }
 
-    refreshStreak();
+    // Hydrate immediately from local cache
+    setStreak(getUserStreak(userEmailOrId));
+
+    // Sync across devices via backend heartbeat
+    syncBackend();
 
     const handleUpdate = (e: Event) => {
       const custom = e as CustomEvent;
@@ -194,7 +259,7 @@ export function useUserStreak(userEmailOrId?: string | null, enabled = true) {
       window.removeEventListener(STREAK_EVENT, handleUpdate);
       window.removeEventListener("storage", handleUpdate);
     };
-  }, [enabled, userEmailOrId, refreshStreak]);
+  }, [enabled, userEmailOrId, syncBackend]);
 
-  return { streak, recordActivity: refreshStreak };
+  return { streak, recordActivity: refreshStreak, syncBackend };
 }

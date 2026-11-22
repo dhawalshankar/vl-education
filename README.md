@@ -183,7 +183,7 @@ Auth is handled client-side via `AuthContext`, which stores the LMS `accessToken
 
 `app/lib/api.ts` wraps `fetch` with automatic Bearer-token injection, retries failed GET requests once for sleeping backend instances, and provides typed API clients for authentication, courses, enrollments, learning, instructors, and administration. Protected pages redirect unauthenticated users to `/auth/login`.
 
-Daily streaks are currently stored per user in browser `localStorage` by `app/lib/streak.ts`. The file documents the future backend heartbeat integration.
+Daily streaks are synchronized across devices using the backend heartbeat API (`POST /api/v1/users/streak/heartbeat` and `GET /api/v1/users/streak`), with responsive client-side caching in `localStorage` by `app/lib/streak.ts`.
 
 ## Deployment
 
