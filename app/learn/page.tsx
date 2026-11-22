@@ -28,7 +28,7 @@ interface Row {
 
 const SECTIONS: { key: Section; title: string; sub?: string }[] = [
   { key: "indian", title: "Indian languages", sub: "The 22 scheduled languages of India" },
-  { key: "english", title: "English" },
+  { key: "english", title: "English and more", sub: "English, Indian Sign Language (ISL), Braille & Garhwali" },
   { key: "foreign", title: "Foreign languages", sub: "In-demand languages for study, work and travel" },
   { key: "other", title: "More languages" },
 ];
@@ -36,6 +36,9 @@ const SECTIONS: { key: Section; title: string; sub?: string }[] = [
 const POPULARITY_ORDER = [
   "Hindi",
   "English",
+  "Indian Sign Language (ISL)",
+  "Braille",
+  "Garhwali",
   "Bengali",
   "Marathi",
   "Telugu",
@@ -130,7 +133,7 @@ export default function LearnPage() {
             </span>
           </h1>
           <p className="text-lg text-stone-300 max-w-2xl mx-auto">
-            India&apos;s 22 scheduled languages, English and in-demand foreign languages.
+            India&apos;s 22 scheduled languages, English, ISL, Braille, Garhwali and in-demand foreign languages.
           </p>
           {!loading && !error && (
             <p className="text-sm text-stone-500 mt-3">
