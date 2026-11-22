@@ -182,6 +182,14 @@ export default function ChallengesPage() {
         if (res.streak_count) {
           setUserStreak(res.streak_count);
         }
+        try {
+          const raw = localStorage.getItem("vl_completed_challenges");
+          const arr: string[] = raw ? JSON.parse(raw) : [];
+          if (!arr.includes(activeChallenge.id)) {
+            arr.push(activeChallenge.id);
+            localStorage.setItem("vl_completed_challenges", JSON.stringify(arr));
+          }
+        } catch {}
       }
     } catch (err: any) {
       alert("Evaluation failed: " + (err.message || "Unknown error"));

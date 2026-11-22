@@ -17,6 +17,7 @@ import { useAuth } from "@/app/context/AuthContext";
 import { enrollmentAPI } from "@/app/lib/api";
 import { useApi } from "@/app/lib/useApi";
 import { slugify } from "@/app/lib/languages";
+import { ChallengeProgressSection } from "./ChallengeProgressSection";
 
 export default function StudentDashboard() {
   const { user, loading: authLoading } = useAuth();
@@ -137,7 +138,7 @@ export default function StudentDashboard() {
         )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-12">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
           {stats.map((s) => {
             const Icon = s.icon;
             return (
@@ -156,6 +157,9 @@ export default function StudentDashboard() {
             );
           })}
         </div>
+
+        {/* Challenge Progress & Heatmap Awards Section */}
+        <ChallengeProgressSection />
 
         {/* Section Heading */}
         <div className="flex items-center justify-between mb-6">

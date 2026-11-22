@@ -349,6 +349,28 @@ export interface ChallengeFilters {
   offset?: number;
 }
 
+export interface ChallengeProgressStats {
+  total_completed: number;
+  total_challenges: number;
+  beginner_completed: number;
+  intermediate_completed: number;
+  advanced_completed: number;
+  total_xp: number;
+  active_streak: number;
+  max_streak: number;
+  total_active_days: number;
+  recent_submissions_count: number;
+  activity_grid: { date: string; count: number; level: number }[];
+  badges: {
+    id: string;
+    name: string;
+    status: string;
+    progress: number;
+    icon: string;
+    description: string;
+  }[];
+}
+
 export const challengeAPI = {
   list: (params?: ChallengeFilters) => {
     const q = new URLSearchParams();
@@ -363,6 +385,7 @@ export const challengeAPI = {
     return getJSON<ChallengeOut[]>("/challenges" + (qs ? "?" + qs : ""));
   },
   languages: () => getJSON<LanguageStatsOut[]>("/challenges/languages"),
+  progress: () => getJSON<ChallengeProgressStats>("/challenges/progress"),
   evaluate: (payload: ChallengeEvaluateRequest) =>
     getJSON<ChallengeEvaluateResponse>("/challenges/evaluate", send("POST", payload)),
   leaderboard: (language?: string) =>
