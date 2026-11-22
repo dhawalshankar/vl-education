@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import {
   ArrowRight,
-  Calendar,
   CheckCircle2,
   Clock,
   Compass,
@@ -13,6 +12,7 @@ import {
   Sparkles,
   Sword,
 } from "lucide-react";
+import { ActivityCalendar } from "react-activity-calendar";
 import { ActivityTile, ChallengeProgressStats, challengeAPI } from "@/app/lib/api";
 import { useAuth } from "@/app/context/AuthContext";
 import { getUserStreak } from "@/app/lib/streak";
@@ -109,28 +109,6 @@ export function ChallengeProgressSection() {
     }
     return tiles;
   }, [progress, localStats, totalCompleted]);
-
-  // Group the 364 tiles into 52 weekly columns (7 days each) for pixel-perfect month alignment
-  const weekColumns = useMemo(() => {
-    const cols: { weekIndex: number; monthLabel: string; days: ActivityTile[] }[] = [];
-    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    let lastMonth = -1;
-
-    for (let w = 0; w < 52; w++) {
-      const days = activityTiles.slice(w * 7, (w + 1) * 7);
-      let monthLabel = "";
-      if (days.length > 0) {
-        const firstDay = new Date(days[0].date + "T00:00:00");
-        const m = firstDay.getMonth();
-        if (m !== lastMonth) {
-          monthLabel = monthNames[m];
-          lastMonth = m;
-        }
-      }
-      cols.push({ weekIndex: w, monthLabel, days });
-    }
-    return cols;
-  }, [activityTiles]);
 
   return (
     <div className="space-y-6 mb-12">
@@ -281,56 +259,33 @@ export function ChallengeProgressSection() {
           </div>
         </div>
 
-        {/* Heatmap Matrix Display */}
-        <div className="overflow-x-auto pb-2 scrollbar-thin">
-          <div className="w-fit">
-            {/* 52 Weekly Columns */}
-            <div className="flex gap-1 mb-2">
-              {weekColumns.map((col) => (
-                <div key={col.weekIndex} className="flex flex-col gap-1">
-                  {col.days.map((tile, dayIdx) => {
-                    let colorClass = "bg-stone-800/60 border border-stone-800/40";
-                    if (tile.level === 1) {
-                      colorClass = "bg-emerald-950 border border-emerald-900";
-                    } else if (tile.level === 2) {
-                      colorClass = "bg-emerald-600 border border-emerald-500 shadow-sm shadow-emerald-500/20";
-                    } else if (tile.level >= 3) {
-                      colorClass = "bg-emerald-400 border border-emerald-300 shadow-sm shadow-emerald-400/40";
-                    }
-
-                    return (
-                      <div
-                        key={dayIdx}
-                        title={`${tile.date}: ${tile.count} challenges & activities`}
-                        className={`w-3 h-3 rounded-[2.5px] transition-colors cursor-pointer hover:ring-1 hover:ring-white ${colorClass}`}
-                      />
-                    );
-                  })}
-                </div>
-              ))}
-            </div>
-
-            {/* Months Row Aligned Column-by-Column */}
-            <div className="flex gap-1 select-none">
-              {weekColumns.map((col) => (
-                <div
-                  key={col.weekIndex}
-                  className="w-3 text-[10px] text-stone-500 font-medium relative h-4 overflow-visible"
-                >
-                  {col.monthLabel && (
-                    <span className="absolute left-0 top-0 whitespace-nowrap">
-                      {col.monthLabel}
-                    </span>
-                  )}
-                </div>
-              ))}
-            </div>
+        {/* Heatmap Matrix Display (Powered by ActivityCalendar) */}
+        <div className="overflow-x-auto pb-2 scrollbar-thin text-stone-400">
+          <div className="w-fit min-w-[700px] py-1">
+            <ActivityCalendar
+              data={activityTiles}
+              loading={loading}
+              colorScheme="dark"
+              theme={{
+                dark: ["#231f1c", "#064e3b", "#047857", "#10b981", "#34d399"],
+              }}
+              blockSize={12}
+              blockMargin={4}
+              blockRadius={2.5}
+              fontSize={11}
+              labels={{
+                totalCount: "{{count}} challenges completed in the past year",
+                legend: {
+                  less: "Less",
+                  more: "More",
+                },
+              }}
+            />
           </div>
         </div>
 
-        {/* Heatmap Legend & Difficulty Breakdown Row */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-6 pt-5 border-t border-stone-800/80">
-          {/* Real Difficulty breakdown pills */}
+        {/* Difficulty Breakdown Row */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-4 pt-4 border-t border-stone-800/80">
           <div className="flex items-center gap-2 sm:gap-3 flex-wrap text-xs">
             <span className="text-stone-500 font-medium">Difficulty Breakdown:</span>
             <span className="px-2.5 py-1 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-bold">
@@ -345,16 +300,6 @@ export function ChallengeProgressSection() {
             <span className="px-2.5 py-1 rounded-lg bg-stone-800 border border-stone-700 text-stone-300 font-bold">
               Total: {totalCompleted} / {totalChallenges}
             </span>
-          </div>
-
-          {/* Activity Intensity Scale */}
-          <div className="flex items-center gap-1.5 text-[11px] text-stone-500">
-            <span>Less</span>
-            <div className="w-2.5 h-2.5 rounded-[2px] bg-stone-800/80 border border-stone-800" />
-            <div className="w-2.5 h-2.5 rounded-[2px] bg-emerald-950 border border-emerald-900" />
-            <div className="w-2.5 h-2.5 rounded-[2px] bg-emerald-600 border border-emerald-500" />
-            <div className="w-2.5 h-2.5 rounded-[2px] bg-emerald-400 border border-emerald-300" />
-            <span>More</span>
           </div>
         </div>
       </div>
