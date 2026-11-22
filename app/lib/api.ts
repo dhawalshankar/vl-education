@@ -352,6 +352,7 @@ export interface ChallengeFilters {
 
 export interface RecentCompletedChallenge {
   challenge_id: string;
+  title?: string | null;
   language: string;
   category: string;
   difficulty: string;

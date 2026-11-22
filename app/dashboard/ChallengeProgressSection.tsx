@@ -110,7 +110,27 @@ export function ChallengeProgressSection() {
     return tiles;
   }, [progress, localStats, totalCompleted]);
 
-  const months = ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov"];
+  // Group the 364 tiles into 52 weekly columns (7 days each) for pixel-perfect month alignment
+  const weekColumns = useMemo(() => {
+    const cols: { weekIndex: number; monthLabel: string; days: ActivityTile[] }[] = [];
+    const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let lastMonth = -1;
+
+    for (let w = 0; w < 52; w++) {
+      const days = activityTiles.slice(w * 7, (w + 1) * 7);
+      let monthLabel = "";
+      if (days.length > 0) {
+        const firstDay = new Date(days[0].date + "T00:00:00");
+        const m = firstDay.getMonth();
+        if (m !== lastMonth) {
+          monthLabel = monthNames[m];
+          lastMonth = m;
+        }
+      }
+      cols.push({ weekIndex: w, monthLabel, days });
+    }
+    return cols;
+  }, [activityTiles]);
 
   return (
     <div className="space-y-6 mb-12">
@@ -263,33 +283,46 @@ export function ChallengeProgressSection() {
 
         {/* Heatmap Matrix Display */}
         <div className="overflow-x-auto pb-2 scrollbar-thin">
-          <div className="min-w-[680px]">
-            {/* Grid of 52 columns x 7 rows */}
-            <div className="grid grid-flow-col grid-rows-7 gap-1 w-fit mb-2">
-              {activityTiles.map((tile, idx) => {
-                let colorClass = "bg-stone-800/60 border border-stone-800/40";
-                if (tile.level === 1) {
-                  colorClass = "bg-emerald-950 border border-emerald-900";
-                } else if (tile.level === 2) {
-                  colorClass = "bg-emerald-600 border border-emerald-500 shadow-sm shadow-emerald-500/20";
-                } else if (tile.level >= 3) {
-                  colorClass = "bg-emerald-400 border border-emerald-300 shadow-sm shadow-emerald-400/40";
-                }
+          <div className="w-fit">
+            {/* 52 Weekly Columns */}
+            <div className="flex gap-1 mb-2">
+              {weekColumns.map((col) => (
+                <div key={col.weekIndex} className="flex flex-col gap-1">
+                  {col.days.map((tile, dayIdx) => {
+                    let colorClass = "bg-stone-800/60 border border-stone-800/40";
+                    if (tile.level === 1) {
+                      colorClass = "bg-emerald-950 border border-emerald-900";
+                    } else if (tile.level === 2) {
+                      colorClass = "bg-emerald-600 border border-emerald-500 shadow-sm shadow-emerald-500/20";
+                    } else if (tile.level >= 3) {
+                      colorClass = "bg-emerald-400 border border-emerald-300 shadow-sm shadow-emerald-400/40";
+                    }
 
-                return (
-                  <div
-                    key={idx}
-                    title={`${tile.date}: ${tile.count} challenges & activities`}
-                    className={`w-3 h-3 rounded-[2.5px] transition-colors cursor-pointer hover:ring-1 hover:ring-white ${colorClass}`}
-                  />
-                );
-              })}
+                    return (
+                      <div
+                        key={dayIdx}
+                        title={`${tile.date}: ${tile.count} challenges & activities`}
+                        className={`w-3 h-3 rounded-[2.5px] transition-colors cursor-pointer hover:ring-1 hover:ring-white ${colorClass}`}
+                      />
+                    );
+                  })}
+                </div>
+              ))}
             </div>
 
-            {/* Months Row */}
-            <div className="flex justify-between text-[11px] text-stone-500 px-1 font-medium select-none">
-              {months.map((m, idx) => (
-                <span key={idx}>{m}</span>
+            {/* Months Row Aligned Column-by-Column */}
+            <div className="flex gap-1 select-none">
+              {weekColumns.map((col) => (
+                <div
+                  key={col.weekIndex}
+                  className="w-3 text-[10px] text-stone-500 font-medium relative h-4 overflow-visible"
+                >
+                  {col.monthLabel && (
+                    <span className="absolute left-0 top-0 whitespace-nowrap">
+                      {col.monthLabel}
+                    </span>
+                  )}
+                </div>
               ))}
             </div>
           </div>
@@ -428,7 +461,12 @@ export function ChallengeProgressSection() {
           )}
         </div>
 
-        {recentCompleted.length > 0 ? (
+        {loading ? (
+          <div className="py-8 flex flex-col items-center justify-center gap-2 text-stone-400">
+            <div className="w-5 h-5 border-2 border-orange-500 border-t-transparent rounded-full animate-spin" />
+            <span className="text-xs">Loading challenge history...</span>
+          </div>
+        ) : recentCompleted.length > 0 ? (
           <div className="space-y-2.5">
             {recentCompleted.map((item, idx) => (
               <div
@@ -440,9 +478,9 @@ export function ChallengeProgressSection() {
                     <CheckCircle2 className="w-4 h-4 text-orange-400" />
                   </div>
                   <div>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-bold text-white font-mono">
-                        {item.challenge_id}
+                    <div className="flex items-center gap-2 flex-wrap mb-0.5">
+                      <span className="text-sm font-bold text-white font-kalam">
+                        {item.title || item.challenge_id}
                       </span>
                       <span className="px-2 py-0.5 rounded-full bg-stone-800 border border-stone-700 text-[10px] text-amber-300 font-semibold">
                         {item.language}
@@ -454,11 +492,10 @@ export function ChallengeProgressSection() {
                         {item.difficulty}
                       </span>
                     </div>
-                    {item.completed_at && (
-                      <span className="text-[11px] text-stone-500 mt-0.5 block">
-                        Solved on {item.completed_at}
-                      </span>
-                    )}
+                    <div className="flex items-center gap-2 text-[11px] text-stone-500">
+                      <span className="font-mono text-[10px] text-stone-400">{item.challenge_id}</span>
+                      {item.completed_at && <span>• Solved on {item.completed_at}</span>}
+                    </div>
                   </div>
                 </div>
 
