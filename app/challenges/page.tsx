@@ -580,9 +580,15 @@ export default function ChallengesPage() {
             {boardLoading ? (
               <div className="h-28 rounded-xl bg-white/5 animate-pulse" />
             ) : board.length === 0 ? (
-              <p className="text-stone-400 text-xs text-center py-4">
-                No scores recorded for this filter yet.
-              </p>
+              <div className="text-center py-6 px-4">
+                <Trophy className="w-7 h-7 text-amber-400/40 mx-auto mb-2" />
+                <p className="text-stone-300 text-xs sm:text-sm font-medium">
+                  No scores recorded yet for this language.
+                </p>
+                <p className="text-stone-500 text-[11px] mt-0.5">
+                  Solve a challenge to earn XP and claim the #1 spot on the leaderboard!
+                </p>
+              </div>
             ) : (
               <ol className="space-y-2">
                 {board.map((row) => (
